@@ -522,7 +522,7 @@ function setupTopCardSwipe(totalImages) {
     currentX = event.clientX - startX;
     const rotation = currentX * 0.06;
     const opacity = Math.max(0.58, 1 - Math.abs(currentX) / 280);
-    topCard.style.transform = `translateX(${currentX}px) rotate(${rotation}deg) scale(1)`;
+    topCard.style.transform = `translate(-50%, -50%) translateX(${currentX}px) rotate(${rotation}deg) scale(1)`;
     topCard.style.opacity = String(opacity);
   });
 
@@ -535,7 +535,7 @@ function setupTopCardSwipe(totalImages) {
     if (Math.abs(currentX) > threshold) {
       const direction = currentX > 0 ? 1 : -1;
       topCard.style.transition = "transform 0.34s cubic-bezier(0.4,0,0.2,1), opacity 0.34s ease";
-      topCard.style.transform = `translateX(${direction * window.innerWidth * 0.8}px) rotate(${direction * 24}deg) scale(0.98)`;
+      topCard.style.transform = `translate(-50%, -50%) translateX(${direction * window.innerWidth * 0.8}px) rotate(${direction * 24}deg) scale(0.98)`;
       topCard.style.opacity = "0";
       topCard.addEventListener(
         "transitionend",
@@ -549,7 +549,7 @@ function setupTopCardSwipe(totalImages) {
     }
 
     topCard.style.transition = "transform 0.28s cubic-bezier(0.4,0,0.2,1), opacity 0.28s ease";
-    topCard.style.transform = "scale(1)";
+    topCard.style.transform = "translate(-50%, -50%) scale(1)";
     topCard.style.opacity = "1";
     topCard.addEventListener(
       "transitionend",
