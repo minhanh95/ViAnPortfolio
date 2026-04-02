@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VAN.LAB Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header" id="siteHeader">
+      <div class="brand">
+        <p class="brand-logo">VAN.LAB</p>
+        <p class="brand-tagline" id="brandTagline"></p>
+      </div>
+      <div class="header-right">
+        <nav class="header-nav">
+          <div class="view-toggle" role="tablist" aria-label="View mode">
+            <button id="viewGalleryBtn" class="view-btn" type="button"></button>
+            <button id="viewIndexBtn" class="view-btn" type="button"></button>
+          </div>
+          <a href="#about" id="navAbout"></a>
+          <a href="#meet" id="navMeet"></a>
+          <a href="#contact" id="navContact"></a>
+        </nav>
+        <div class="lang-toggle" role="group" aria-label="Language switcher">
+          <button id="langViBtn" class="lang-btn" type="button">VI</button>
+          <button id="langEnBtn" class="lang-btn" type="button">EN</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <section id="about" class="hero-section reveal">
+        <p class="section-label" id="portfolioLabel"></p>
+        <h1 id="heroTitle"></h1>
+        <p class="hero-subtext" id="heroSubtext"></p>
+      </section>
+
+      <section id="galleryView" class="content-view reveal">
+        <div id="galleryList" class="gallery-list"></div>
+      </section>
+
+      <section id="indexView" class="content-view reveal hidden">
+        <div class="index-wrap">
+          <table class="projects-table" id="projectsTable">
+            <thead>
+              <tr>
+                <th id="thProject"></th>
+                <th id="thCategory"></th>
+                <th id="thTechnology"></th>
+                <th id="thYear"></th>
+              </tr>
+            </thead>
+            <tbody id="projectsTableBody"></tbody>
+          </table>
+          <aside id="indexPreview" class="index-preview" aria-hidden="true"></aside>
+        </div>
+      </section>
+
+      <section id="meet" class="prefooter reveal">
+        <p id="lastUpdateLabel"></p>
+        <p id="ctaLabel"></p>
+      </section>
+
+      <section id="contact" class="studio-info reveal">
+        <article>
+          <p class="section-label" id="aboutStudioLabel"></p>
+          <p id="aboutStudioBody"></p>
+        </article>
+        <article>
+          <p class="section-label" id="servicesLabel"></p>
+          <p id="servicesBody"></p>
+        </article>
+        <article>
+          <p class="section-label" id="contactLabel"></p>
+          <p>Email: <a href="mailto:ngv.vian@gmail.com">ngv.vian@gmail.com</a></p>
+          <p><span id="phoneLabel"></span>: <a href="tel:+84941017048">+84 94 101 7048</a></p>
+          <p><span id="addressLabel"></span>: Lê Đại Hành district, Hanoi</p>
+          <p>Instagram: <a href="https://www.instagram.com/v.anlab/" target="_blank" rel="noreferrer">@v.anlab</a></p>
+        </article>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
