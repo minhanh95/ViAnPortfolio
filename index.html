@@ -63,6 +63,35 @@
         </div>
       </section>
 
+      <section id="caseStudyView" class="case-study hidden">
+        <div class="case-panel">
+          <div class="case-layout">
+            <aside class="case-left-column">
+              <button id="caseBackBtn" class="case-back" type="button"></button>
+              <h2 id="caseTitle"></h2>
+              <p id="caseType"></p>
+              <p id="caseTech"></p>
+              <p id="caseYear"></p>
+              <p id="caseDescription" class="case-description"></p>
+
+              <div class="case-info-bar">
+                <p><strong id="caseInfoTechLabel"></strong><span id="caseInfoTech"></span></p>
+                <p><strong id="caseInfoYearLabel"></strong><span id="caseInfoYear"></span></p>
+              </div>
+
+              <button id="nextProjectBtn" class="next-project-btn" type="button"></button>
+            </aside>
+
+            <section class="case-right-column">
+              <div class="case-slider-wrap">
+                <div id="caseSlideTrack" class="case-slide-track"></div>
+                <div id="caseSwipeHint" class="case-swipe-hint" aria-hidden="true"></div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+
       <section id="meet" class="prefooter reveal">
         <p id="lastUpdateLabel"></p>
         <p id="ctaLabel"></p>
@@ -87,6 +116,9 @@
       </section>
     </main>
 
-    <script src="./script.js"></script>
+    <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Draggable.min.js"></script>
+    <script src="./portfolio.js"></script>
   </body>
 </html>

@@ -13,3 +13,15 @@ Place each cover image as `cover.jpg` in the corresponding project folder:
 Ban co the dung `.jpg`, `.jpeg`, `.png`, hoac `.gif`, sau do cap nhat `coverPath` trong `script.js` neu can.
 
 You can use `.jpg`, `.jpeg`, `.png`, or `.gif`, then update each `coverPath` in `script.js` if needed.
+
+---
+
+## Detail slideshow naming
+
+Use standardized names for detail images:
+
+- `detail-01.jpg`
+- `detail-02.jpg`
+- `detail-03.jpg`
+
+The site now auto-loads `detail-*.jpg` from each project folder, so you only need to drop files with this naming format. No `portfolio.js` update required.
