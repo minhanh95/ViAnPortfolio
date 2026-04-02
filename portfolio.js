@@ -206,6 +206,13 @@ function getSelectedProject() {
   return state.items.find((item) => item.slug === state.selectedSlug) || state.items[0];
 }
 
+function normalizeSlideImages(project) {
+  const rawImages = project.detailImages?.length ? project.detailImages : [project.coverPath];
+  const uniqueImages = [...new Set(rawImages)];
+  const withoutCover = uniqueImages.filter((path) => path !== project.coverPath);
+  return [project.coverPath, ...withoutCover];
+}
+
 function isMobileCaseLayout() {
   return window.matchMedia("(max-width: 768px)").matches;
 }
@@ -381,8 +388,7 @@ function renderCaseStudy() {
   const project = getSelectedProject();
   if (!project) return;
 
-  const images = project.detailImages?.length ? project.detailImages : [project.coverPath];
-  const slideImages = images.length ? images : [project.coverPath];
+  const slideImages = normalizeSlideImages(project);
 
   els.caseTitle.textContent = project.name;
   els.caseType.textContent = getLocalizedValue(project.category);
@@ -476,9 +482,44 @@ function setupTopCardSwipe(totalImages) {
 
   const gsap = window.gsap;
   const Draggable = window.Draggable;
+  const stackCards = [...els.caseSlideTrack.querySelectorAll(".case-stack-card")];
+  const secondaryCards = stackCards.slice(1);
+
+  function updateSecondaryCards(progress) {
+    secondaryCards.forEach((card, index) => {
+      const depth = index + 1;
+      const baseScale = 1 - depth * 0.06;
+      const nextScale = 1 - Math.max(0, depth - 1) * 0.06;
+      const baseY = depth * 16;
+      const nextY = Math.max(0, depth - 1) * 16;
+      const baseOpacity = 1 - depth * 0.14;
+      const nextOpacity = 1 - Math.max(0, depth - 1) * 0.14;
+
+      gsap.set(card, {
+        scale: baseScale + (nextScale - baseScale) * progress,
+        y: baseY + (nextY - baseY) * progress,
+        opacity: baseOpacity + (nextOpacity - baseOpacity) * progress,
+      });
+    });
+  }
+
+  function resetSecondaryCards() {
+    secondaryCards.forEach((card, index) => {
+      const depth = index + 1;
+      gsap.to(card, {
+        scale: 1 - depth * 0.06,
+        y: depth * 16,
+        opacity: 1 - depth * 0.14,
+        duration: 0.22,
+        ease: "power2.out",
+      });
+    });
+  }
+
   if (gsap && Draggable) {
     const threshold = Math.max(72, topCard.clientWidth * 0.18);
     gsap.set(topCard, { x: 0, rotation: 0, opacity: 1 });
+    updateSecondaryCards(0);
 
     activeCardDraggable = Draggable.create(topCard, {
       type: "x",
@@ -490,6 +531,8 @@ function setupTopCardSwipe(totalImages) {
       },
       onDrag() {
         const x = this.x;
+        const progress = Math.min(1, Math.abs(x) / threshold);
+        updateSecondaryCards(progress);
         gsap.set(this.target, {
           rotation: x * 0.06,
           opacity: Math.max(0.58, 1 - Math.abs(x) / 280),
@@ -513,6 +556,7 @@ function setupTopCardSwipe(totalImages) {
           });
           return;
         }
+        resetSecondaryCards();
         gsap.to(this.target, {
           x: 0,
           rotation: 0,
@@ -547,7 +591,7 @@ function setupTopCardSwipe(totalImages) {
     currentX = event.clientX - startX;
     const rotation = currentX * 0.06;
     const opacity = Math.max(0.58, 1 - Math.abs(currentX) / 280);
-    topCard.style.transform = `translate(-50%, -50%) translateX(${currentX}px) rotate(${rotation}deg) scale(1)`;
+    topCard.style.transform = `translateX(${currentX}px) rotate(${rotation}deg) scale(1)`;
     topCard.style.opacity = String(opacity);
   });
 
@@ -560,7 +604,7 @@ function setupTopCardSwipe(totalImages) {
     if (Math.abs(currentX) > threshold) {
       const direction = currentX > 0 ? 1 : -1;
       topCard.style.transition = "transform 0.34s cubic-bezier(0.4,0,0.2,1), opacity 0.34s ease";
-      topCard.style.transform = `translate(-50%, -50%) translateX(${direction * window.innerWidth * 0.8}px) rotate(${direction * 24}deg) scale(0.98)`;
+      topCard.style.transform = `translateX(${direction * window.innerWidth * 0.8}px) rotate(${direction * 24}deg) scale(0.98)`;
       topCard.style.opacity = "0";
       topCard.addEventListener(
         "transitionend",
@@ -574,7 +618,7 @@ function setupTopCardSwipe(totalImages) {
     }
 
     topCard.style.transition = "transform 0.28s cubic-bezier(0.4,0,0.2,1), opacity 0.28s ease";
-    topCard.style.transform = "translate(-50%, -50%) scale(1)";
+    topCard.style.transform = "scale(1)";
     topCard.style.opacity = "1";
     topCard.addEventListener(
       "transitionend",
