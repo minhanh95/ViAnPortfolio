@@ -1315,7 +1315,18 @@ body.case-open {
   }
 
   .case-study.mobile-info-collapsed .case-info-body {
+    margin-top: 0;
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .case-study.mobile-info-collapsed .case-info-body > :not(.next-project-btn) {
     display: none;
+  }
+
+  .case-study.mobile-info-collapsed .next-project-btn {
+    margin-top: 0.1rem;
   }
 
   .case-slider-wrap {

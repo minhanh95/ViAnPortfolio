@@ -450,7 +450,6 @@ async function openCaseStudy(slug) {
     return;
   }
   renderCaseStudy();
-  window.scrollTo({ top: 0, behavior: "auto" });
 }
 
 function closeCaseStudy() {
