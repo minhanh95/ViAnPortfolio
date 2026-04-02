@@ -160,6 +160,7 @@ const state = {
 
 let activeCardDraggable = null;
 const detailResolvePromises = new Map();
+const imageWarmupCache = new Set();
 
 const els = {
   siteHeader: document.getElementById("siteHeader"),
@@ -246,6 +247,17 @@ function checkImageExists(path) {
       clearTimeout(timeout);
       resolve(false);
     };
+    image.src = path;
+  });
+}
+
+function warmupImages(paths) {
+  paths.forEach((path) => {
+    if (!path || imageWarmupCache.has(path)) return;
+    imageWarmupCache.add(path);
+    const image = new Image();
+    image.decoding = "async";
+    image.loading = "eager";
     image.src = path;
   });
 }
@@ -389,6 +401,7 @@ function renderCaseStudy() {
   if (!project) return;
 
   const slideImages = normalizeSlideImages(project);
+  warmupImages(slideImages.slice(0, 8));
 
   els.caseTitle.textContent = project.name;
   els.caseType.textContent = getLocalizedValue(project.category);
@@ -495,6 +508,7 @@ function setupTopCardSwipe(totalImages) {
       const nextOpacity = 1 - Math.max(0, depth - 1) * 0.14;
 
       gsap.set(card, {
+        force3D: true,
         scale: baseScale + (nextScale - baseScale) * progress,
         y: baseY + (nextY - baseY) * progress,
         opacity: baseOpacity + (nextOpacity - baseOpacity) * progress,
@@ -517,7 +531,8 @@ function setupTopCardSwipe(totalImages) {
 
   if (gsap && Draggable) {
     const threshold = Math.max(72, topCard.clientWidth * 0.18);
-    gsap.set(topCard, { x: 0, rotation: 0, opacity: 1 });
+    let lastProgress = 0;
+    gsap.set(topCard, { x: 0, rotation: 0, opacity: 1, force3D: true });
     updateSecondaryCards(0);
 
     activeCardDraggable = Draggable.create(topCard, {
@@ -531,8 +546,12 @@ function setupTopCardSwipe(totalImages) {
       onDrag() {
         const x = this.x;
         const progress = Math.min(1, Math.abs(x) / threshold);
-        updateSecondaryCards(progress);
+        if (Math.abs(progress - lastProgress) > 0.02) {
+          updateSecondaryCards(progress);
+          lastProgress = progress;
+        }
         gsap.set(this.target, {
+          force3D: true,
           rotation: x * 0.06,
           opacity: Math.max(0.58, 1 - Math.abs(x) / 280),
         });

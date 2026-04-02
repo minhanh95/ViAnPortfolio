@@ -90,6 +90,8 @@ a {
   border-radius: 8px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.02);
+  align-self: flex-start;
+  width: fit-content;
 }
 
 .lang-btn {
@@ -100,6 +102,7 @@ a {
   font-size: 0.74rem;
   letter-spacing: 0.08em;
   padding: 0.35rem 0.55rem;
+  min-width: 40px;
   cursor: pointer;
   transition: color 0.5s var(--ease-premium), background 0.5s var(--ease-premium);
 }
@@ -110,7 +113,7 @@ a {
 
 .lang-btn.active {
   background: var(--accent);
-  color: #04281f;
+  color: #ffffff;
   font-weight: 600;
 }
 
@@ -635,6 +638,10 @@ a {
     justify-content: space-between;
   }
 
+  .lang-toggle {
+    margin-top: 0.15rem;
+  }
+
   .main-layout {
     padding: 1rem;
   }
@@ -1153,19 +1160,18 @@ body.case-open {
   transform: translateY(var(--card-y)) scale(var(--card-scale));
   opacity: var(--card-opacity);
   z-index: 1;
-  transition: transform 0.35s ease, opacity 0.35s ease, filter 0.35s ease;
-  filter: blur(0.5px);
+  transition: transform 0.35s ease, opacity 0.35s ease;
   pointer-events: none;
   will-change: transform, opacity;
   backface-visibility: hidden;
   transform-origin: center center;
+  contain: layout paint style;
 }
 
 .case-stack-card.is-top {
   z-index: 4;
   opacity: 1;
   transform: scale(1);
-  filter: none;
   pointer-events: auto;
   cursor: grab;
 }
@@ -1181,9 +1187,10 @@ body.case-open {
   object-fit: contain;
   border-radius: 12px;
   background: #f6f6f6;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
   will-change: transform;
   backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .case-swipe-hint {
@@ -1249,6 +1256,7 @@ body.case-open {
 @media (max-width: 768px) {
   .case-study {
     padding: 0.35rem;
+    backdrop-filter: none;
   }
 
   .case-panel {
@@ -1342,6 +1350,7 @@ body.case-open {
     bottom: 0.5rem;
     font-size: 0.68rem;
     padding: 0.34rem 0.55rem;
+    animation: none;
   }
 }
 
