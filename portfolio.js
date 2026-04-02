@@ -19,6 +19,8 @@ const i18n = {
     infoTechnology: "Technology",
     infoYear: "Year",
     caseBack: "Back to list",
+    caseInfoMore: "Show details",
+    caseInfoLess: "Hide details",
     slidePrev: "Prev",
     slideNext: "Next",
     swipeHint: "Vuot trai / phai de xem anh tiep theo",
@@ -57,6 +59,8 @@ const i18n = {
     infoTechnology: "Technology",
     infoYear: "Year",
     caseBack: "Back to list",
+    caseInfoMore: "Show details",
+    caseInfoLess: "Hide details",
     slidePrev: "Prev",
     slideNext: "Next",
     swipeHint: "Swipe left / right to view next image",
@@ -148,6 +152,7 @@ const state = {
   language: defaultLanguage,
   viewMode: "gallery",
   inCaseStudy: false,
+  mobileInfoCollapsed: true,
   items: sortedProjects,
   selectedSlug: sortedProjects[0]?.slug || "",
   caseSlideIndex: 0,
@@ -168,6 +173,8 @@ const els = {
   tableBody: document.getElementById("projectsTableBody"),
   indexPreview: document.getElementById("indexPreview"),
   caseBackBtn: document.getElementById("caseBackBtn"),
+  caseInfoToggleBtn: document.getElementById("caseInfoToggleBtn"),
+  caseInfoBody: document.getElementById("caseInfoBody"),
   caseTitle: document.getElementById("caseTitle"),
   caseType: document.getElementById("caseType"),
   caseTech: document.getElementById("caseTech"),
@@ -199,9 +206,21 @@ function getSelectedProject() {
   return state.items.find((item) => item.slug === state.selectedSlug) || state.items[0];
 }
 
+function isMobileCaseLayout() {
+  return window.matchMedia("(max-width: 768px)").matches;
+}
+
 function setSelectedProject(slug) {
   state.selectedSlug = slug;
   state.caseSlideIndex = 0;
+}
+
+function applyMobileInfoState() {
+  const collapsed = isMobileCaseLayout() ? state.mobileInfoCollapsed : false;
+  els.caseStudyView.classList.toggle("mobile-info-collapsed", collapsed);
+  if (els.caseInfoToggleBtn) {
+    els.caseInfoToggleBtn.textContent = collapsed ? t("caseInfoMore") : t("caseInfoLess");
+  }
 }
 
 function getFolderPath(path) {
@@ -292,6 +311,7 @@ function renderStaticText() {
   document.getElementById("phoneLabel").textContent = t("phoneLabel");
   document.getElementById("addressLabel").textContent = t("addressLabel");
   els.caseBackBtn.textContent = t("caseBack");
+  applyMobileInfoState();
   els.caseSwipeHint.textContent = t("swipeHint");
   els.caseInfoTechLabel.textContent = t("caseInfoTechLabel");
   els.caseInfoYearLabel.textContent = t("caseInfoYearLabel");
@@ -408,11 +428,15 @@ function applyViewMode() {
 function applyCaseStudyMode() {
   els.caseStudyView.classList.toggle("hidden", !state.inCaseStudy);
   document.body.classList.toggle("case-open", state.inCaseStudy);
+  if (state.inCaseStudy) {
+    applyMobileInfoState();
+  }
 }
 
 async function openCaseStudy(slug) {
   setSelectedProject(slug);
   state.inCaseStudy = true;
+  state.mobileInfoCollapsed = isMobileCaseLayout();
   applyCaseStudyMode();
   const project = getSelectedProject();
   await ensureProjectDetailImages(project);
@@ -425,6 +449,7 @@ async function openCaseStudy(slug) {
 
 function closeCaseStudy() {
   state.inCaseStudy = false;
+  state.mobileInfoCollapsed = true;
   applyCaseStudyMode();
 }
 
@@ -576,9 +601,18 @@ function switchLanguage(language) {
 function switchViewMode(mode) {
   state.viewMode = mode;
   state.inCaseStudy = false;
+  state.mobileInfoCollapsed = true;
   renderStaticText();
   applyViewMode();
   applyCaseStudyMode();
+}
+
+function handleCaseLayoutResize() {
+  if (!state.inCaseStudy) return;
+  if (!isMobileCaseLayout()) {
+    state.mobileInfoCollapsed = false;
+  }
+  applyMobileInfoState();
 }
 
 function initScrollReveal() {
@@ -630,6 +664,10 @@ els.langEnBtn.addEventListener("click", () => switchLanguage("en"));
 els.viewGalleryBtn.addEventListener("click", () => switchViewMode("gallery"));
 els.viewIndexBtn.addEventListener("click", () => switchViewMode("index"));
 els.caseBackBtn.addEventListener("click", closeCaseStudy);
+els.caseInfoToggleBtn.addEventListener("click", () => {
+  state.mobileInfoCollapsed = !state.mobileInfoCollapsed;
+  applyMobileInfoState();
+});
 els.nextProjectBtn.addEventListener("click", goToNextProject);
 els.caseStudyView.addEventListener("click", (event) => {
   if (event.target === els.caseStudyView) {
@@ -647,6 +685,7 @@ async function initializeApp() {
   wireHeaderGlassEffect();
   initScrollReveal();
   initLenisSmoothScroll();
+  window.addEventListener("resize", handleCaseLayoutResize);
 }
 
 initializeApp();

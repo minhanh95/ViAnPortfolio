@@ -67,19 +67,25 @@
         <div class="case-panel">
           <div class="case-layout">
             <aside class="case-left-column">
-              <button id="caseBackBtn" class="case-back" type="button"></button>
-              <h2 id="caseTitle"></h2>
-              <p id="caseType"></p>
-              <p id="caseTech"></p>
-              <p id="caseYear"></p>
-              <p id="caseDescription" class="case-description"></p>
-
-              <div class="case-info-bar">
-                <p><strong id="caseInfoTechLabel"></strong><span id="caseInfoTech"></span></p>
-                <p><strong id="caseInfoYearLabel"></strong><span id="caseInfoYear"></span></p>
+              <div class="case-info-head">
+                <button id="caseBackBtn" class="case-back" type="button"></button>
+                <button id="caseInfoToggleBtn" class="case-info-toggle" type="button"></button>
               </div>
+              <h2 id="caseTitle"></h2>
 
-              <button id="nextProjectBtn" class="next-project-btn" type="button"></button>
+              <div id="caseInfoBody" class="case-info-body">
+                <p id="caseType"></p>
+                <p id="caseTech"></p>
+                <p id="caseYear"></p>
+                <p id="caseDescription" class="case-description"></p>
+
+                <div class="case-info-bar">
+                  <p><strong id="caseInfoTechLabel"></strong><span id="caseInfoTech"></span></p>
+                  <p><strong id="caseInfoYearLabel"></strong><span id="caseInfoYear"></span></p>
+                </div>
+
+                <button id="nextProjectBtn" class="next-project-btn" type="button"></button>
+              </div>
             </aside>
 
             <section class="case-right-column">
