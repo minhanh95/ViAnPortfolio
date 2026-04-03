@@ -548,13 +548,25 @@ function positionCaseCards(totalImages, animate = true) {
     els.caseSlideTrack.classList.remove("no-motion");
   }
 
+  const activeCard = cards.find((card) => Number(card.dataset.imageIndex || 0) === state.caseSlideIndex) || null;
+
   cards.forEach((card) => {
     const imageIndex = Number(card.dataset.imageIndex || 0);
     const offset = getCircularOffset(imageIndex, state.caseSlideIndex, totalImages);
-    const visual = getStackCardVisual(offset, stepX);
+    const isActive = activeCard === card;
+    const visual = isActive
+      ? {
+          x: 0,
+          scale: 1,
+          opacity: 1,
+          blur: 0,
+          rotateY: 0,
+          z: 30,
+        }
+      : getStackCardVisual(offset, stepX);
 
     card.dataset.offset = String(offset);
-    card.classList.toggle("is-top", offset === 0);
+    card.classList.toggle("is-top", isActive);
     card.style.zIndex = String(visual.z);
     card.style.setProperty("--card-x", `${visual.x}px`);
     card.style.setProperty("--card-scale", String(visual.scale));

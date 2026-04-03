@@ -1195,11 +1195,11 @@ body.case-open {
 
 .case-stack-card {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  inset: 0;
+  margin: auto;
   width: clamp(230px, 30vw, 360px);
   aspect-ratio: 3 / 4;
-  transform: translate3d(calc(-50% + var(--card-x, 0px) + var(--drag-x, 0px)), -50%, 0)
+  transform: translate3d(calc(var(--card-x, 0px) + var(--drag-x, 0px)), 0, 0)
     perspective(1300px)
     scale(var(--card-scale, 1)) rotateY(var(--card-ry, 0deg)) rotate(var(--drag-rot, 0deg));
   opacity: var(--card-opacity);
@@ -1226,6 +1226,8 @@ body.case-open {
   z-index: 30;
   pointer-events: auto;
   cursor: grab;
+  transform: translate3d(var(--drag-x, 0px), 0, 0) perspective(1300px)
+    scale(1) rotateY(0deg) rotate(var(--drag-rot, 0deg));
 }
 
 .case-stack-card.is-top.dragging {
