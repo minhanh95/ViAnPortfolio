@@ -1199,8 +1199,8 @@ body.case-open {
   left: 50%;
   width: clamp(230px, 30vw, 360px);
   aspect-ratio: 3 / 4;
-  transform: translate(-50%, -50%) perspective(1300px) translateX(var(--card-x, 0px))
-    translateX(var(--drag-x, 0px))
+  transform: translate3d(calc(-50% + var(--card-x, 0px) + var(--drag-x, 0px)), -50%, 0)
+    perspective(1300px)
     scale(var(--card-scale, 1)) rotateY(var(--card-ry, 0deg)) rotate(var(--drag-rot, 0deg));
   opacity: var(--card-opacity);
   z-index: var(--card-z, 1);
