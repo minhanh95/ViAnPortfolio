@@ -156,9 +156,10 @@ const state = {
   items: sortedProjects,
   selectedSlug: sortedProjects[0]?.slug || "",
   caseSlideIndex: 0,
+  caseAnimating: false,
 };
 
-let activeCardDraggable = null;
+let topCardSwipeCleanup = null;
 const detailResolvePromises = new Map();
 const imageWarmupCache = new Set();
 
@@ -401,7 +402,7 @@ function renderCaseStudy() {
   if (!project) return;
 
   const slideImages = normalizeSlideImages(project);
-  warmupImages(slideImages.slice(0, 8));
+  warmupImages(slideImages);
 
   els.caseTitle.textContent = project.name;
   els.caseType.textContent = getLocalizedValue(project.category);
@@ -415,27 +416,132 @@ function renderCaseStudy() {
     state.caseSlideIndex = 0;
   }
 
-  const visibleCards = Math.min(4, slideImages.length);
-  const stackCards = Array.from({ length: visibleCards }, (_, depth) => {
-    const imageIndex = (state.caseSlideIndex + depth) % slideImages.length;
-    return { depth, imageIndex, path: slideImages[imageIndex] };
+  const signature = `${project.slug}:${slideImages.join("|")}`;
+  if (els.caseSlideTrack.dataset.signature !== signature) {
+    els.caseSlideTrack.dataset.signature = signature;
+    els.caseSlideTrack.innerHTML = slideImages
+      .map(
+        (path, imageIndex) => `
+          <figure
+            class="case-stack-card"
+            data-image-index="${imageIndex}"
+            style="--card-x:0px; --card-scale:1; --card-opacity:1; --card-blur:0px; --card-ry:0deg; --card-z:1; --drag-x:0px; --drag-rot:0deg;"
+          >
+            <img src="${path}" alt="${project.name} detail ${imageIndex + 1}" loading="lazy" draggable="false" />
+          </figure>`,
+      )
+      .join("");
+    positionCaseCards(slideImages.length, false);
+  } else {
+    positionCaseCards(slideImages.length, true);
+  }
+
+  setupTopCardSwipe(slideImages.length);
+}
+
+function getStackCardVisual(offset, stepX) {
+  const distance = Math.abs(offset);
+  if (distance > 2) {
+    return {
+      x: offset * stepX,
+      scale: 0.5,
+      opacity: 0,
+      blur: 6,
+      rotateY: offset > 0 ? -1.2 : 1.2,
+      z: 1,
+    };
+  }
+
+  if (distance === 0) {
+    return {
+      x: 0,
+      scale: 1,
+      opacity: 1,
+      blur: 0,
+      rotateY: 0,
+      z: 30,
+    };
+  }
+
+  if (distance === 1) {
+    return {
+      x: offset * stepX,
+      scale: 0.8,
+      opacity: 0.6,
+      blur: 5,
+      rotateY: offset > 0 ? -1.2 : 1.2,
+      z: 9,
+    };
+  }
+
+  return {
+    x: offset * stepX,
+    scale: 0.6,
+    opacity: 0.6,
+    blur: 5,
+    rotateY: offset > 0 ? -1.2 : 1.2,
+    z: 8,
+  };
+}
+
+function getCircularOffset(index, active, total) {
+  let diff = index - active;
+  if (diff > total / 2) diff -= total;
+  if (diff < -total / 2) diff += total;
+  return diff;
+}
+
+function positionCaseCards(totalImages, animate = true) {
+  const cards = Array.from(els.caseSlideTrack.querySelectorAll(".case-stack-card"));
+  if (!cards.length) return;
+
+  const trackWidth = els.caseSlideTrack.clientWidth || 700;
+  const stepX = Math.max(96, Math.min(132, trackWidth * 0.16));
+
+  if (!animate) {
+    els.caseSlideTrack.classList.add("no-motion");
+  } else {
+    els.caseSlideTrack.classList.remove("no-motion");
+  }
+
+  cards.forEach((card) => {
+    const imageIndex = Number(card.dataset.imageIndex || 0);
+    const offset = getCircularOffset(imageIndex, state.caseSlideIndex, totalImages);
+    const visual = getStackCardVisual(offset, stepX);
+
+    card.dataset.offset = String(offset);
+    card.classList.toggle("is-top", offset === 0);
+    card.style.zIndex = String(visual.z);
+    card.style.setProperty("--card-x", `${visual.x}px`);
+    card.style.setProperty("--card-scale", String(visual.scale));
+    card.style.setProperty("--card-opacity", String(visual.opacity));
+    card.style.setProperty("--card-blur", `${visual.blur}px`);
+    card.style.setProperty("--card-ry", `${visual.rotateY}deg`);
+    card.style.setProperty("--drag-x", "0px");
+    card.style.setProperty("--drag-rot", "0deg");
+    if (offset !== 0) {
+      card.style.opacity = "";
+      card.classList.remove("dragging");
+    }
   });
 
-  els.caseSlideTrack.innerHTML = stackCards
-    .map(
-      ({ depth, imageIndex, path }) => `
-        <figure
-          class="case-stack-card ${depth === 0 ? "is-top" : ""}"
-          style="--card-scale:${1 - depth * 0.06}; --card-y:${depth * 16}px; --card-opacity:${1 - depth * 0.14};"
-        >
-          <img src="${path}" alt="${project.name} detail ${imageIndex + 1}" loading="lazy" />
-        </figure>`,
-    )
-    .join("");
-
-  if (slideImages.length > 1) {
-    setupTopCardSwipe(slideImages.length);
+  if (!animate) {
+    requestAnimationFrame(() => {
+      els.caseSlideTrack.classList.remove("no-motion");
+    });
   }
+}
+
+function animateCardShift(direction, totalImages) {
+  if (state.caseAnimating) return;
+  state.caseAnimating = true;
+  const delta = direction > 0 ? -1 : 1;
+  state.caseSlideIndex = (state.caseSlideIndex + delta + totalImages) % totalImages;
+  positionCaseCards(totalImages, true);
+  window.setTimeout(() => {
+    state.caseAnimating = false;
+    setupTopCardSwipe(totalImages);
+  }, 520);
 }
 
 function applyViewMode() {
@@ -484,171 +590,85 @@ async function goToNextProject() {
 }
 
 function setupTopCardSwipe(totalImages) {
+  if (typeof topCardSwipeCleanup === "function") {
+    topCardSwipeCleanup();
+    topCardSwipeCleanup = null;
+  }
+
   const topCard = els.caseSlideTrack.querySelector(".case-stack-card.is-top");
-  if (!topCard) return;
-
-  if (activeCardDraggable && typeof activeCardDraggable.kill === "function") {
-    activeCardDraggable.kill();
-    activeCardDraggable = null;
-  }
-
-  const gsap = window.gsap;
-  const Draggable = window.Draggable;
-  const stackCards = [...els.caseSlideTrack.querySelectorAll(".case-stack-card")];
-  const secondaryCards = stackCards.slice(1);
-
-  function updateSecondaryCards(progress) {
-    secondaryCards.forEach((card, index) => {
-      const depth = index + 1;
-      const baseScale = 1 - depth * 0.06;
-      const nextScale = 1 - Math.max(0, depth - 1) * 0.06;
-      const baseY = depth * 16;
-      const nextY = Math.max(0, depth - 1) * 16;
-      const baseOpacity = 1 - depth * 0.14;
-      const nextOpacity = 1 - Math.max(0, depth - 1) * 0.14;
-
-      gsap.set(card, {
-        force3D: true,
-        scale: baseScale + (nextScale - baseScale) * progress,
-        y: baseY + (nextY - baseY) * progress,
-        opacity: baseOpacity + (nextOpacity - baseOpacity) * progress,
-      });
-    });
-  }
-
-  function resetSecondaryCards() {
-    secondaryCards.forEach((card, index) => {
-      const depth = index + 1;
-      gsap.to(card, {
-        scale: 1 - depth * 0.06,
-        y: depth * 16,
-        opacity: 1 - depth * 0.14,
-        duration: 0.22,
-        ease: "power2.out",
-      });
-    });
-  }
-
-  if (gsap && Draggable) {
-    const threshold = Math.max(72, topCard.clientWidth * 0.18);
-    let lastProgress = 0;
-    gsap.set(topCard, { x: 0, rotation: 0, opacity: 1, force3D: true });
-    updateSecondaryCards(0);
-
-    activeCardDraggable = Draggable.create(topCard, {
-      type: "x",
-      dragResistance: 0.08,
-      edgeResistance: 0.72,
-      allowNativeTouchScrolling: true,
-      onPress() {
-        topCard.classList.add("dragging");
-      },
-      onDrag() {
-        const x = this.x;
-        const progress = Math.min(1, Math.abs(x) / threshold);
-        if (Math.abs(progress - lastProgress) > 0.02) {
-          updateSecondaryCards(progress);
-          lastProgress = progress;
-        }
-        gsap.set(this.target, {
-          force3D: true,
-          rotation: x * 0.06,
-          opacity: Math.max(0.58, 1 - Math.abs(x) / 280),
-        });
-      },
-      onRelease() {
-        topCard.classList.remove("dragging");
-        const x = this.x;
-        if (Math.abs(x) > threshold) {
-          const direction = x > 0 ? 1 : -1;
-          gsap.to(this.target, {
-            x: direction * window.innerWidth * 0.86,
-            rotation: direction * 24,
-            opacity: 0,
-            duration: 0.34,
-            ease: "power3.out",
-            onComplete: () => {
-              state.caseSlideIndex = (state.caseSlideIndex + 1) % totalImages;
-              renderCaseStudy();
-            },
-          });
-          return;
-        }
-        resetSecondaryCards();
-        gsap.to(this.target, {
-          x: 0,
-          rotation: 0,
-          opacity: 1,
-          duration: 0.28,
-          ease: "power3.out",
-        });
-      },
-    })[0];
-    return;
-  }
+  if (!topCard || totalImages <= 1) return;
 
   let dragging = false;
   let pointerId = null;
   let startX = 0;
   let currentX = 0;
-  const threshold = Math.max(70, topCard.clientWidth * 0.18);
 
-  topCard.style.touchAction = "pan-y";
+  const onPointerMove = (event) => {
+    if (!dragging || pointerId !== event.pointerId || state.caseAnimating) return;
+    currentX = event.clientX - startX;
+    const rotation = currentX * 0.04;
+    const opacity = Math.max(0.6, 1 - Math.abs(currentX) / 320);
+    topCard.style.setProperty("--drag-x", `${currentX}px`);
+    topCard.style.setProperty("--drag-rot", `${rotation}deg`);
+    topCard.style.opacity = String(opacity);
+  };
 
-  topCard.addEventListener("pointerdown", (event) => {
+  const endSwipe = () => {
+    if (pointerId !== null && topCard.hasPointerCapture(pointerId)) {
+      topCard.releasePointerCapture(pointerId);
+    }
+    dragging = false;
+    pointerId = null;
+    topCard.classList.remove("dragging");
+  };
+
+  const onPointerUp = (event) => {
+    if (!dragging || pointerId !== event.pointerId) return;
+    const threshold = Math.max(62, topCard.clientWidth * 0.16);
+    const movedX = currentX;
+    endSwipe();
+    if (!state.caseAnimating && Math.abs(movedX) > threshold) {
+      const direction = movedX > 0 ? 1 : -1;
+      animateCardShift(direction, totalImages);
+      return;
+    }
+    topCard.style.setProperty("--drag-x", "0px");
+    topCard.style.setProperty("--drag-rot", "0deg");
+    topCard.style.opacity = "1";
+  };
+
+  const onPointerCancel = (event) => {
+    if (!dragging || pointerId !== event.pointerId) return;
+    endSwipe();
+    topCard.style.setProperty("--drag-x", "0px");
+    topCard.style.setProperty("--drag-rot", "0deg");
+    topCard.style.opacity = "1";
+  };
+
+  const onPointerDown = (event) => {
+    if (state.caseAnimating) return;
+    event.preventDefault();
     dragging = true;
     pointerId = event.pointerId;
     startX = event.clientX;
     currentX = 0;
     topCard.setPointerCapture(pointerId);
     topCard.classList.add("dragging");
-  });
-
-  topCard.addEventListener("pointermove", (event) => {
-    if (!dragging || event.pointerId !== pointerId) return;
-    currentX = event.clientX - startX;
-    const rotation = currentX * 0.06;
-    const opacity = Math.max(0.58, 1 - Math.abs(currentX) / 280);
-    topCard.style.transform = `translateX(${currentX}px) rotate(${rotation}deg) scale(1)`;
-    topCard.style.opacity = String(opacity);
-  });
-
-  const release = (event) => {
-    if (!dragging || event.pointerId !== pointerId) return;
-    dragging = false;
-    topCard.classList.remove("dragging");
-    topCard.releasePointerCapture(pointerId);
-
-    if (Math.abs(currentX) > threshold) {
-      const direction = currentX > 0 ? 1 : -1;
-      topCard.style.transition = "transform 0.34s cubic-bezier(0.4,0,0.2,1), opacity 0.34s ease";
-      topCard.style.transform = `translateX(${direction * window.innerWidth * 0.8}px) rotate(${direction * 24}deg) scale(0.98)`;
-      topCard.style.opacity = "0";
-      topCard.addEventListener(
-        "transitionend",
-        () => {
-          state.caseSlideIndex = (state.caseSlideIndex + 1) % totalImages;
-          renderCaseStudy();
-        },
-        { once: true },
-      );
-      return;
-    }
-
-    topCard.style.transition = "transform 0.28s cubic-bezier(0.4,0,0.2,1), opacity 0.28s ease";
-    topCard.style.transform = "scale(1)";
-    topCard.style.opacity = "1";
-    topCard.addEventListener(
-      "transitionend",
-      () => {
-        topCard.style.transition = "";
-      },
-      { once: true },
-    );
   };
 
-  topCard.addEventListener("pointerup", release);
-  topCard.addEventListener("pointercancel", release);
+  topCard.addEventListener("pointerdown", onPointerDown);
+  topCard.style.touchAction = "pan-y";
+  window.addEventListener("pointermove", onPointerMove);
+  window.addEventListener("pointerup", onPointerUp);
+  window.addEventListener("pointercancel", onPointerCancel);
+
+  topCardSwipeCleanup = () => {
+    topCard.removeEventListener("pointerdown", onPointerDown);
+    window.removeEventListener("pointermove", onPointerMove);
+    window.removeEventListener("pointerup", onPointerUp);
+    window.removeEventListener("pointercancel", onPointerCancel);
+    topCard.style.touchAction = "";
+  };
 }
 
 function switchLanguage(language) {
