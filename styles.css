@@ -945,14 +945,42 @@ body {
   background: #fff;
 }
 
-.prefooter {
+.skills-showcase {
   margin-top: 2.8rem;
-  padding-top: 0.9rem;
+  padding-top: 1rem;
   border-top: 1px solid var(--line);
 }
 
-.prefooter p {
-  margin: 0.2rem 0;
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.skill-card {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  padding: 0.8rem;
+}
+
+.skill-card h3 {
+  margin: 0 0 0.45rem;
+  font-size: 0.88rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.skill-card ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.skill-card li {
+  margin: 0.25rem 0;
+  font-size: 0.87rem;
+  line-height: 1.45;
 }
 
 .studio-info {
@@ -991,6 +1019,10 @@ body {
     grid-template-columns: 1fr;
   }
 
+  .skills-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
   .detail-slider {
     grid-template-columns: 1fr;
   }
@@ -1009,6 +1041,10 @@ body {
   .projects-table th:nth-child(3),
   .projects-table td:nth-child(3) {
     display: none;
+  }
+
+  .skills-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -1159,11 +1195,12 @@ body.case-open {
 
 .case-stack-card {
   position: absolute;
-  inset: auto;
+  top: 50%;
+  left: 50%;
   width: clamp(230px, 30vw, 360px);
   aspect-ratio: 3 / 4;
-  margin: auto;
-  transform: perspective(1300px) translateX(var(--card-x, 0px)) translateX(var(--drag-x, 0px))
+  transform: translate(-50%, -50%) perspective(1300px) translateX(var(--card-x, 0px))
+    translateX(var(--drag-x, 0px))
     scale(var(--card-scale, 1)) rotateY(var(--card-ry, 0deg)) rotate(var(--drag-rot, 0deg));
   opacity: var(--card-opacity);
   z-index: var(--card-z, 1);

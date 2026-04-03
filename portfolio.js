@@ -1,16 +1,16 @@
 const i18n = {
   vi: {
     pageTitle: "VAN.LAB Portfolio",
-    brandTagline: "Portfolio artist - art direction, set design, visual storytelling",
+    brandTagline: "Artist Portfolio - Art Direction, Product Thinking, Spatial Storytelling",
     viewGallery: "Gallery",
     viewIndex: "Index",
     navAbout: "About",
-    navMeet: "Meet",
+    navMeet: "Skills",
     navContact: "Contact",
     portfolioLabel: "Portfolio",
-    heroTitle: "Portfolio dành cho artist: kể câu chuyện thị giác bằng bố cục, không gian và cảm xúc.",
+    heroTitle: "Giới thiệu",
     heroSubtext:
-      "Mỗi dự án là một tuyên ngôn hình ảnh - nơi Art Direction, Set Design và tư duy biên tập gặp nhau để tạo nên trải nghiệm giàu bản sắc.",
+      "Tôi mở rộng từ art direction sang product thinking và spatial storytelling, biến ý tưởng thành những trải nghiệm hữu hình. Việc thử nghiệm trên nhiều chất liệu định hình cách tôi tư duy, xây dựng và dẫn dắt. Từ các đội ngũ agile đến những dự án sản xuất quy mô lớn, tôi đã thực hiện các dự án cho những thương hiệu hàng đầu tại Việt Nam và hiện giữ vai trò Team Lead kiêm Art Director tại Invisible Space Studio.",
     thProject: "Project",
     thCategory: "Category",
     thTechnology: "Statement of Work",
@@ -27,30 +27,45 @@ const i18n = {
     caseInfoTechLabel: "Statement of Work:",
     caseInfoYearLabel: "Year:",
     nextProject: "Dự án tiếp theo",
-    lastUpdateLabel: "LAST UPDATE: April 2, 2026",
-    ctaLabel: "Liên hệ để xem portfolio đầy đủ: ngv.vian@gmail.com",
+    skillsLabel: "Kỹ năng",
+    softwareLabel: "Software",
+    softwareItems: ["Adobe Suite", "Figma", "Canva", "AI tools: Midjourney & Gemini"],
+    digitalSkillsLabel: "Digital Skill",
+    digitalSkillsItems: [
+      "Visual Design",
+      "Concept Development",
+      "Photo Editing",
+      "Interface Design",
+      "Layout Design",
+    ],
+    analogSkillsLabel: "Analog Skill",
+    analogSkillsItems: ["Bookbinding", "Model Making", "Set Design"],
+    languagesLabel: "Language",
+    languagesItems: ["Vietnamese: native", "English: fluent"],
     aboutStudioLabel: "Giới thiệu",
     aboutStudioBody:
-      "VAN.LAB là portfolio cá nhân dành cho artist, tập trung vào các dự án visual-led với định hướng biên tập, cảm quan thẩm mỹ và năng lực triển khai thực tế.",
+      "VAN.LAB là portfolio cá nhân tập trung vào art direction, product thinking và spatial storytelling - nơi thực hành thị giác được kết nối với tư duy hệ thống và năng lực dẫn dắt đội ngũ sáng tạo.",
     servicesLabel: "Statement of Work",
-    servicesBody: "Art Direction, Set Design, Visual Identity, Editorial Visual System, Spatial Storytelling",
+    servicesBody: "Art Direction, Set Design, Visual Identity, Editorial Visual System, Spatial Storytelling.",
     contactLabel: "Liên hệ",
     phoneLabel: "Điện thoại",
     addressLabel: "Địa chỉ",
+    linkedinLabel: "LinkedIn",
+    linkedinValue: "Sẽ cập nhật",
     previewHint: "Hover để xem preview",
   },
   en: {
     pageTitle: "VAN.LAB Portfolio",
-    brandTagline: "Design and editorial portfolio",
+    brandTagline: "Artist Portfolio - Art Direction, Product Thinking, Spatial Storytelling",
     viewGallery: "Gallery",
     viewIndex: "Index",
     navAbout: "About",
-    navMeet: "Meet",
+    navMeet: "Skills",
     navContact: "Contact",
     portfolioLabel: "Portfolio",
-    heroTitle: "Product-focused direction with spatial visual storytelling.",
+    heroTitle: "Introduction",
     heroSubtext:
-      "Art Direction, Set Design, and Product Thinking for visual campaigns that balance aesthetics with execution clarity.",
+      "I move beyond art direction into product thinking and spatial storytelling — shaping ideas into tangible experiences. Experimentation across mediums drives how I think, build, and lead. From agile teams to large-scale productions, I’ve delivered work for leading brands in Vietnam and currently lead as Team Lead and Art Director at Invisible Space Studio.",
     thProject: "Project",
     thCategory: "Category",
     thTechnology: "Statement of Work",
@@ -67,16 +82,31 @@ const i18n = {
     caseInfoTechLabel: "Statement of Work:",
     caseInfoYearLabel: "Year:",
     nextProject: "Next Project",
-    lastUpdateLabel: "LAST UPDATE: April 2, 2026",
-    ctaLabel: "Reach out for full portfolio: ngv.vian@gmail.com",
+    skillsLabel: "Skills",
+    softwareLabel: "Software",
+    softwareItems: ["Adobe Suite", "Figma", "Canva", "AI tools: Midjourney & Gemini"],
+    digitalSkillsLabel: "Digital Skill",
+    digitalSkillsItems: [
+      "Visual Design",
+      "Concept Development",
+      "Photo Editing",
+      "Interface Design",
+      "Layout Design",
+    ],
+    analogSkillsLabel: "Analog Skill",
+    analogSkillsItems: ["Bookbinding", "Model Making", "Set Design"],
+    languagesLabel: "Language",
+    languagesItems: ["Vietnamese: native", "English: fluent"],
     aboutStudioLabel: "About",
     aboutStudioBody:
-      "VAN.LAB is a personal portfolio focused on visual-led projects, combining art direction craft with product-minded execution.",
+      "VAN.LAB is a personal artist portfolio focused on art direction, product thinking, and spatial storytelling, combining visual craft with clear execution systems.",
     servicesLabel: "Services",
-    servicesBody: "Art Direction, Set Design, Visual Identity, Interface Design, Spatial Storytelling",
+    servicesBody: "Art Direction, Set Design, Visual Identity, Editorial Visual System, Spatial Storytelling.",
     contactLabel: "Contact",
     phoneLabel: "Phone",
     addressLabel: "Address",
+    linkedinLabel: "LinkedIn",
+    linkedinValue: "To be updated",
     previewHint: "Hover to preview",
   },
 };
@@ -321,8 +351,15 @@ function renderStaticText() {
   document.getElementById("thCategory").textContent = t("thCategory");
   document.getElementById("thTechnology").textContent = t("thTechnology");
   document.getElementById("thYear").textContent = t("thYear");
-  document.getElementById("lastUpdateLabel").textContent = t("lastUpdateLabel");
-  document.getElementById("ctaLabel").textContent = t("ctaLabel");
+  document.getElementById("skillsLabel").textContent = t("skillsLabel");
+  document.getElementById("softwareLabel").textContent = t("softwareLabel");
+  document.getElementById("digitalSkillsLabel").textContent = t("digitalSkillsLabel");
+  document.getElementById("analogSkillsLabel").textContent = t("analogSkillsLabel");
+  document.getElementById("languagesLabel").textContent = t("languagesLabel");
+  renderListItems(document.getElementById("softwareList"), t("softwareItems"));
+  renderListItems(document.getElementById("digitalSkillsList"), t("digitalSkillsItems"));
+  renderListItems(document.getElementById("analogSkillsList"), t("analogSkillsItems"));
+  renderListItems(document.getElementById("languagesList"), t("languagesItems"));
   document.getElementById("aboutStudioLabel").textContent = t("aboutStudioLabel");
   document.getElementById("aboutStudioBody").textContent = t("aboutStudioBody");
   document.getElementById("servicesLabel").textContent = t("servicesLabel");
@@ -330,6 +367,8 @@ function renderStaticText() {
   document.getElementById("contactLabel").textContent = t("contactLabel");
   document.getElementById("phoneLabel").textContent = t("phoneLabel");
   document.getElementById("addressLabel").textContent = t("addressLabel");
+  document.getElementById("linkedinLabel").textContent = t("linkedinLabel");
+  document.getElementById("linkedinValue").textContent = t("linkedinValue");
   els.caseBackBtn.textContent = t("caseBack");
   applyMobileInfoState();
   els.caseSwipeHint.textContent = t("swipeHint");
@@ -341,6 +380,11 @@ function renderStaticText() {
   els.langEnBtn.classList.toggle("active", state.language === "en");
   els.viewGalleryBtn.classList.toggle("active", state.viewMode === "gallery");
   els.viewIndexBtn.classList.toggle("active", state.viewMode === "index");
+}
+
+function renderListItems(target, items) {
+  if (!target || !Array.isArray(items)) return;
+  target.innerHTML = items.map((item) => `<li>${item}</li>`).join("");
 }
 
 function renderGallery() {
