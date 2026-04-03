@@ -1281,6 +1281,7 @@ body.case-open {
     max-height: calc(100dvh - 0.7rem);
     border-radius: 10px;
     padding: 0.75rem;
+    overflow: hidden;
   }
 
   .case-layout {
@@ -1356,6 +1357,7 @@ body.case-open {
 
   .case-slide-track {
     height: clamp(340px, 64dvh, 620px);
+    touch-action: none;
   }
 
   .case-stack-card {

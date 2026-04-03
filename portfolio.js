@@ -602,6 +602,11 @@ function setupTopCardSwipe(totalImages) {
   let pointerId = null;
   let startX = 0;
   let currentX = 0;
+  let touchDragging = false;
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchCurrentX = 0;
+  let touchLockAxis = null;
 
   const onPointerMove = (event) => {
     if (!dragging || pointerId !== event.pointerId || state.caseAnimating) return;
@@ -656,7 +661,81 @@ function setupTopCardSwipe(totalImages) {
     topCard.classList.add("dragging");
   };
 
+  const applyDragVisual = (deltaX) => {
+    const rotation = deltaX * 0.04;
+    const opacity = Math.max(0.6, 1 - Math.abs(deltaX) / 320);
+    topCard.style.setProperty("--drag-x", `${deltaX}px`);
+    topCard.style.setProperty("--drag-rot", `${rotation}deg`);
+    topCard.style.opacity = String(opacity);
+  };
+
+  const resetDragVisual = () => {
+    topCard.style.setProperty("--drag-x", "0px");
+    topCard.style.setProperty("--drag-rot", "0deg");
+    topCard.style.opacity = "1";
+  };
+
+  const onTouchStart = (event) => {
+    if (state.caseAnimating || event.touches.length !== 1) return;
+    const touch = event.touches[0];
+    touchDragging = true;
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+    touchCurrentX = 0;
+    touchLockAxis = null;
+    topCard.classList.add("dragging");
+  };
+
+  const onTouchMove = (event) => {
+    if (!touchDragging || state.caseAnimating || event.touches.length !== 1) return;
+    const touch = event.touches[0];
+    const deltaX = touch.clientX - touchStartX;
+    const deltaY = touch.clientY - touchStartY;
+
+    if (!touchLockAxis) {
+      if (Math.abs(deltaX) > 8 || Math.abs(deltaY) > 8) {
+        touchLockAxis = Math.abs(deltaX) > Math.abs(deltaY) ? "x" : "y";
+      } else {
+        return;
+      }
+    }
+
+    if (touchLockAxis === "y") return;
+    event.preventDefault();
+    touchCurrentX = deltaX;
+    applyDragVisual(touchCurrentX);
+  };
+
+  const endTouchSwipe = () => {
+    touchDragging = false;
+    touchLockAxis = null;
+    topCard.classList.remove("dragging");
+  };
+
+  const onTouchEnd = () => {
+    if (!touchDragging) return;
+    const threshold = Math.max(62, topCard.clientWidth * 0.16);
+    const movedX = touchCurrentX;
+    endTouchSwipe();
+    if (!state.caseAnimating && Math.abs(movedX) > threshold) {
+      const direction = movedX > 0 ? 1 : -1;
+      animateCardShift(direction, totalImages);
+      return;
+    }
+    resetDragVisual();
+  };
+
+  const onTouchCancel = () => {
+    if (!touchDragging) return;
+    endTouchSwipe();
+    resetDragVisual();
+  };
+
   topCard.addEventListener("pointerdown", onPointerDown);
+  topCard.addEventListener("touchstart", onTouchStart, { passive: true });
+  topCard.addEventListener("touchmove", onTouchMove, { passive: false });
+  topCard.addEventListener("touchend", onTouchEnd, { passive: true });
+  topCard.addEventListener("touchcancel", onTouchCancel, { passive: true });
   topCard.style.touchAction = "pan-y";
   window.addEventListener("pointermove", onPointerMove);
   window.addEventListener("pointerup", onPointerUp);
@@ -664,6 +743,10 @@ function setupTopCardSwipe(totalImages) {
 
   topCardSwipeCleanup = () => {
     topCard.removeEventListener("pointerdown", onPointerDown);
+    topCard.removeEventListener("touchstart", onTouchStart);
+    topCard.removeEventListener("touchmove", onTouchMove);
+    topCard.removeEventListener("touchend", onTouchEnd);
+    topCard.removeEventListener("touchcancel", onTouchCancel);
     window.removeEventListener("pointermove", onPointerMove);
     window.removeEventListener("pointerup", onPointerUp);
     window.removeEventListener("pointercancel", onPointerCancel);
