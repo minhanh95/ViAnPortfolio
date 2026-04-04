@@ -3,11 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#050505" />
     <title>VAN.LAB Portfolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css" />
@@ -38,7 +39,7 @@
     <main class="main-layout">
       <section id="about" class="hero-section reveal">
         <p class="section-label" id="portfolioLabel"></p>
-        <h1 id="heroTitle"></h1>
+        <h1 id="heroTitle" class="heading-display"></h1>
         <p class="hero-subtext" id="heroSubtext"></p>
       </section>
 
@@ -71,7 +72,7 @@
                 <button id="caseBackBtn" class="case-back" type="button"></button>
                 <button id="caseInfoToggleBtn" class="case-info-toggle" type="button"></button>
               </div>
-              <h2 id="caseTitle"></h2>
+              <h2 id="caseTitle" class="heading-display"></h2>
 
               <div id="caseInfoBody" class="case-info-body">
                 <p id="caseType"></p>
@@ -91,7 +92,38 @@
             <section class="case-right-column">
               <div class="case-slider-wrap">
                 <div id="caseSlideTrack" class="case-slide-track"></div>
-                <div id="caseSwipeHint" class="case-swipe-hint" aria-hidden="true"></div>
+                <button
+                  type="button"
+                  id="caseSlidePrevBtn"
+                  class="case-slide-arrow case-slide-arrow--prev"
+                >
+                  <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.75"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M15 6l-6 6 6 6"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  id="caseSlideNextBtn"
+                  class="case-slide-arrow case-slide-arrow--next"
+                >
+                  <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.75"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M9 6l6 6-6 6"
+                    />
+                  </svg>
+                </button>
               </div>
             </section>
           </div>

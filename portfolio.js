@@ -21,9 +21,8 @@ const i18n = {
     caseBack: "Quay lại danh sách",
     caseInfoMore: "Xem chi tiết",
     caseInfoLess: "Ẩn chi tiết",
-    slidePrev: "Trước",
-    slideNext: "Sau",
-    swipeHint: "Vuot trai / phai de xem anh tiep theo",
+    slidePrev: "Ảnh trước",
+    slideNext: "Ảnh sau",
     caseInfoTechLabel: "Statement of Work:",
     caseInfoYearLabel: "Year:",
     nextProject: "Dự án tiếp theo",
@@ -76,9 +75,8 @@ const i18n = {
     caseBack: "Back to list",
     caseInfoMore: "Show details",
     caseInfoLess: "Hide details",
-    slidePrev: "Prev",
-    slideNext: "Next",
-    swipeHint: "Swipe left / right to view next image",
+    slidePrev: "Previous image",
+    slideNext: "Next image",
     caseInfoTechLabel: "Statement of Work:",
     caseInfoYearLabel: "Year:",
     nextProject: "Next Project",
@@ -190,6 +188,7 @@ const state = {
 };
 
 let topCardSwipeCleanup = null;
+let lenisInstance = null;
 const detailResolvePromises = new Map();
 const imageWarmupCache = new Set();
 
@@ -213,7 +212,8 @@ const els = {
   caseYear: document.getElementById("caseYear"),
   caseDescription: document.getElementById("caseDescription"),
   caseSlideTrack: document.getElementById("caseSlideTrack"),
-  caseSwipeHint: document.getElementById("caseSwipeHint"),
+  caseSlidePrevBtn: document.getElementById("caseSlidePrevBtn"),
+  caseSlideNextBtn: document.getElementById("caseSlideNextBtn"),
   caseInfoTechLabel: document.getElementById("caseInfoTechLabel"),
   caseInfoYearLabel: document.getElementById("caseInfoYearLabel"),
   caseInfoTech: document.getElementById("caseInfoTech"),
@@ -371,7 +371,8 @@ function renderStaticText() {
   document.getElementById("linkedinValue").textContent = t("linkedinValue");
   els.caseBackBtn.textContent = t("caseBack");
   applyMobileInfoState();
-  els.caseSwipeHint.textContent = t("swipeHint");
+  els.caseSlidePrevBtn.setAttribute("aria-label", t("slidePrev"));
+  els.caseSlideNextBtn.setAttribute("aria-label", t("slideNext"));
   els.caseInfoTechLabel.textContent = t("caseInfoTechLabel");
   els.caseInfoYearLabel.textContent = t("caseInfoYearLabel");
   els.nextProjectBtn.textContent = t("nextProject");
@@ -387,6 +388,29 @@ function renderListItems(target, items) {
   target.innerHTML = items.map((item) => `<li>${item}</li>`).join("");
 }
 
+function attachGalleryMediaParallax(media) {
+  if (!media || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const img = media.querySelector("img");
+  if (!img) return;
+
+  const onMove = (event) => {
+    const rect = media.getBoundingClientRect();
+    const nx = (event.clientX - rect.left) / rect.width - 0.5;
+    const ny = (event.clientY - rect.top) / rect.height - 0.5;
+    const max = 11;
+    img.style.setProperty("--img-px", `${-nx * max * 2}px`);
+    img.style.setProperty("--img-py", `${-ny * max * 2}px`);
+  };
+
+  const onLeave = () => {
+    img.style.setProperty("--img-px", "0px");
+    img.style.setProperty("--img-py", "0px");
+  };
+
+  media.addEventListener("pointermove", onMove);
+  media.addEventListener("pointerleave", onLeave);
+}
+
 function renderGallery() {
   els.galleryList.innerHTML = "";
   state.items.forEach((project) => {
@@ -397,7 +421,7 @@ function renderGallery() {
         <img src="${project.coverPath}" alt="${project.name} cover" loading="lazy" decoding="async" />
       </div>
       <div class="gallery-info">
-        <div><p class="meta-label">${t("infoProject")}</p><p>${project.name} | ${getLocalizedValue(
+        <div><p class="meta-label">${t("infoProject")}</p><p class="gallery-lead-line"><span class="heading-display">${project.name}</span><span class="gallery-title-sep"> | </span>${getLocalizedValue(
       project.category,
     )}</p></div>
         <div><p class="meta-label">${t("infoTechnology")}</p><p>${project.technology}</p></div>
@@ -407,6 +431,7 @@ function renderGallery() {
     `;
     item.addEventListener("click", () => openCaseStudy(project.slug));
     els.galleryList.appendChild(item);
+    attachGalleryMediaParallax(item.querySelector(".gallery-media"));
   });
 }
 
@@ -481,6 +506,8 @@ function renderCaseStudy() {
   }
 
   setupTopCardSwipe(slideImages.length);
+  resetCaseTopImageParallax();
+  updateCaseSlideArrowsState(slideImages.length);
 }
 
 function getStackCardVisual(offset, stepX) {
@@ -594,10 +621,35 @@ function animateCardShift(direction, totalImages) {
   const delta = direction > 0 ? -1 : 1;
   state.caseSlideIndex = (state.caseSlideIndex + delta + totalImages) % totalImages;
   positionCaseCards(totalImages, true);
+  resetCaseTopImageParallax();
   window.setTimeout(() => {
     state.caseAnimating = false;
     setupTopCardSwipe(totalImages);
   }, 520);
+}
+
+function getCaseSlideCount() {
+  const project = getSelectedProject();
+  if (!project) return 0;
+  return normalizeSlideImages(project).length;
+}
+
+function goToPrevCaseSlide() {
+  const n = getCaseSlideCount();
+  if (n <= 1) return;
+  animateCardShift(1, n);
+}
+
+function goToNextCaseSlide() {
+  const n = getCaseSlideCount();
+  if (n <= 1) return;
+  animateCardShift(-1, n);
+}
+
+function updateCaseSlideArrowsState(slideCount) {
+  const disabled = slideCount <= 1;
+  els.caseSlidePrevBtn.disabled = disabled;
+  els.caseSlideNextBtn.disabled = disabled;
 }
 
 function applyViewMode() {
@@ -715,6 +767,11 @@ function setupTopCardSwipe(totalImages) {
     currentX = 0;
     topCard.setPointerCapture(pointerId);
     topCard.classList.add("dragging");
+    const topImg = topCard.querySelector("img");
+    if (topImg) {
+      topImg.style.setProperty("--img-parallax-x", "0px");
+      topImg.style.setProperty("--img-parallax-y", "0px");
+    }
   };
 
   const applyDragVisual = (deltaX) => {
@@ -740,6 +797,11 @@ function setupTopCardSwipe(totalImages) {
     touchCurrentX = 0;
     touchLockAxis = null;
     topCard.classList.add("dragging");
+    const topImg = topCard.querySelector("img");
+    if (topImg) {
+      topImg.style.setProperty("--img-parallax-x", "0px");
+      topImg.style.setProperty("--img-parallax-y", "0px");
+    }
   };
 
   const onTouchMove = (event) => {
@@ -826,6 +888,7 @@ function switchViewMode(mode) {
   renderStaticText();
   applyViewMode();
   applyCaseStudyMode();
+  scrollToPageTop();
 }
 
 function handleCaseLayoutResize() {
@@ -838,6 +901,10 @@ function handleCaseLayoutResize() {
 
 function initScrollReveal() {
   const nodes = document.querySelectorAll(".reveal");
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    nodes.forEach((node) => node.classList.add("in-view"));
+    return;
+  }
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -847,34 +914,113 @@ function initScrollReveal() {
         }
       });
     },
-    { threshold: 0.08 },
+    { threshold: 0.06, rootMargin: "0px 0px -4% 0px" },
   );
   nodes.forEach((node) => observer.observe(node));
 }
 
 function wireHeaderGlassEffect() {
-  const onScroll = () => {
-    els.siteHeader.classList.toggle("scrolled", window.scrollY > 12);
+  const threshold = 12;
+  const setScrolled = (scroll) => {
+    els.siteHeader.classList.toggle("scrolled", scroll > threshold);
   };
-  window.addEventListener("scroll", onScroll);
-  onScroll();
+
+  if (lenisInstance) {
+    lenisInstance.on("scroll", ({ scroll }) => setScrolled(scroll));
+    setScrolled(lenisInstance.scroll);
+  } else {
+    const onScroll = () => setScrolled(window.scrollY);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  }
+}
+
+function scrollToPageTop() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (lenisInstance) {
+      lenisInstance.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo(0, 0);
+    }
+    return;
+  }
+  if (lenisInstance) {
+    lenisInstance.scrollTo(0, { duration: 1.05 });
+  } else {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}
+
+function initAnchorNavigation() {
+  const headerOffset = 80;
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener("click", (event) => {
+      const href = anchor.getAttribute("href");
+      if (!href || href === "#") return;
+      const target = document.querySelector(href);
+      if (!target) return;
+      event.preventDefault();
+      if (lenisInstance) {
+        lenisInstance.scrollTo(target, { offset: -headerOffset, duration: 1.2 });
+      } else {
+        const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
+        window.scrollTo({ top, behavior: "smooth" });
+      }
+    });
+  });
+}
+
+function resetCaseTopImageParallax() {
+  const img = els.caseSlideTrack.querySelector(".case-stack-card.is-top img");
+  if (img) {
+    img.style.setProperty("--img-parallax-x", "0px");
+    img.style.setProperty("--img-parallax-y", "0px");
+  }
+}
+
+function onCaseSlideTrackParallax(event) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const topCard = els.caseSlideTrack.querySelector(".case-stack-card.is-top");
+  if (!topCard || topCard.classList.contains("dragging")) {
+    resetCaseTopImageParallax();
+    return;
+  }
+  const img = topCard.querySelector("img");
+  if (!img) return;
+  const rect = els.caseSlideTrack.getBoundingClientRect();
+  const nx = (event.clientX - rect.left) / rect.width - 0.5;
+  const ny = (event.clientY - rect.top) / rect.height - 0.5;
+  const max = 13;
+  img.style.setProperty("--img-parallax-x", `${-nx * max * 2}px`);
+  img.style.setProperty("--img-parallax-y", `${-ny * max * 2}px`);
+}
+
+let caseParallaxWired = false;
+
+function initCaseImageParallax() {
+  if (caseParallaxWired) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  caseParallaxWired = true;
+  els.caseSlideTrack.addEventListener("pointermove", onCaseSlideTrackParallax);
+  els.caseSlideTrack.addEventListener("pointerleave", resetCaseTopImageParallax);
 }
 
 function initLenisSmoothScroll() {
+  lenisInstance = null;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   if (typeof window.Lenis !== "function") return;
 
-  const lenis = new window.Lenis({
-    duration: 1.15,
+  lenisInstance = new window.Lenis({
+    duration: 1.2,
     smoothWheel: true,
     smoothTouch: false,
-    wheelMultiplier: 0.9,
-    touchMultiplier: 1.0,
+    wheelMultiplier: 0.92,
+    touchMultiplier: 1,
     easing: (value) => Math.min(1, 1.001 - 2 ** (-10 * value)),
   });
 
   function raf(time) {
-    lenis.raf(time);
+    lenisInstance.raf(time);
     requestAnimationFrame(raf);
   }
   requestAnimationFrame(raf);
@@ -890,6 +1036,14 @@ els.caseInfoToggleBtn.addEventListener("click", () => {
   applyMobileInfoState();
 });
 els.nextProjectBtn.addEventListener("click", goToNextProject);
+els.caseSlidePrevBtn.addEventListener("click", (event) => {
+  event.stopPropagation();
+  goToPrevCaseSlide();
+});
+els.caseSlideNextBtn.addEventListener("click", (event) => {
+  event.stopPropagation();
+  goToNextCaseSlide();
+});
 els.caseStudyView.addEventListener("click", (event) => {
   if (event.target === els.caseStudyView) {
     closeCaseStudy();
@@ -903,9 +1057,11 @@ async function initializeApp() {
   renderIndexTable();
   applyViewMode();
   applyCaseStudyMode();
-  wireHeaderGlassEffect();
-  initScrollReveal();
   initLenisSmoothScroll();
+  wireHeaderGlassEffect();
+  initAnchorNavigation();
+  initScrollReveal();
+  initCaseImageParallax();
   window.addEventListener("resize", handleCaseLayoutResize);
 }
 
