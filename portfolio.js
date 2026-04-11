@@ -196,6 +196,7 @@ let lenisInstance = null;
 let listScrollYBeforeCase = 0;
 let caseSlideObserver = null;
 let caseSlideWheelCleanup = null;
+let caseVideoObserverCleanup = null;
 const detailResolvePromises = new Map();
 const imageWarmupCache = new Set();
 
@@ -301,15 +302,65 @@ function checkImageExists(path) {
   });
 }
 
+function isVideoPath(path) {
+  return /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(path || "");
+}
+
+function escapeHtmlAttr(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;");
+}
+
+function buildCaseSlideMediaHtml(path, projectName, slideIndex) {
+  const src = escapeHtmlAttr(path);
+  const label = escapeHtmlAttr(`${projectName} detail ${slideIndex + 1}`);
+  if (isVideoPath(path)) {
+    return `<video class="case-slide-media" src="${src}" controls playsinline preload="metadata" title="${label}"></video>`;
+  }
+  return `<img src="${src}" alt="${label}" loading="lazy" decoding="async" />`;
+}
+
 function warmupImages(paths) {
   paths.forEach((path) => {
     if (!path || imageWarmupCache.has(path)) return;
     imageWarmupCache.add(path);
+    if (isVideoPath(path)) {
+      const video = document.createElement("video");
+      video.preload = "metadata";
+      video.src = path;
+      return;
+    }
     const image = new Image();
     image.decoding = "async";
     image.loading = "eager";
     image.src = path;
   });
+}
+
+function wireCaseVideoPause() {
+  if (typeof caseVideoObserverCleanup === "function") {
+    caseVideoObserverCleanup();
+    caseVideoObserverCleanup = null;
+  }
+  const track = els.caseSlideTrack;
+  if (!track) return;
+  const videos = track.querySelectorAll("video.case-slide-media");
+  if (!videos.length) return;
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.5) return;
+        entry.target.pause();
+      });
+    },
+    { root: track, threshold: [0, 0.35, 0.5, 0.65] },
+  );
+  videos.forEach((video) => observer.observe(video));
+  caseVideoObserverCleanup = () => {
+    observer.disconnect();
+  };
 }
 
 async function resolveDetailImagesForProject(project) {
@@ -514,6 +565,10 @@ function cleanupCaseSlideObserver() {
     caseSlideWheelCleanup();
     caseSlideWheelCleanup = null;
   }
+  if (typeof caseVideoObserverCleanup === "function") {
+    caseVideoObserverCleanup();
+    caseVideoObserverCleanup = null;
+  }
 }
 
 function wireCaseHorizontalWheel() {
@@ -572,7 +627,7 @@ function renderCaseStudy() {
   els.caseType.textContent = getLocalizedValue(project.category);
   els.caseTech.textContent = project.technology;
   els.caseYear.textContent = String(project.year);
-  els.caseDescription.textContent = getLocalizedValue(project.description);
+  els.caseDescription.textContent = getLocalizedValue(project.summary) || getLocalizedValue(project.description);
   els.caseInfoTech.textContent = project.technology;
   els.caseInfoYear.textContent = String(project.year);
 
@@ -584,7 +639,7 @@ function renderCaseStudy() {
     .map(
       (path, imageIndex) => `
         <figure class="case-image-item" data-slide-index="${imageIndex}">
-          <img src="${path}" alt="${project.name} detail ${imageIndex + 1}" loading="lazy" />
+          ${buildCaseSlideMediaHtml(path, project.name, imageIndex)}
         </figure>`,
     )
     .join("");
@@ -593,6 +648,7 @@ function renderCaseStudy() {
   updateCaseSlideCounter(1, slideImages.length);
   wireCaseSlideObserver(slideImages.length);
   wireCaseHorizontalWheel();
+  wireCaseVideoPause();
   updateCaseSlideArrowsState(slideImages.length);
 }
 

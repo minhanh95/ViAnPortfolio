@@ -2,10 +2,14 @@ const pageI18n = {
   vi: {
     back: "Back",
     nextProject: "Next project",
-    metaDate: "Date",
+    metaYear: "Năm",
+    metaClient: "Khách hàng",
+    metaObjective: "Mục tiêu",
+    metaScope: "Phạm vi công việc",
+    metaDescription: "Mô tả",
+    metaDeliverable: "Bàn giao",
     metaWebsite: "Website",
-    metaTypeface: "Typeface",
-    metaCommissioned: "Commissioned by",
+    metaTypeface: "Font chữ",
     notFound: "Khong tim thay du an.",
     themeToggleLabel: "Đổi giao diện",
     themeDarkShort: "Tối",
@@ -14,10 +18,14 @@ const pageI18n = {
   en: {
     back: "Back",
     nextProject: "Next project",
-    metaDate: "Date",
+    metaYear: "Year",
+    metaClient: "Client",
+    metaObjective: "Objective",
+    metaScope: "Scope of work",
+    metaDescription: "Description",
+    metaDeliverable: "Deliverable",
     metaWebsite: "Website",
     metaTypeface: "Typeface",
-    metaCommissioned: "Commissioned by",
     notFound: "Project not found.",
     themeToggleLabel: "Switch theme",
     themeDarkShort: "Dark",
@@ -134,6 +142,9 @@ function checkImageExists(path) {
 
 async function resolveDetailImages(project) {
   if (!project) return [];
+  if (project.detailImages?.length) {
+    return project.detailImages;
+  }
   const folder = getFolderPath(project.coverPath);
   const detailImages = [];
   let foundAny = false;
@@ -158,22 +169,112 @@ function updateCounter(activeIndex) {
   pageEls.counter.textContent = `${safeCurrent}/${safeTotal}`;
 }
 
+function escapeHtml(s) {
+  if (s == null) return "";
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function isVideoPath(path) {
+  return /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(path || "");
+}
+
+function pickLocalizedField(value, lang) {
+  if (value == null) return "";
+  if (typeof value === "string") return value;
+  return value[lang] || value.en || "";
+}
+
+function getScopeLines(scope, lang) {
+  if (!scope) return [];
+  if (Array.isArray(scope)) return scope;
+  const lines = scope[lang] || scope.en;
+  return Array.isArray(lines) ? lines : [];
+}
+
+function buildDescriptionParagraphs(raw, lang) {
+  const text = raw?.[lang] || raw?.en || "";
+  if (!text.trim()) return "";
+  return text
+    .split(/\n\n+/)
+    .map((block) => block.trim())
+    .filter(Boolean)
+    .map((block) => `<p class="project-meta-body">${escapeHtml(block).replace(/\n/g, "<br />")}</p>`)
+    .join("");
+}
+
+function buildDeliverableSection(project, lang, label) {
+  const block = project.deliverable?.[lang] || project.deliverable?.en;
+  if (!block) return "";
+  const lead = typeof block.lead === "string" && block.lead.trim() ? `<p class="project-meta-deliverable-lead">${escapeHtml(block.lead)}</p>` : "";
+  const groups = Array.isArray(block.groups) ? block.groups : [];
+  const groupsHtml = groups
+    .map((g) => {
+      const title = escapeHtml(g.title || "");
+      const items = (Array.isArray(g.items) ? g.items : []).map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+      return `<div class="project-meta-deliverable-group"><h3 class="project-meta-deliverable-subtitle">${title}</h3><ul class="project-meta-deliverable-list">${items}</ul></div>`;
+    })
+    .join("");
+  return `
+    <section class="project-meta-deliverable" aria-label="${escapeHtml(label)}">
+      <h2 class="project-meta-section-title">${escapeHtml(label)}</h2>
+      ${lead}
+      <div class="project-meta-deliverable-groups">${groupsHtml}</div>
+    </section>
+  `;
+}
+
 function buildMetaMarkup(project) {
-  const text = pageI18n[pageState.language];
-  const website = project.website || "-";
-  const typeface = project.typeface || "-";
-  const commissionedBy = project.commissionedBy || project.client || "-";
+  const lang = pageState.language;
+  const text = pageI18n[lang];
+
+  const objective = pickLocalizedField(project.objective, lang).trim();
+  const scopeLines = getScopeLines(project.scopeOfWork, lang);
+
+  const factRows = [];
+  factRows.push(
+    `<div class="project-meta-fact"><span class="project-meta-fact-label">${escapeHtml(text.metaYear)}</span><strong class="project-meta-fact-value">${escapeHtml(String(project.year))}</strong></div>`,
+  );
+  factRows.push(
+    `<div class="project-meta-fact"><span class="project-meta-fact-label">${escapeHtml(text.metaClient)}</span><strong class="project-meta-fact-value">${escapeHtml(project.client || "—")}</strong></div>`,
+  );
+  if (objective) {
+    factRows.push(
+      `<div class="project-meta-fact"><span class="project-meta-fact-label">${escapeHtml(text.metaObjective)}</span><strong class="project-meta-fact-value">${escapeHtml(objective)}</strong></div>`,
+    );
+  }
+  if (scopeLines.length) {
+    const scopeHtml = scopeLines.map((line) => escapeHtml(line)).join("<br />");
+    factRows.push(
+      `<div class="project-meta-fact"><span class="project-meta-fact-label">${escapeHtml(text.metaScope)}</span><strong class="project-meta-fact-value project-meta-fact-value--block">${scopeHtml}</strong></div>`,
+    );
+  }
+  if (project.website) {
+    factRows.push(
+      `<div class="project-meta-fact"><span class="project-meta-fact-label">${escapeHtml(text.metaWebsite)}</span><strong class="project-meta-fact-value">${escapeHtml(project.website)}</strong></div>`,
+    );
+  }
+  if (project.typeface) {
+    factRows.push(
+      `<div class="project-meta-fact"><span class="project-meta-fact-label">${escapeHtml(text.metaTypeface)}</span><strong class="project-meta-fact-value">${escapeHtml(project.typeface)}</strong></div>`,
+    );
+  }
+
+  const descHtml = buildDescriptionParagraphs(project.description, lang);
+  const deliverableHtml = buildDeliverableSection(project, lang, text.metaDeliverable);
 
   return `
     <div class="project-meta-card">
-      <h1>${project.name}</h1>
-      <p class="project-meta-body">${project.description?.[pageState.language] || project.description?.en || ""}</p>
-      <div class="project-meta-facts">
-        <p><span>${text.metaDate}</span><strong>${project.year}</strong></p>
-        <p><span>${text.metaWebsite}</span><strong>${website}</strong></p>
-        <p><span>${text.metaTypeface}</span><strong>${typeface}</strong></p>
-        <p><span>${text.metaCommissioned}</span><strong>${commissionedBy}</strong></p>
-      </div>
+      <h1>${escapeHtml(project.name)}</h1>
+      <div class="project-meta-facts">${factRows.join("")}</div>
+      <section class="project-meta-description-block" aria-label="${escapeHtml(text.metaDescription)}">
+        <h2 class="project-meta-section-title">${escapeHtml(text.metaDescription)}</h2>
+        ${descHtml || "<p class=\"project-meta-body\">—</p>"}
+      </section>
+      ${deliverableHtml}
     </div>
   `;
 }
@@ -189,7 +290,11 @@ function createSlide(slide, realIndex, cloneSet) {
   if (slide.type === "meta") {
     wrapper.innerHTML = slide.html;
   } else {
-    wrapper.innerHTML = `<img src="${slide.path}" alt="${slide.alt}" loading="lazy" decoding="async" />`;
+    const src = escapeHtml(slide.path);
+    const label = escapeHtml(slide.alt);
+    wrapper.innerHTML = isVideoPath(slide.path)
+      ? `<video class="project-slide-media" src="${src}" controls playsinline preload="metadata" title="${label}"></video>`
+      : `<img src="${src}" alt="${label}" loading="lazy" decoding="async" />`;
   }
   return wrapper;
 }
@@ -237,6 +342,22 @@ function wireCounterObserver() {
   );
 
   slides.forEach((slide) => pageState.counterObserver.observe(slide));
+}
+
+function wireProjectVideoPause() {
+  const videos = pageEls.gallery.querySelectorAll("video.project-slide-media");
+  if (!videos.length) return;
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const video = entry.target;
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.5) return;
+        video.pause();
+      });
+    },
+    { root: pageEls.gallery, threshold: [0, 0.35, 0.5, 0.65] },
+  );
+  videos.forEach((video) => observer.observe(video));
 }
 
 function runMomentum() {
@@ -315,6 +436,7 @@ function renderSequence() {
     pageEls.gallery.scrollLeft = pageState.setStart;
     updateCounter(0);
     wireCounterObserver();
+    wireProjectVideoPause();
   });
 }
 

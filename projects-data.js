@@ -64,4 +64,94 @@ window.VANLAB_PROJECTS = [
     },
     coverPath: "assets/projects/x3d-robot/cover.gif",
   },
+  {
+    slug: "invisible-space-studio",
+    name: "Invisible Space Studio",
+    client: "Invisible Space Studio",
+    category: { vi: "Chiến dịch & hình ảnh studio", en: "Social campaign & studio assets" },
+    technology: "Creative Proposal, Art Direction, Production",
+    year: 2025,
+    summary: {
+      en: "Quirkiness × Authenticity — playful profile work for the studio’s social channels and website.",
+      vi: "Quirkiness × Authenticity — ảnh profile mang tinh nghịch cho kênh social và website studio.",
+    },
+    objective: {
+      en: "Social Campaign + Image asset for Studio Website",
+      vi: "Chiến dịch mạng xã hội + Hình ảnh cho website studio",
+    },
+    scopeOfWork: {
+      en: ["Creative Proposal", "Art Direction", "Production"],
+      vi: ["Đề xuất sáng tạo", "Art Direction", "Sản xuất"],
+    },
+    description: {
+      en: `Quirkiness × Authenticity
+
+A playful profile shoot that reveals the (in)side of Invisible Space Studio and celebrating individuality through candid, honest moments.
+
+The visual tone is casual and slightly imperfect, with spontaneous gestures and subtle details that bring out personality. The use of styling, props, or composition hints at both the seen and unseen — layering meaning without over-staging.
+
+Rooted in human-centered, emotion-driven & a sense of belonging, it's about capturing people as they are — expressive, individual, and real.`,
+      vi: `Quirkiness × Authenticity
+
+Một buổi chụp profile vui nhẹ, bóc trần (mặt)trong của Invisible Space Studio và tôn vinh cá tính qua những khoảnh khắc chân thật, không gò bó.
+
+Chất hình thư giãn, hơi "thiếu hoàn hảo" có chủ đích; cử chỉ tự phát và chi tiết nhỏ làm nổi bật con người. Styling, đạo cụ hay bố cục gợi cả phần thấy và không thấy — nhiều lớp ý nghĩa nhưng không dàn dựng quá đà.
+
+Bám vào con người, cảm xúc và cảm giác thuộc về; là ghi lại mọi người đúng như họ vốn thế — sống động, riêng một và thật.`,
+    },
+    deliverable: {
+      en: {
+        lead: "41 photos including",
+        groups: [
+          {
+            title: "Individual",
+            items: ["Close up profile: 11 photos", "Full-shot + Set Design: 11 photos"],
+          },
+          {
+            title: "Team",
+            items: [
+              "Whole team: 3 photos",
+              "Co-founders: 1 photo",
+              "PM team: 1 photo",
+              "Production design team: 1 photo",
+              "Media team: 1 photo",
+              "Graphic design team: 1 photo",
+            ],
+          },
+        ],
+      },
+      vi: {
+        lead: "41 ảnh, gồm",
+        groups: [
+          {
+            title: "Cá nhân",
+            items: ["Close-up profile: 11 ảnh", "Full-shot + thiết kế set: 11 ảnh"],
+          },
+          {
+            title: "Nhóm",
+            items: [
+              "Cả team: 3 ảnh",
+              "Co-founders: 1 ảnh",
+              "Team PM: 1 ảnh",
+              "Team production design: 1 ảnh",
+              "Team media: 1 ảnh",
+              "Team graphic design: 1 ảnh",
+            ],
+          },
+        ],
+      },
+    },
+    coverPath: "assets/projects/invisible-space-studio/cover.jpg",
+    detailImages: [
+      "assets/projects/invisible-space-studio/detail-01.jpg",
+      "assets/projects/invisible-space-studio/detail-02.jpg",
+      "assets/projects/invisible-space-studio/detail-03.jpg",
+      "assets/projects/invisible-space-studio/detail-04.jpg",
+      "assets/projects/invisible-space-studio/detail-05.jpg",
+      "assets/projects/invisible-space-studio/detail-06.jpg",
+      "assets/projects/invisible-space-studio/detail-07.gif",
+      "assets/projects/invisible-space-studio/detail-08.png",
+      "assets/projects/invisible-space-studio/showreel.mp4",
+    ],
+  },
 ];
