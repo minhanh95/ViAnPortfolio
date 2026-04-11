@@ -1,8 +1,8 @@
 :root {
   color-scheme: dark;
   /* Deep Onyx */
-  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Cormorant Garamond", "Georgia", "Times New Roman", serif;
+  --font-sans: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
   --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
   --bg: #050505;
   --bg-2: #0a0a0a;
@@ -1087,6 +1087,10 @@ body {
   line-height: 1.55;
 }
 
+#aboutStudioBody {
+  white-space: pre-line;
+}
+
 .studio-info a {
   color: inherit;
 }
@@ -1573,4 +1577,75 @@ body.case-open {
     padding: 0.45rem 0.75rem;
     font-size: 0.7rem;
   }
+}
+
+/* Project detail page style inspired by soup.work layout */
+body.case-open {
+  overflow: auto;
+}
+
+.case-study {
+  position: relative;
+  inset: auto;
+  z-index: 10;
+  padding: clamp(2rem, 6vw, 4rem) 0 0;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  display: block;
+}
+
+.case-panel {
+  width: 100%;
+  max-height: none;
+  overflow: visible;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+}
+
+.case-layout {
+  grid-template-columns: minmax(240px, 300px) 1fr;
+  gap: clamp(1.1rem, 3vw, 2rem);
+}
+
+.case-left-column {
+  position: sticky;
+  top: 92px;
+}
+
+.case-slider-wrap {
+  min-height: auto;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.case-slide-track {
+  height: auto;
+  background: transparent;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.4vw, 1.6rem);
+  touch-action: auto;
+}
+
+.case-image-item {
+  margin: 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.case-image-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  background: var(--bg-2);
+}
+
+.case-slide-arrow {
+  display: none !important;
 }
