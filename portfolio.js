@@ -135,9 +135,21 @@ const initialSelectedParam = initialQuery.get("selected");
 
 const sortedProjects = [...projects].sort((a, b) => b.year - a.year);
 const defaultLanguage = "en";
+const LANGUAGE_STORAGE_KEY = "vanlab-language";
+
+function getStoredLanguage() {
+  const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+  return stored === "vi" || stored === "en" ? stored : "";
+}
+
+function getInitialLanguage() {
+  const queryLang = initialQuery.get("lang");
+  if (queryLang === "vi" || queryLang === "en") return queryLang;
+  return getStoredLanguage() || defaultLanguage;
+}
 
 const state = {
-  language: defaultLanguage,
+  language: getInitialLanguage(),
   viewMode: initialViewMode,
   inCaseStudy: false,
   mobileInfoCollapsed: true,
@@ -934,7 +946,7 @@ function setupTopCardSwipe(totalImages) {
 
 function switchLanguage(language) {
   state.language = language;
-  localStorage.setItem("vanlab-language", language);
+  localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
   renderStaticText();
   renderGallery();
   renderIndexTable();
@@ -1127,6 +1139,7 @@ els.caseStudyView.addEventListener("click", (event) => {
 });
 
 async function initializeApp() {
+  localStorage.setItem(LANGUAGE_STORAGE_KEY, state.language);
   await ensureProjectDetailImages(getSelectedProject());
   renderStaticText();
   renderGallery();

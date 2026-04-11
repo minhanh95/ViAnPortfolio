@@ -35,6 +35,7 @@ const pageState = {
   momentumRaf: null,
   lastWheelAt: Date.now(),
 };
+const LANGUAGE_STORAGE_KEY = "vanlab-language";
 
 const SCROLL_PHYSICS = {
   MIN_DELTA_TIME: 16,
@@ -55,7 +56,11 @@ const pageEls = {
 
 function getQueryLanguage() {
   const query = new URLSearchParams(window.location.search);
-  return query.get("lang") === "vi" ? "vi" : "en";
+  const queryLang = query.get("lang");
+  if (queryLang === "vi" || queryLang === "en") return queryLang;
+  const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+  if (stored === "vi" || stored === "en") return stored;
+  return "en";
 }
 
 function getReturnContext() {
@@ -333,6 +338,7 @@ function initializePage() {
   const { returnSelectedSlug, returnView, returnScroll } = getReturnContext();
   pageState.currentSlug = query.get("slug") || pageState.projects[0]?.slug || "";
   pageState.language = getQueryLanguage();
+  localStorage.setItem(LANGUAGE_STORAGE_KEY, pageState.language);
   pageState.returnSelectedSlug = returnSelectedSlug || pageState.currentSlug;
   pageState.returnView = returnView;
   pageState.returnScroll = returnScroll;

@@ -14,19 +14,26 @@
     <header class="site-header scrolled" id="siteHeader">
       <div class="brand">
         <p class="brand-logo">VAN.LAB</p>
-        <p class="brand-tagline">Artist Portfolio - Art Direction, Product Thinking, Spatial Storytelling</p>
+        <p class="brand-tagline" id="brandTagline">Artist Portfolio - Art Direction, Product Thinking, Spatial Storytelling</p>
       </div>
       <div class="header-right">
         <nav class="header-nav">
           <div class="view-toggle" role="tablist" aria-label="View mode">
-            <a href="./index.html?view=gallery" class="view-btn active" role="tab" aria-selected="true">Gallery</a>
-            <a href="./index.html?view=index" class="view-btn" role="tab" aria-selected="false">Index</a>
+            <a
+              href="./index.html?view=gallery"
+              id="viewGalleryBtn"
+              class="view-btn active"
+              role="tab"
+              aria-selected="true"
+              >Gallery</a
+            >
+            <a href="./index.html?view=index" id="viewIndexBtn" class="view-btn" role="tab" aria-selected="false">Index</a>
           </div>
-          <a href="./about.html" class="active-link">About</a>
+          <a href="./about.html" id="navAbout" class="active-link">About</a>
         </nav>
         <div class="lang-toggle" role="group" aria-label="Language switcher">
-          <button class="lang-btn" type="button">VI</button>
-          <button class="lang-btn active" type="button">EN</button>
+          <button id="langViBtn" class="lang-btn" type="button">VI</button>
+          <button id="langEnBtn" class="lang-btn active" type="button">EN</button>
         </div>
       </div>
     </header>
@@ -145,5 +152,6 @@
         <div class="about-line"></div>
       </section>
     </main>
+    <script src="./about.js"></script>
   </body>
 </html>

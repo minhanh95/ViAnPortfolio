@@ -741,9 +741,9 @@ body {
 }
 
 .main-layout {
-  max-width: 1280px;
-  padding: clamp(1.25rem, 3vw, 2rem) clamp(1.25rem, 3vw, 2rem)
-    clamp(4.5rem, 14vw, 8rem);
+  width: 100%;
+  max-width: none;
+  padding: clamp(1.25rem, 3vw, 2rem) 0 clamp(4.5rem, 14vw, 8rem);
 }
 
 .header-nav {
@@ -790,6 +790,7 @@ body {
 .hero-section {
   min-height: auto;
   padding: clamp(3.25rem, 9vw, 5.5rem) 0 clamp(3rem, 8vw, 4.5rem);
+  padding-inline: clamp(1.25rem, 3vw, 2rem);
   border-bottom: 1px solid var(--line);
 }
 
