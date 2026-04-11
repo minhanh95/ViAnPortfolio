@@ -394,14 +394,7 @@ function renderGallery() {
       <div class="gallery-media">
         <img src="${project.coverPath}" alt="${project.name} cover" loading="lazy" decoding="async" />
       </div>
-      <div class="gallery-info">
-        <div><p class="meta-label">${t("infoProject")}</p><p class="gallery-lead-line"><span class="heading-display">${project.name}</span><span class="gallery-title-sep"> | </span>${getLocalizedValue(
-      project.category,
-    )}</p></div>
-        <div><p class="meta-label">${t("infoTechnology")}</p><p>${project.technology}</p></div>
-        <div><p class="meta-label">${t("infoYear")}</p><p>${project.year}</p></div>
-      </div>
-      <p class="gallery-description">${getLocalizedValue(project.description)}</p>
+      <p class="gallery-title heading-display">${project.name}</p>
     `;
     item.addEventListener("click", () => {
       setSelectedProject(project.slug);
@@ -946,6 +939,21 @@ function switchLanguage(language) {
   renderGallery();
   renderIndexTable();
   if (state.inCaseStudy) renderCaseStudy();
+  syncListStateToUrl();
+}
+
+function syncListStateToUrl() {
+  if (state.inCaseStudy) return;
+  const url = new URL(window.location.href);
+  url.searchParams.set("lang", state.language);
+  url.searchParams.set("view", state.viewMode);
+  if (state.selectedSlug) {
+    url.searchParams.set("selected", state.selectedSlug);
+  } else {
+    url.searchParams.delete("selected");
+  }
+  url.searchParams.delete("scroll");
+  window.history.replaceState(window.history.state, "", url.toString());
 }
 
 function switchViewMode(mode) {
@@ -956,6 +964,7 @@ function switchViewMode(mode) {
   applyViewMode();
   applyCaseStudyMode();
   scrollToPageTop();
+  syncListStateToUrl();
 }
 
 function handleCaseLayoutResize() {
@@ -1124,6 +1133,7 @@ async function initializeApp() {
   renderIndexTable();
   applyViewMode();
   applyCaseStudyMode();
+  syncListStateToUrl();
   initLenisSmoothScroll();
   wireHeaderGlassEffect();
   initAnchorNavigation();

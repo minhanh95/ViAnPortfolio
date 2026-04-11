@@ -808,97 +808,53 @@ body {
 }
 
 .gallery-list {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(4rem, 11vw, 7.5rem);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(2rem, 5vw, 3rem) clamp(1rem, 2.5vw, 1.5rem);
 }
 
 .gallery-item {
   display: flex;
   flex-direction: column;
-  gap: clamp(1rem, 2.5vw, 1.35rem);
+  gap: 0.85rem;
   cursor: pointer;
-  border-radius: 12px;
-  padding: 0.45rem;
-  transition: background 0.45s var(--ease-reveal);
+  border-radius: 8px;
+  transition: transform 0.35s var(--ease-reveal), opacity 0.35s var(--ease-reveal);
 }
 
 .gallery-item:hover {
-  background: rgba(232, 232, 237, 0.04);
+  transform: translateY(-2px);
 }
 
 .gallery-item.active {
-  background: rgba(232, 232, 237, 0.06);
+  opacity: 0.92;
 }
 
 .gallery-media {
   width: 100%;
-  border-radius: 10px;
+  border-radius: 6px;
   overflow: hidden;
   position: relative;
+  background: var(--bg-2);
+  aspect-ratio: 16 / 10;
 }
 
 .gallery-media img {
   width: 100%;
-  max-height: 76vh;
-  object-fit: contain;
+  height: 100%;
+  object-fit: cover;
   display: block;
-  background: var(--bg-2);
   transform: translate3d(var(--img-px, 0px), var(--img-py, 0px), 0) scale(1.035);
   transition: transform 0.35s var(--ease-reveal);
   will-change: transform;
 }
 
-.gallery-info {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr 120px;
-  gap: 0.85rem;
-}
-
-.meta-label {
-  margin: 0 0 0.2rem;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--label-fg);
-}
-
-.gallery-info p:not(.meta-label),
-.gallery-info .gallery-lead-line {
-  color: var(--text);
-}
-
-.gallery-info p {
+.gallery-title {
   margin: 0;
-  font-size: 0.92rem;
-  line-height: 1.5;
-}
-
-.gallery-lead-line {
-  font-size: 0.92rem;
-  line-height: 1.45;
-}
-
-.gallery-lead-line .heading-display {
-  font-size: clamp(1.45rem, 2.8vw, 2.05rem);
-  font-weight: 600;
-  letter-spacing: 0.008em;
-  line-height: 1.15;
-}
-
-.gallery-title-sep {
-  color: var(--muted);
-  font-weight: 400;
-  font-family: var(--font-sans);
-  font-size: 0.92rem;
-}
-
-.gallery-description {
-  max-width: 880px;
-  margin: clamp(1.35rem, 3.5vw, 2rem) 0 0;
-  font-size: 0.92rem;
-  line-height: 1.5;
-  color: rgba(232, 232, 237, 0.94);
+  font-size: clamp(1rem, 1.6vw, 1.18rem);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1096,7 +1052,15 @@ body {
 }
 
 #aboutStudioBody {
-  white-space: pre-line;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#aboutStudioBody li {
+  margin: 0.25rem 0;
+  font-size: 0.87rem;
+  line-height: 1.45;
 }
 
 .about-page {
@@ -1107,6 +1071,24 @@ body {
   margin-bottom: clamp(1.25rem, 3vw, 2rem);
 }
 
+.about-page .skills-grid {
+  gap: clamp(0.9rem, 2vw, 1.4rem);
+}
+
+.about-page .skill-card {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.about-page .skill-card h3 {
+  margin: 0 0 0.45rem;
+}
+
 .about-line {
   height: 1px;
   background: var(--line);
@@ -1115,9 +1097,13 @@ body {
 
 .about-main-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: clamp(1.25rem, 3vw, 2rem);
   margin-bottom: clamp(2rem, 5vw, 3rem);
+}
+
+.about-main-grid > article:first-child {
+  grid-column: span 2;
 }
 
 .about-main-grid p {
@@ -1134,7 +1120,28 @@ body {
 
 #aboutServicesList li,
 #aboutContactList li {
-  margin: 0 0 0.45rem;
+  margin: 0.25rem 0;
+  font-size: 0.87rem;
+  line-height: 1.45;
+}
+
+#aboutContactList .phone-reveal details {
+  display: inline;
+}
+
+#aboutContactList .phone-reveal summary {
+  display: inline;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+#aboutContactList .phone-reveal summary::-webkit-details-marker {
+  display: none;
+}
+
+#aboutContactList .phone-reveal details[open] summary {
+  margin-right: 0.38rem;
 }
 
 .about-office-grid {
@@ -1162,8 +1169,8 @@ body {
     max-width: 420px;
   }
 
-  .gallery-info {
-    grid-template-columns: 1fr 1fr;
+  .gallery-list {
+    grid-template-columns: 1fr;
   }
 
   .studio-info {
@@ -1171,7 +1178,11 @@ body {
   }
 
   .about-main-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .about-main-grid > article:first-child {
+    grid-column: span 2;
   }
 
   .skills-grid {
@@ -1189,8 +1200,8 @@ body {
     gap: 0.45rem 0.7rem;
   }
 
-  .gallery-info {
-    grid-template-columns: 1fr;
+  .gallery-list {
+    gap: 1.6rem;
   }
 
   .projects-table th:nth-child(3),
