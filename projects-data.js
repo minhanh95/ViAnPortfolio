@@ -1,0 +1,67 @@
+window.VANLAB_PROJECTS = [
+  {
+    slug: "no-one-magazine",
+    name: "No One Magazine",
+    client: "No-one Magazine",
+    category: { vi: "Media Campaign", en: "Media Campaign" },
+    technology: "Art Direction, Set Design",
+    year: 2025,
+    description: {
+      vi: "Hệ visual cho chiến dịch tạp chí với định hướng thời trang đương đại và xử lý bố cục nhân vật theo tinh thần editorial.",
+      en: "Visual direction for a contemporary editorial campaign with stylized character composition and magazine-led atmosphere.",
+    },
+    coverPath: "assets/projects/no-one-magazine/cover.jpg",
+  },
+  {
+    slug: "lofficiel-beauty-award",
+    name: "L'Officiel Beauty Award 2025",
+    client: "L'Officiel",
+    category: { vi: "Media Campaign", en: "Media Campaign" },
+    technology: "Art Direction, Set Design",
+    year: 2025,
+    description: {
+      vi: "Dẫn dắt concept và không gian hình ảnh cho chiến dịch giải thưởng làm đẹp, tối ưu cho xuất bản đa nền tảng.",
+      en: "Concept and visual space direction for a beauty award campaign optimized for multi-platform publishing.",
+    },
+    coverPath: "assets/projects/lofficiel-beauty-award-2025/cover.jpg",
+  },
+  {
+    slug: "vinamilk-green-farm",
+    name: "Vinamilk Green Farm",
+    client: "Vinamilk",
+    category: { vi: "Photography", en: "Photography" },
+    technology: "Set Design, Production",
+    year: 2025,
+    description: {
+      vi: "Thiết kế bối cảnh chính cho key visual, nhấn vào ngôn ngữ sạch, tươi và nhất quán thương hiệu.",
+      en: "Lead set design for key visuals with a clean, fresh language aligned to brand consistency.",
+    },
+    coverPath: "assets/projects/vinamilk-green-farm/cover.jpg",
+  },
+  {
+    slug: "one-plus",
+    name: "One Plus",
+    client: "OnePlus",
+    category: { vi: "Media Campaign", en: "Media Campaign" },
+    technology: "Art Direction Support",
+    year: 2024,
+    description: {
+      vi: "Hỗ trợ art direction cho chiến dịch thương mại với nhịp điệu thị giác mạnh và hệ thống layout động.",
+      en: "Assistant art direction on a commercial campaign with high visual rhythm and dynamic layout system.",
+    },
+    coverPath: "assets/projects/one-plus/cover.jpg",
+  },
+  {
+    slug: "x3d-robot",
+    name: "X3D Robot",
+    client: "X3D Studio",
+    category: { vi: "3D Animation", en: "3D Animation" },
+    technology: "3D Pipeline, Motion",
+    year: 2023,
+    description: {
+      vi: "Sản xuất nội dung 3D animation với pipeline rõ ràng, tập trung vào nhịp chuyển động và độ hoàn thiện hình ảnh.",
+      en: "3D animation production with a clear pipeline, focused on motion rhythm and visual finish.",
+    },
+    coverPath: "assets/projects/x3d-robot/cover.gif",
+  },
+];

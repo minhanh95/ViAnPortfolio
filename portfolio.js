@@ -5,12 +5,12 @@ const i18n = {
     viewGallery: "Gallery",
     viewIndex: "Index",
     navAbout: "About",
-    navMeet: "Skills",
+    navMeet: "About",
     navContact: "Contact",
     portfolioLabel: "Portfolio",
-    heroTitle: "Vian Nguyen is an Art Director",
+    heroTitle: "Slogan",
     heroSubtext:
-      "With a background in spatial studies and illustration, Vian moved into product thinking and spatial storytelling - translating ideas into tangible experiences beyond visuals. The practice grew from art direction through constant experimentation across mediums, shaping both creative thinking and execution. With experience spanning agile teams to large-scale productions, I now lead projects for major brands in Vietnam as Team Lead and Art Director at Invisible Space Studio.",
+      "Vian Nguyen is an Art Director. With a background in spatial studies and illustration, Vian moved into product thinking and spatial storytelling - translating ideas into tangible experiences beyond visuals. The practice grew from art direction through constant experimentation across mediums, shaping both creative thinking and execution. With experience spanning agile teams to large-scale productions, I now lead projects for major brands in Vietnam as Team Lead and Art Director at Invisible Space Studio.",
     thYear: "Year",
     thClient: "Client",
     thType: "Type",
@@ -44,7 +44,16 @@ const i18n = {
     aboutStudioBody:
       "Vinamilk\nHighland\nPizza Hut\nKFC\nCheese Coffee\nAn Miên\nTáo Tào\nVesou\nÉp Phê\nOnePlus\nPS\nHazeline\nColor Key\nNimai\nG.G.G\nDowny\nNo-one Magazine\nL'Officiel\nLife Center Vietnam\nElink English\nInvisible Space Studio\nX3D Studio\nRefinery Media",
     servicesLabel: "Statement of Work",
-    servicesBody: "Art Direction, Set Design, Visual Identity, Editorial Visual System, Spatial Storytelling.",
+    servicesItems: [
+      "Art Direction",
+      "Set Design",
+      "Visual Identity",
+      "Editorial Visual System",
+      "Spatial Storytelling",
+    ],
+    findUsLabel: "Find Us",
+    newsletterLabel: "Newsletter",
+    newsletterPlaceholder: "Enter your email",
     contactLabel: "Liên hệ",
     phoneLabel: "Điện thoại",
     addressLabel: "Địa chỉ",
@@ -58,12 +67,12 @@ const i18n = {
     viewGallery: "Gallery",
     viewIndex: "Index",
     navAbout: "About",
-    navMeet: "Skills",
+    navMeet: "About",
     navContact: "Contact",
     portfolioLabel: "Portfolio",
-    heroTitle: "Vian Nguyen is an Art Director",
+    heroTitle: "Slogan",
     heroSubtext:
-      "With a background in spatial studies and illustration, Vian moved into product thinking and spatial storytelling - translating ideas into tangible experiences beyond visuals. The practice grew from art direction through constant experimentation across mediums, shaping both creative thinking and execution. With experience spanning agile teams to large-scale productions, I now lead projects for major brands in Vietnam as Team Lead and Art Director at Invisible Space Studio.",
+      "Vian Nguyen is an Art Director. With a background in spatial studies and illustration, Vian moved into product thinking and spatial storytelling - translating ideas into tangible experiences beyond visuals. The practice grew from art direction through constant experimentation across mediums, shaping both creative thinking and execution. With experience spanning agile teams to large-scale productions, I now lead projects for major brands in Vietnam as Team Lead and Art Director at Invisible Space Studio.",
     thYear: "Year",
     thClient: "Client",
     thType: "Type",
@@ -97,7 +106,16 @@ const i18n = {
     aboutStudioBody:
       "Vinamilk\nHighland\nPizza Hut\nKFC\nCheese Coffee\nAn Miên\nTáo Tào\nVesou\nÉp Phê\nOnePlus\nPS\nHazeline\nColor Key\nNimai\nG.G.G\nDowny\nNo-one Magazine\nL'Officiel\nLife Center Vietnam\nElink English\nInvisible Space Studio\nX3D Studio\nRefinery Media",
     servicesLabel: "Services",
-    servicesBody: "Art Direction, Set Design, Visual Identity, Editorial Visual System, Spatial Storytelling.",
+    servicesItems: [
+      "Art Direction",
+      "Set Design",
+      "Visual Identity",
+      "Editorial Visual System",
+      "Spatial Storytelling",
+    ],
+    findUsLabel: "Find Us",
+    newsletterLabel: "Newsletter",
+    newsletterPlaceholder: "Enter your email",
     contactLabel: "Contact",
     phoneLabel: "Phone",
     addressLabel: "Address",
@@ -107,90 +125,35 @@ const i18n = {
   },
 };
 
-const projects = [
-  {
-    slug: "no-one-magazine",
-    name: "No One Magazine",
-    client: "No-one Magazine",
-    category: { vi: "Media Campaign", en: "Media Campaign" },
-    technology: "Art Direction, Set Design",
-    year: 2025,
-    description: {
-      vi: "Hệ visual cho chiến dịch tạp chí với định hướng thời trang đương đại và xử lý bố cục nhân vật theo tinh thần editorial.",
-      en: "Visual direction for a contemporary editorial campaign with stylized character composition and magazine-led atmosphere.",
-    },
-    coverPath: "assets/projects/no-one-magazine/cover.jpg",
-  },
-  {
-    slug: "lofficiel-beauty-award",
-    name: "L'Officiel Beauty Award 2025",
-    client: "L'Officiel",
-    category: { vi: "Media Campaign", en: "Media Campaign" },
-    technology: "Art Direction, Set Design",
-    year: 2025,
-    description: {
-      vi: "Dẫn dắt concept và không gian hình ảnh cho chiến dịch giải thưởng làm đẹp, tối ưu cho xuất bản đa nền tảng.",
-      en: "Concept and visual space direction for a beauty award campaign optimized for multi-platform publishing.",
-    },
-    coverPath: "assets/projects/lofficiel-beauty-award-2025/cover.jpg",
-  },
-  {
-    slug: "vinamilk-green-farm",
-    name: "Vinamilk Green Farm",
-    client: "Vinamilk",
-    category: { vi: "Photography", en: "Photography" },
-    technology: "Set Design, Production",
-    year: 2025,
-    description: {
-      vi: "Thiết kế bối cảnh chính cho key visual, nhấn vào ngôn ngữ sạch, tươi và nhất quán thương hiệu.",
-      en: "Lead set design for key visuals with a clean, fresh language aligned to brand consistency.",
-    },
-    coverPath: "assets/projects/vinamilk-green-farm/cover.jpg",
-  },
-  {
-    slug: "one-plus",
-    name: "One Plus",
-    client: "OnePlus",
-    category: { vi: "Media Campaign", en: "Media Campaign" },
-    technology: "Art Direction Support",
-    year: 2024,
-    description: {
-      vi: "Hỗ trợ art direction cho chiến dịch thương mại với nhịp điệu thị giác mạnh và hệ thống layout động.",
-      en: "Assistant art direction on a commercial campaign with high visual rhythm and dynamic layout system.",
-    },
-    coverPath: "assets/projects/one-plus/cover.jpg",
-  },
-  {
-    slug: "x3d-robot",
-    name: "X3D Robot",
-    client: "X3D Studio",
-    category: { vi: "3D Animation", en: "3D Animation" },
-    technology: "3D Pipeline, Motion",
-    year: 2023,
-    description: {
-      vi: "Sản xuất nội dung 3D animation với pipeline rõ ràng, tập trung vào nhịp chuyển động và độ hoàn thiện hình ảnh.",
-      en: "3D animation production with a clear pipeline, focused on motion rhythm and visual finish.",
-    },
-    coverPath: "assets/projects/x3d-robot/cover.gif",
-  },
-];
+const projects = Array.isArray(window.VANLAB_PROJECTS) ? window.VANLAB_PROJECTS : [];
+const initialQuery = new URLSearchParams(window.location.search);
+const initialViewParam = initialQuery.get("view");
+const initialViewMode = initialViewParam === "index" ? "index" : "gallery";
+const initialScrollParam = Number(initialQuery.get("scroll"));
+const initialScrollY = Number.isFinite(initialScrollParam) && initialScrollParam >= 0 ? initialScrollParam : null;
+const initialSelectedParam = initialQuery.get("selected");
 
 const sortedProjects = [...projects].sort((a, b) => b.year - a.year);
 const defaultLanguage = "en";
 
 const state = {
   language: defaultLanguage,
-  viewMode: "gallery",
+  viewMode: initialViewMode,
   inCaseStudy: false,
   mobileInfoCollapsed: true,
   items: sortedProjects,
-  selectedSlug: sortedProjects[0]?.slug || "",
+  selectedSlug: sortedProjects.some((project) => project.slug === initialSelectedParam)
+    ? initialSelectedParam
+    : sortedProjects[0]?.slug || "",
   caseSlideIndex: 0,
   caseAnimating: false,
 };
 
 let topCardSwipeCleanup = null;
 let lenisInstance = null;
+let listScrollYBeforeCase = 0;
+let caseSlideObserver = null;
+let caseSlideWheelCleanup = null;
 const detailResolvePromises = new Map();
 const imageWarmupCache = new Set();
 
@@ -214,6 +177,7 @@ const els = {
   caseYear: document.getElementById("caseYear"),
   caseDescription: document.getElementById("caseDescription"),
   caseSlideTrack: document.getElementById("caseSlideTrack"),
+  caseSlideCounter: document.getElementById("caseSlideCounter"),
   caseSlidePrevBtn: document.getElementById("caseSlidePrevBtn"),
   caseSlideNextBtn: document.getElementById("caseSlideNextBtn"),
   caseInfoTechLabel: document.getElementById("caseInfoTechLabel"),
@@ -243,8 +207,8 @@ function getSelectedProject() {
 function normalizeSlideImages(project) {
   const rawImages = project.detailImages?.length ? project.detailImages : [project.coverPath];
   const uniqueImages = [...new Set(rawImages)];
-  const withoutCover = uniqueImages.filter((path) => path !== project.coverPath);
-  return [project.coverPath, ...withoutCover];
+  const detailOnly = uniqueImages.filter((path) => path !== project.coverPath);
+  return detailOnly.length ? detailOnly : [project.coverPath];
 }
 
 function isMobileCaseLayout() {
@@ -296,7 +260,7 @@ function warmupImages(paths) {
 }
 
 async function resolveDetailImagesForProject(project) {
-  const detailImages = [project.coverPath];
+  const detailImages = [];
   const folder = getFolderPath(project.coverPath);
   const maxDetailImages = 20;
   let foundAny = false;
@@ -315,7 +279,7 @@ async function resolveDetailImagesForProject(project) {
     }
   }
 
-  return detailImages;
+  return detailImages.length ? detailImages : [project.coverPath];
 }
 
 async function ensureProjectDetailImages(project) {
@@ -337,39 +301,46 @@ async function ensureProjectDetailImages(project) {
 }
 
 function renderStaticText() {
+  const setText = (id, value) => {
+    const node = document.getElementById(id);
+    if (node) node.textContent = value;
+  };
+
   document.documentElement.lang = state.language;
   document.title = t("pageTitle");
 
-  document.getElementById("brandTagline").textContent = t("brandTagline");
-  document.getElementById("viewGalleryBtn").textContent = t("viewGallery");
-  document.getElementById("viewIndexBtn").textContent = t("viewIndex");
-  document.getElementById("navAbout").textContent = t("navAbout");
-  document.getElementById("navMeet").textContent = t("navMeet");
-  document.getElementById("navContact").textContent = t("navContact");
-  document.getElementById("portfolioLabel").textContent = t("portfolioLabel");
-  document.getElementById("heroTitle").textContent = t("heroTitle");
-  document.getElementById("heroSubtext").textContent = t("heroSubtext");
-  document.getElementById("thYear").textContent = t("thYear");
-  document.getElementById("thClient").textContent = t("thClient");
-  document.getElementById("thType").textContent = t("thType");
-  document.getElementById("skillsLabel").textContent = t("skillsLabel");
-  document.getElementById("softwareLabel").textContent = t("softwareLabel");
-  document.getElementById("digitalSkillsLabel").textContent = t("digitalSkillsLabel");
-  document.getElementById("analogSkillsLabel").textContent = t("analogSkillsLabel");
-  document.getElementById("languagesLabel").textContent = t("languagesLabel");
+  setText("brandTagline", t("brandTagline"));
+  setText("viewGalleryBtn", t("viewGallery"));
+  setText("viewIndexBtn", t("viewIndex"));
+  setText("navAbout", t("navAbout"));
+  setText("navMeet", t("navMeet"));
+  setText("navContact", t("navContact"));
+  setText("portfolioLabel", t("portfolioLabel"));
+  setText("heroTitle", t("heroTitle"));
+  setText("heroSubtext", t("heroSubtext"));
+  setText("thYear", t("thYear"));
+  setText("thClient", t("thClient"));
+  setText("thType", t("thType"));
+  setText("skillsLabel", t("skillsLabel"));
+  setText("softwareLabel", t("softwareLabel"));
+  setText("digitalSkillsLabel", t("digitalSkillsLabel"));
+  setText("analogSkillsLabel", t("analogSkillsLabel"));
+  setText("languagesLabel", t("languagesLabel"));
   renderListItems(document.getElementById("softwareList"), t("softwareItems"));
   renderListItems(document.getElementById("digitalSkillsList"), t("digitalSkillsItems"));
   renderListItems(document.getElementById("analogSkillsList"), t("analogSkillsItems"));
   renderListItems(document.getElementById("languagesList"), t("languagesItems"));
-  document.getElementById("aboutStudioLabel").textContent = t("aboutStudioLabel");
-  document.getElementById("aboutStudioBody").textContent = t("aboutStudioBody");
-  document.getElementById("servicesLabel").textContent = t("servicesLabel");
-  document.getElementById("servicesBody").textContent = t("servicesBody");
-  document.getElementById("contactLabel").textContent = t("contactLabel");
-  document.getElementById("phoneLabel").textContent = t("phoneLabel");
-  document.getElementById("addressLabel").textContent = t("addressLabel");
-  document.getElementById("linkedinLabel").textContent = t("linkedinLabel");
-  document.getElementById("linkedinValue").textContent = t("linkedinValue");
+  setText("aboutStudioLabel", t("aboutStudioLabel"));
+  setText("aboutStudioBody", t("aboutStudioBody"));
+  setText("servicesLabel", t("servicesLabel"));
+  renderListItems(document.getElementById("aboutServicesList"), t("servicesItems"));
+  setText("findUsLabel", t("findUsLabel"));
+  setText("newsletterLabel", t("newsletterLabel"));
+  setText("newsletterPlaceholder", t("newsletterPlaceholder"));
+  setText("phoneLabel", t("phoneLabel"));
+  setText("addressLabel", t("addressLabel"));
+  setText("linkedinLabel", t("linkedinLabel"));
+  setText("linkedinValue", t("linkedinValue"));
   els.caseBackBtn.textContent = t("caseBack");
   applyMobileInfoState();
   els.caseSlidePrevBtn.setAttribute("aria-label", t("slidePrev"));
@@ -417,6 +388,8 @@ function renderGallery() {
   state.items.forEach((project) => {
     const item = document.createElement("article");
     item.className = "gallery-item";
+    item.dataset.slug = project.slug;
+    item.classList.toggle("active", project.slug === state.selectedSlug);
     item.innerHTML = `
       <div class="gallery-media">
         <img src="${project.coverPath}" alt="${project.name} cover" loading="lazy" decoding="async" />
@@ -430,7 +403,10 @@ function renderGallery() {
       </div>
       <p class="gallery-description">${getLocalizedValue(project.description)}</p>
     `;
-    item.addEventListener("click", () => openCaseStudy(project.slug));
+    item.addEventListener("click", () => {
+      setSelectedProject(project.slug);
+      openCaseStudy(project.slug);
+    });
     els.galleryList.appendChild(item);
     attachGalleryMediaParallax(item.querySelector(".gallery-media"));
   });
@@ -440,16 +416,21 @@ function renderIndexTable() {
   els.tableBody.innerHTML = "";
   state.items.forEach((project) => {
     const row = document.createElement("tr");
+    row.dataset.slug = project.slug;
+    row.classList.toggle("active", project.slug === state.selectedSlug);
     row.innerHTML = `
       <td>${project.year}</td>
       <td>${project.client}</td>
       <td>${getLocalizedValue(project.category)}</td>
     `;
     row.addEventListener("mouseenter", () => renderIndexPreview(project));
-    row.addEventListener("click", () => openCaseStudy(project.slug));
+    row.addEventListener("click", () => {
+      setSelectedProject(project.slug);
+      openCaseStudy(project.slug);
+    });
     els.tableBody.appendChild(row);
   });
-  renderIndexPreview(state.items[0]);
+  renderIndexPreview(getSelectedProject());
 }
 
 function renderIndexPreview(project) {
@@ -464,6 +445,73 @@ function renderIndexPreview(project) {
       <p>${project.year} - ${project.client} - ${getLocalizedValue(project.category)}</p>
     </div>
   `;
+}
+
+function formatCaseSlideCounter(current, total) {
+  const safeCurrent = Math.max(1, current || 1);
+  const safeTotal = Math.max(1, total || 1);
+  return `${String(safeCurrent).padStart(2, "0")}/${String(safeTotal).padStart(2, "0")}`;
+}
+
+function updateCaseSlideCounter(current, total) {
+  if (!els.caseSlideCounter) return;
+  els.caseSlideCounter.textContent = formatCaseSlideCounter(current, total);
+}
+
+function cleanupCaseSlideObserver() {
+  if (caseSlideObserver) {
+    caseSlideObserver.disconnect();
+    caseSlideObserver = null;
+  }
+  if (typeof caseSlideWheelCleanup === "function") {
+    caseSlideWheelCleanup();
+    caseSlideWheelCleanup = null;
+  }
+}
+
+function wireCaseHorizontalWheel() {
+  if (!els.caseSlideTrack) return;
+  const onWheel = (event) => {
+    if (!state.inCaseStudy) return;
+    if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+    event.preventDefault();
+    els.caseSlideTrack.scrollBy({
+      left: event.deltaY,
+      top: 0,
+      behavior: "auto",
+    });
+  };
+  els.caseSlideTrack.addEventListener("wheel", onWheel, { passive: false });
+  caseSlideWheelCleanup = () => {
+    els.caseSlideTrack.removeEventListener("wheel", onWheel);
+  };
+}
+
+function wireCaseSlideObserver(totalSlides) {
+  cleanupCaseSlideObserver();
+  const slides = Array.from(els.caseSlideTrack.querySelectorAll(".case-image-item"));
+  if (!slides.length) {
+    updateCaseSlideCounter(1, 1);
+    return;
+  }
+
+  updateCaseSlideCounter(1, totalSlides);
+  caseSlideObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting || entry.intersectionRatio < 0.6) return;
+        const slideIndex = Number(entry.target.dataset.slideIndex || 0);
+        state.caseSlideIndex = slideIndex;
+        updateCaseSlideCounter(slideIndex + 1, totalSlides);
+      });
+    },
+    {
+      root: els.caseSlideTrack,
+      threshold: [0.6, 0.85],
+    },
+  );
+
+  slides.forEach((slide) => caseSlideObserver.observe(slide));
 }
 
 function renderCaseStudy() {
@@ -488,12 +536,16 @@ function renderCaseStudy() {
   els.caseSlideTrack.innerHTML = slideImages
     .map(
       (path, imageIndex) => `
-        <figure class="case-image-item">
+        <figure class="case-image-item" data-slide-index="${imageIndex}">
           <img src="${path}" alt="${project.name} detail ${imageIndex + 1}" loading="lazy" />
         </figure>`,
     )
     .join("");
 
+  els.caseSlideTrack.scrollLeft = 0;
+  updateCaseSlideCounter(1, slideImages.length);
+  wireCaseSlideObserver(slideImages.length);
+  wireCaseHorizontalWheel();
   updateCaseSlideArrowsState(slideImages.length);
 }
 
@@ -650,7 +702,9 @@ function applyCaseStudyMode() {
   els.caseStudyView.classList.toggle("hidden", !state.inCaseStudy);
   els.about.classList.toggle("hidden", state.inCaseStudy);
   els.meet.classList.toggle("hidden", state.inCaseStudy);
-  els.contact.classList.toggle("hidden", state.inCaseStudy);
+  if (els.contact) {
+    els.contact.classList.toggle("hidden", state.inCaseStudy);
+  }
   if (state.inCaseStudy) {
     els.galleryView.classList.add("hidden");
     els.indexView.classList.add("hidden");
@@ -661,23 +715,41 @@ function applyCaseStudyMode() {
 }
 
 async function openCaseStudy(slug) {
-  setSelectedProject(slug);
-  state.inCaseStudy = true;
-  state.mobileInfoCollapsed = isMobileCaseLayout();
-  applyCaseStudyMode();
-  scrollToPageTop();
-  const project = getSelectedProject();
-  await ensureProjectDetailImages(project);
-  if (!state.inCaseStudy || state.selectedSlug !== slug) {
-    return;
-  }
-  renderCaseStudy();
+  const currentUrl = new URL(window.location.href);
+  currentUrl.searchParams.set("lang", state.language);
+  currentUrl.searchParams.set("view", state.viewMode);
+  currentUrl.searchParams.set("scroll", String(Math.round(window.scrollY)));
+  currentUrl.searchParams.set("selected", slug);
+  window.history.replaceState(window.history.state, "", currentUrl.toString());
+
+  const url = new URL("./project.html", window.location.href);
+  url.searchParams.set("slug", slug);
+  url.searchParams.set("lang", state.language);
+  url.searchParams.set("fromView", state.viewMode);
+  url.searchParams.set("fromScroll", String(Math.round(window.scrollY)));
+  url.searchParams.set("selected", slug);
+  window.location.href = url.toString();
+}
+
+function focusSelectedProject() {
+  if (!state.selectedSlug) return false;
+  const selector = state.viewMode === "index" ? `#projectsTableBody tr[data-slug="${state.selectedSlug}"]` : `.gallery-item[data-slug="${state.selectedSlug}"]`;
+  const target = document.querySelector(selector);
+  if (!target) return false;
+  target.scrollIntoView({ block: "center", behavior: "auto" });
+  return true;
 }
 
 function closeCaseStudy() {
   state.inCaseStudy = false;
   state.mobileInfoCollapsed = true;
+  cleanupCaseSlideObserver();
   applyCaseStudyMode();
+  if (lenisInstance) {
+    lenisInstance.scrollTo(listScrollYBeforeCase, { immediate: true });
+  } else {
+    window.scrollTo(0, listScrollYBeforeCase);
+  }
 }
 
 async function goToNextProject() {
@@ -1058,6 +1130,16 @@ async function initializeApp() {
   initScrollReveal();
   initCaseImageParallax();
   window.addEventListener("resize", handleCaseLayoutResize);
+  if (initialSelectedParam && focusSelectedProject()) {
+    return;
+  }
+  if (initialScrollY !== null) {
+    if (lenisInstance) {
+      lenisInstance.scrollTo(initialScrollY, { immediate: true });
+    } else {
+      window.scrollTo(0, initialScrollY);
+    }
+  }
 }
 
 initializeApp();
