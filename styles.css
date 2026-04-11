@@ -909,7 +909,6 @@ body {
   flex-direction: column;
   gap: 0.85rem;
   cursor: pointer;
-  border-radius: 8px;
   transition: transform 0.35s var(--ease-reveal), opacity 0.35s var(--ease-reveal);
 }
 
@@ -923,10 +922,9 @@ body {
 
 .gallery-media {
   width: 100%;
-  border-radius: 6px;
   overflow: hidden;
   position: relative;
-  background: var(--bg-2);
+  background: transparent;
   aspect-ratio: 16 / 10;
 }
 
@@ -935,7 +933,7 @@ body {
   height: 100%;
   object-fit: cover;
   display: block;
-  transform: translate3d(var(--img-px, 0px), var(--img-py, 0px), 0) scale(1.035);
+  transform: translate3d(var(--img-px, 0px), var(--img-py, 0px), 0) scale(1);
   transition: transform 0.35s var(--ease-reveal);
   will-change: transform;
 }
@@ -1009,7 +1007,7 @@ body {
   aspect-ratio: 4 / 3;
   object-fit: contain;
   display: block;
-  background: var(--bg-2);
+  background: transparent;
 }
 
 .index-preview-meta {
@@ -1064,9 +1062,9 @@ body {
 
 .detail-track {
   overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--bg-2);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .detail-rail {
@@ -1088,7 +1086,7 @@ body {
   height: 100%;
   object-fit: contain;
   display: block;
-  background: var(--bg-2);
+  background: transparent;
 }
 
 .skills-showcase {
@@ -1467,7 +1465,7 @@ body.case-open {
   grid-template-columns: 1fr;
   min-height: min(86vh, 920px);
   position: relative;
-  border-radius: 20px;
+  border-radius: 0;
   overflow: hidden;
 }
 
@@ -1822,7 +1820,7 @@ body.case-open {
 
 .case-image-item {
   margin: 0;
-  border-radius: 8px;
+  border-radius: 0;
   overflow: hidden;
   height: 100%;
   min-height: 100%;
@@ -1831,7 +1829,7 @@ body.case-open {
   min-width: 100%;
   display: grid;
   place-items: center;
-  background: var(--case-image-surface);
+  background: transparent;
   scroll-snap-align: start;
 }
 
@@ -1844,7 +1842,7 @@ body.case-open {
   object-fit: contain !important;
   object-position: center center;
   aspect-ratio: auto !important;
-  background: var(--bg-2);
+  background: transparent;
   transform: none !important;
 }
 
@@ -1867,7 +1865,7 @@ body.case-open {
   flex: 0 0 100%;
   width: 100%;
   min-width: 100%;
-  padding: 0.35rem;
+  padding: 0;
 }
 
 #caseStudyView .case-image-item img {
@@ -2050,7 +2048,7 @@ body.case-open {
   height: 100%;
   object-fit: contain;
   object-position: center;
-  background: var(--bg-2);
+  background: transparent;
 }
 
 .project-empty {
