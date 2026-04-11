@@ -60,6 +60,9 @@ const i18n = {
     linkedinLabel: "LinkedIn",
     linkedinValue: "Sẽ cập nhật",
     previewHint: "Hover để xem preview",
+    themeToggleLabel: "Đổi giao diện",
+    themeDarkShort: "Tối",
+    themeLightShort: "Sáng",
   },
   en: {
     pageTitle: "VAN.LAB Portfolio",
@@ -122,6 +125,9 @@ const i18n = {
     linkedinLabel: "LinkedIn",
     linkedinValue: "To be updated",
     previewHint: "Hover to preview",
+    themeToggleLabel: "Switch theme",
+    themeDarkShort: "Dark",
+    themeLightShort: "Light",
   },
 };
 
@@ -199,9 +205,20 @@ const els = {
   nextProjectBtn: document.getElementById("nextProjectBtn"),
   langViBtn: document.getElementById("langViBtn"),
   langEnBtn: document.getElementById("langEnBtn"),
+  themeToggleBtn: document.getElementById("themeToggleBtn"),
   viewGalleryBtn: document.getElementById("viewGalleryBtn"),
   viewIndexBtn: document.getElementById("viewIndexBtn"),
 };
+
+function updateThemeToggleUi() {
+  if (!els.themeToggleBtn || !window.VANLAB_THEME) return;
+  const theme = window.VANLAB_THEME.get();
+  const isDark = theme === "dark";
+  const nextThemeText = isDark ? t("themeLightShort") : t("themeDarkShort");
+  els.themeToggleBtn.textContent = nextThemeText;
+  els.themeToggleBtn.setAttribute("aria-label", t("themeToggleLabel"));
+  els.themeToggleBtn.title = t("themeToggleLabel");
+}
 
 function t(key) {
   return i18n[state.language][key];
@@ -365,6 +382,7 @@ function renderStaticText() {
   els.langEnBtn.classList.toggle("active", state.language === "en");
   els.viewGalleryBtn.classList.toggle("active", state.viewMode === "gallery");
   els.viewIndexBtn.classList.toggle("active", state.viewMode === "index");
+  updateThemeToggleUi();
 }
 
 function renderListItems(target, items) {
@@ -722,6 +740,7 @@ function applyCaseStudyMode() {
 async function openCaseStudy(slug) {
   const currentUrl = new URL(window.location.href);
   currentUrl.searchParams.set("lang", state.language);
+  currentUrl.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "dark");
   currentUrl.searchParams.set("view", state.viewMode);
   currentUrl.searchParams.set("scroll", String(Math.round(window.scrollY)));
   currentUrl.searchParams.set("selected", slug);
@@ -730,6 +749,7 @@ async function openCaseStudy(slug) {
   const url = new URL("./project.html", window.location.href);
   url.searchParams.set("slug", slug);
   url.searchParams.set("lang", state.language);
+  url.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "dark");
   url.searchParams.set("fromView", state.viewMode);
   url.searchParams.set("fromScroll", String(Math.round(window.scrollY)));
   url.searchParams.set("selected", slug);
@@ -954,10 +974,16 @@ function switchLanguage(language) {
   syncListStateToUrl();
 }
 
+function switchTheme() {
+  window.VANLAB_THEME?.toggle({ syncUrl: true });
+  syncListStateToUrl();
+}
+
 function syncListStateToUrl() {
   if (state.inCaseStudy) return;
   const url = new URL(window.location.href);
   url.searchParams.set("lang", state.language);
+  url.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "dark");
   url.searchParams.set("view", state.viewMode);
   if (state.selectedSlug) {
     url.searchParams.set("selected", state.selectedSlug);
@@ -1116,6 +1142,7 @@ function initLenisSmoothScroll() {
 
 els.langViBtn.addEventListener("click", () => switchLanguage("vi"));
 els.langEnBtn.addEventListener("click", () => switchLanguage("en"));
+els.themeToggleBtn?.addEventListener("click", switchTheme);
 els.viewGalleryBtn.addEventListener("click", () => switchViewMode("gallery"));
 els.viewIndexBtn.addEventListener("click", () => switchViewMode("index"));
 els.caseBackBtn.addEventListener("click", closeCaseStudy);
@@ -1140,6 +1167,8 @@ els.caseStudyView.addEventListener("click", (event) => {
 
 async function initializeApp() {
   localStorage.setItem(LANGUAGE_STORAGE_KEY, state.language);
+  updateThemeToggleUi();
+  window.addEventListener("vanlab-themechange", updateThemeToggleUi);
   await ensureProjectDetailImages(getSelectedProject());
   renderStaticText();
   renderGallery();

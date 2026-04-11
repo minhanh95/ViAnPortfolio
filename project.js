@@ -7,6 +7,9 @@ const pageI18n = {
     metaTypeface: "Typeface",
     metaCommissioned: "Commissioned by",
     notFound: "Khong tim thay du an.",
+    themeToggleLabel: "Đổi giao diện",
+    themeDarkShort: "Tối",
+    themeLightShort: "Sáng",
   },
   en: {
     back: "Back",
@@ -16,6 +19,9 @@ const pageI18n = {
     metaTypeface: "Typeface",
     metaCommissioned: "Commissioned by",
     notFound: "Project not found.",
+    themeToggleLabel: "Switch theme",
+    themeDarkShort: "Dark",
+    themeLightShort: "Light",
   },
 };
 
@@ -52,6 +58,7 @@ const pageEls = {
   gallery: document.getElementById("projectGallery"),
   backLink: document.getElementById("projectBackLink"),
   nextLink: document.getElementById("projectNextLink"),
+  themeToggleBtn: document.getElementById("themeToggleBtn"),
 };
 
 function getQueryLanguage() {
@@ -75,6 +82,7 @@ function getReturnContext() {
 function updateStaticText() {
   pageEls.backLink.textContent = pageI18n[pageState.language].back;
   pageEls.nextLink.textContent = pageI18n[pageState.language].nextProject;
+  updateThemeToggleUi();
 }
 
 function getNextProjectSlug() {
@@ -88,10 +96,20 @@ function buildProjectUrl(slug) {
   const detailUrl = new URL("./project.html", window.location.href);
   detailUrl.searchParams.set("slug", slug);
   detailUrl.searchParams.set("lang", pageState.language);
+  detailUrl.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "dark");
   detailUrl.searchParams.set("fromView", pageState.returnView);
   detailUrl.searchParams.set("fromScroll", String(pageState.returnScroll));
   detailUrl.searchParams.set("selected", slug);
   return detailUrl.toString();
+}
+
+function updateThemeToggleUi() {
+  if (!pageEls.themeToggleBtn || !window.VANLAB_THEME) return;
+  const dict = pageI18n[pageState.language] || pageI18n.en;
+  const theme = window.VANLAB_THEME.get();
+  pageEls.themeToggleBtn.textContent = theme === "dark" ? dict.themeLightShort : dict.themeDarkShort;
+  pageEls.themeToggleBtn.title = dict.themeToggleLabel;
+  pageEls.themeToggleBtn.setAttribute("aria-label", dict.themeToggleLabel);
 }
 
 function getFolderPath(path) {
@@ -300,6 +318,21 @@ function renderSequence() {
   });
 }
 
+function updateOutboundNavLinks() {
+  if (!window.VANLAB_THEME) return;
+  const project = pageState.projects.find((item) => item.slug === pageState.currentSlug);
+  if (!project) return;
+  const backUrl = new URL("./index.html", window.location.href);
+  backUrl.searchParams.set("lang", pageState.language);
+  backUrl.searchParams.set("theme", window.VANLAB_THEME.get());
+  backUrl.searchParams.set("view", pageState.returnView);
+  backUrl.searchParams.set("scroll", String(pageState.returnScroll));
+  backUrl.searchParams.set("selected", pageState.currentSlug);
+  pageEls.backLink.href = backUrl.toString();
+  const nextSlug = getNextProjectSlug();
+  pageEls.nextLink.href = nextSlug ? buildProjectUrl(nextSlug) : pageEls.nextLink.href;
+}
+
 async function renderPage() {
   const project = pageState.projects.find((item) => item.slug === pageState.currentSlug);
   if (!project) {
@@ -322,14 +355,7 @@ async function renderPage() {
   ];
 
   document.title = `${project.name} - VAN.LAB`;
-  const backUrl = new URL("./index.html", window.location.href);
-  backUrl.searchParams.set("lang", pageState.language);
-  backUrl.searchParams.set("view", pageState.returnView);
-  backUrl.searchParams.set("scroll", String(pageState.returnScroll));
-  backUrl.searchParams.set("selected", pageState.currentSlug);
-  pageEls.backLink.href = backUrl.toString();
-  const nextSlug = getNextProjectSlug();
-  pageEls.nextLink.href = nextSlug ? buildProjectUrl(nextSlug) : pageEls.nextLink.href;
+  updateOutboundNavLinks();
   renderSequence();
 }
 
@@ -344,6 +370,13 @@ function initializePage() {
   pageState.returnScroll = returnScroll;
   document.documentElement.lang = pageState.language;
   updateStaticText();
+  pageEls.themeToggleBtn?.addEventListener("click", () => {
+    window.VANLAB_THEME?.toggle({ syncUrl: true });
+  });
+  window.addEventListener("vanlab-themechange", () => {
+    updateThemeToggleUi();
+    updateOutboundNavLinks();
+  });
   wireHorizontalWheel();
   renderPage();
 }

@@ -8,6 +8,9 @@ const aboutI18n = {
     viewIndex: "Index",
     navAbout: "About",
     heroTitle: "Slogan",
+    themeToggleLabel: "Đổi giao diện",
+    themeDarkShort: "Tối",
+    themeLightShort: "Sáng",
   },
   en: {
     pageTitle: "VAN.LAB - About",
@@ -16,6 +19,9 @@ const aboutI18n = {
     viewIndex: "Index",
     navAbout: "About",
     heroTitle: "Slogan",
+    themeToggleLabel: "Switch theme",
+    themeDarkShort: "Dark",
+    themeLightShort: "Light",
   },
 };
 
@@ -27,6 +33,7 @@ const aboutEls = {
   heroTitle: document.getElementById("heroTitle"),
   langViBtn: document.getElementById("langViBtn"),
   langEnBtn: document.getElementById("langEnBtn"),
+  themeToggleBtn: document.getElementById("themeToggleBtn"),
 };
 
 function getInitialLanguage() {
@@ -43,15 +50,25 @@ function setText(node, value) {
 }
 
 function updateHeaderLinks(language) {
+  const theme = window.VANLAB_THEME ? window.VANLAB_THEME.get() : "dark";
   if (aboutEls.viewGalleryBtn) {
-    aboutEls.viewGalleryBtn.href = `./index.html?view=gallery&lang=${language}`;
+    aboutEls.viewGalleryBtn.href = `./index.html?view=gallery&lang=${language}&theme=${theme}`;
   }
   if (aboutEls.viewIndexBtn) {
-    aboutEls.viewIndexBtn.href = `./index.html?view=index&lang=${language}`;
+    aboutEls.viewIndexBtn.href = `./index.html?view=index&lang=${language}&theme=${theme}`;
   }
   if (aboutEls.navAbout) {
-    aboutEls.navAbout.href = `./about.html?lang=${language}`;
+    aboutEls.navAbout.href = `./about.html?lang=${language}&theme=${theme}`;
   }
+}
+
+function updateThemeToggleUi(language) {
+  if (!aboutEls.themeToggleBtn || !window.VANLAB_THEME) return;
+  const dict = aboutI18n[language] || aboutI18n.en;
+  const theme = window.VANLAB_THEME.get();
+  aboutEls.themeToggleBtn.textContent = theme === "dark" ? dict.themeLightShort : dict.themeDarkShort;
+  aboutEls.themeToggleBtn.title = dict.themeToggleLabel;
+  aboutEls.themeToggleBtn.setAttribute("aria-label", dict.themeToggleLabel);
 }
 
 function applyLanguage(language) {
@@ -67,22 +84,33 @@ function applyLanguage(language) {
   aboutEls.langViBtn?.classList.toggle("active", language === "vi");
   aboutEls.langEnBtn?.classList.toggle("active", language === "en");
   updateHeaderLinks(language);
-}
-
-function switchLanguage(language) {
-  localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
-  applyLanguage(language);
-  const url = new URL(window.location.href);
-  url.searchParams.set("lang", language);
-  window.history.replaceState(window.history.state, "", url.toString());
+  updateThemeToggleUi(language);
 }
 
 function initializeAboutPage() {
-  const language = getInitialLanguage();
-  localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
-  applyLanguage(language);
+  let currentLanguage = getInitialLanguage();
+
+  function switchLanguage(language) {
+    currentLanguage = language;
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+    applyLanguage(language);
+    const url = new URL(window.location.href);
+    url.searchParams.set("lang", language);
+    if (window.VANLAB_THEME) {
+      url.searchParams.set("theme", window.VANLAB_THEME.get());
+    }
+    window.history.replaceState(window.history.state, "", url.toString());
+  }
+
+  localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLanguage);
+  applyLanguage(currentLanguage);
+
   aboutEls.langViBtn?.addEventListener("click", () => switchLanguage("vi"));
   aboutEls.langEnBtn?.addEventListener("click", () => switchLanguage("en"));
+  aboutEls.themeToggleBtn?.addEventListener("click", () => {
+    window.VANLAB_THEME?.toggle({ syncUrl: true });
+  });
+  window.addEventListener("vanlab-themechange", () => applyLanguage(currentLanguage));
 }
 
 initializeAboutPage();

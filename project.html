@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
+    <script src="./theme.js"></script>
   </head>
   <body>
     <main class="project-minimal">
@@ -17,7 +18,10 @@
           <a href="./index.html" class="project-back-link" id="projectBackLink">Back</a>
           <a href="./project.html" class="project-next-link" id="projectNextLink">Next project</a>
         </div>
-        <p class="project-counter" id="projectCounter">01/01</p>
+        <div class="project-topbar-actions">
+          <button id="themeToggleBtn" class="theme-toggle-btn" type="button" aria-label="Switch theme"></button>
+          <p class="project-counter" id="projectCounter">01/01</p>
+        </div>
       </div>
 
       <section class="project-gallery-wrap">
