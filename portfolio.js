@@ -8,13 +8,12 @@ const i18n = {
     navMeet: "Skills",
     navContact: "Contact",
     portfolioLabel: "Portfolio",
-    heroTitle: "Giới thiệu",
+    heroTitle: "Vian Nguyen is an Art Director",
     heroSubtext:
-      "Tôi mở rộng từ art direction sang product thinking và spatial storytelling, biến ý tưởng thành những trải nghiệm hữu hình. Việc thử nghiệm trên nhiều chất liệu định hình cách tôi tư duy, xây dựng và dẫn dắt. Từ các đội ngũ agile đến những dự án sản xuất quy mô lớn, tôi đã thực hiện các dự án cho những thương hiệu hàng đầu tại Việt Nam và hiện giữ vai trò Team Lead kiêm Art Director tại Invisible Space Studio.",
-    thProject: "Project",
-    thCategory: "Category",
-    thTechnology: "Statement of Work",
+      "With a background in spatial studies and illustration, Vian moved into product thinking and spatial storytelling - translating ideas into tangible experiences beyond visuals. The practice grew from art direction through constant experimentation across mediums, shaping both creative thinking and execution. With experience spanning agile teams to large-scale productions, I now lead projects for major brands in Vietnam as Team Lead and Art Director at Invisible Space Studio.",
     thYear: "Year",
+    thClient: "Client",
+    thType: "Type",
     infoProject: "Project",
     infoTechnology: "Statement of Work",
     infoYear: "Year",
@@ -41,9 +40,9 @@ const i18n = {
     analogSkillsItems: ["Bookbinding", "Model Making", "Set Design"],
     languagesLabel: "Language",
     languagesItems: ["Vietnamese: native", "English: fluent"],
-    aboutStudioLabel: "Giới thiệu",
+    aboutStudioLabel: "Clients",
     aboutStudioBody:
-      "VAN.LAB là portfolio cá nhân tập trung vào art direction, product thinking và spatial storytelling - nơi thực hành thị giác được kết nối với tư duy hệ thống và năng lực dẫn dắt đội ngũ sáng tạo.",
+      "Vinamilk\nHighland\nPizza Hut\nKFC\nCheese Coffee\nAn Miên\nTáo Tào\nVesou\nÉp Phê\nOnePlus\nPS\nHazeline\nColor Key\nNimai\nG.G.G\nDowny\nNo-one Magazine\nL'Officiel\nLife Center Vietnam\nElink English\nInvisible Space Studio\nX3D Studio\nRefinery Media",
     servicesLabel: "Statement of Work",
     servicesBody: "Art Direction, Set Design, Visual Identity, Editorial Visual System, Spatial Storytelling.",
     contactLabel: "Liên hệ",
@@ -62,13 +61,12 @@ const i18n = {
     navMeet: "Skills",
     navContact: "Contact",
     portfolioLabel: "Portfolio",
-    heroTitle: "Introduction",
+    heroTitle: "Vian Nguyen is an Art Director",
     heroSubtext:
-      "I move beyond art direction into product thinking and spatial storytelling — shaping ideas into tangible experiences. Experimentation across mediums drives how I think, build, and lead. From agile teams to large-scale productions, I’ve delivered work for leading brands in Vietnam and currently lead as Team Lead and Art Director at Invisible Space Studio.",
-    thProject: "Project",
-    thCategory: "Category",
-    thTechnology: "Statement of Work",
+      "With a background in spatial studies and illustration, Vian moved into product thinking and spatial storytelling - translating ideas into tangible experiences beyond visuals. The practice grew from art direction through constant experimentation across mediums, shaping both creative thinking and execution. With experience spanning agile teams to large-scale productions, I now lead projects for major brands in Vietnam as Team Lead and Art Director at Invisible Space Studio.",
     thYear: "Year",
+    thClient: "Client",
+    thType: "Type",
     infoProject: "Project",
     infoTechnology: "Statement of Work",
     infoYear: "Year",
@@ -95,9 +93,9 @@ const i18n = {
     analogSkillsItems: ["Bookbinding", "Model Making", "Set Design"],
     languagesLabel: "Language",
     languagesItems: ["Vietnamese: native", "English: fluent"],
-    aboutStudioLabel: "About",
+    aboutStudioLabel: "Clients",
     aboutStudioBody:
-      "VAN.LAB is a personal artist portfolio focused on art direction, product thinking, and spatial storytelling, combining visual craft with clear execution systems.",
+      "Vinamilk\nHighland\nPizza Hut\nKFC\nCheese Coffee\nAn Miên\nTáo Tào\nVesou\nÉp Phê\nOnePlus\nPS\nHazeline\nColor Key\nNimai\nG.G.G\nDowny\nNo-one Magazine\nL'Officiel\nLife Center Vietnam\nElink English\nInvisible Space Studio\nX3D Studio\nRefinery Media",
     servicesLabel: "Services",
     servicesBody: "Art Direction, Set Design, Visual Identity, Editorial Visual System, Spatial Storytelling.",
     contactLabel: "Contact",
@@ -113,6 +111,7 @@ const projects = [
   {
     slug: "no-one-magazine",
     name: "No One Magazine",
+    client: "No-one Magazine",
     category: { vi: "Media Campaign", en: "Media Campaign" },
     technology: "Art Direction, Set Design",
     year: 2025,
@@ -125,6 +124,7 @@ const projects = [
   {
     slug: "lofficiel-beauty-award",
     name: "L'Officiel Beauty Award 2025",
+    client: "L'Officiel",
     category: { vi: "Media Campaign", en: "Media Campaign" },
     technology: "Art Direction, Set Design",
     year: 2025,
@@ -137,6 +137,7 @@ const projects = [
   {
     slug: "vinamilk-green-farm",
     name: "Vinamilk Green Farm",
+    client: "Vinamilk",
     category: { vi: "Photography", en: "Photography" },
     technology: "Set Design, Production",
     year: 2025,
@@ -149,6 +150,7 @@ const projects = [
   {
     slug: "one-plus",
     name: "One Plus",
+    client: "OnePlus",
     category: { vi: "Media Campaign", en: "Media Campaign" },
     technology: "Art Direction Support",
     year: 2024,
@@ -161,6 +163,7 @@ const projects = [
   {
     slug: "x3d-robot",
     name: "X3D Robot",
+    client: "X3D Studio",
     category: { vi: "3D Animation", en: "3D Animation" },
     technology: "3D Pipeline, Motion",
     year: 2023,
@@ -173,8 +176,7 @@ const projects = [
 ];
 
 const sortedProjects = [...projects].sort((a, b) => b.year - a.year);
-const savedLanguage = localStorage.getItem("vanlab-language");
-const defaultLanguage = savedLanguage === "en" ? "en" : "vi";
+const defaultLanguage = "en";
 
 const state = {
   language: defaultLanguage,
@@ -347,10 +349,9 @@ function renderStaticText() {
   document.getElementById("portfolioLabel").textContent = t("portfolioLabel");
   document.getElementById("heroTitle").textContent = t("heroTitle");
   document.getElementById("heroSubtext").textContent = t("heroSubtext");
-  document.getElementById("thProject").textContent = t("thProject");
-  document.getElementById("thCategory").textContent = t("thCategory");
-  document.getElementById("thTechnology").textContent = t("thTechnology");
   document.getElementById("thYear").textContent = t("thYear");
+  document.getElementById("thClient").textContent = t("thClient");
+  document.getElementById("thType").textContent = t("thType");
   document.getElementById("skillsLabel").textContent = t("skillsLabel");
   document.getElementById("softwareLabel").textContent = t("softwareLabel");
   document.getElementById("digitalSkillsLabel").textContent = t("digitalSkillsLabel");
@@ -440,10 +441,9 @@ function renderIndexTable() {
   state.items.forEach((project) => {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td>${project.name}</td>
-      <td>${getLocalizedValue(project.category)}</td>
-      <td>${project.technology}</td>
       <td>${project.year}</td>
+      <td>${project.client}</td>
+      <td>${getLocalizedValue(project.category)}</td>
     `;
     row.addEventListener("mouseenter", () => renderIndexPreview(project));
     row.addEventListener("click", () => openCaseStudy(project.slug));
@@ -461,7 +461,7 @@ function renderIndexPreview(project) {
     <img src="${project.coverPath}" alt="${project.name} preview" />
     <div class="index-preview-meta">
       <p>${project.name}</p>
-      <p>${project.year} - ${getLocalizedValue(project.category)}</p>
+      <p>${project.year} - ${project.client} - ${getLocalizedValue(project.category)}</p>
     </div>
   `;
 }
@@ -485,28 +485,15 @@ function renderCaseStudy() {
     state.caseSlideIndex = 0;
   }
 
-  const signature = `${project.slug}:${slideImages.join("|")}`;
-  if (els.caseSlideTrack.dataset.signature !== signature) {
-    els.caseSlideTrack.dataset.signature = signature;
-    els.caseSlideTrack.innerHTML = slideImages
-      .map(
-        (path, imageIndex) => `
-          <figure
-            class="case-stack-card"
-            data-image-index="${imageIndex}"
-            style="--card-x:0px; --card-scale:1; --card-opacity:1; --card-blur:0px; --card-ry:0deg; --card-z:1; --drag-x:0px; --drag-rot:0deg;"
-          >
-            <img src="${path}" alt="${project.name} detail ${imageIndex + 1}" loading="lazy" draggable="false" />
-          </figure>`,
-      )
-      .join("");
-    positionCaseCards(slideImages.length, false);
-  } else {
-    positionCaseCards(slideImages.length, true);
-  }
+  els.caseSlideTrack.innerHTML = slideImages
+    .map(
+      (path, imageIndex) => `
+        <figure class="case-image-item">
+          <img src="${path}" alt="${project.name} detail ${imageIndex + 1}" loading="lazy" />
+        </figure>`,
+    )
+    .join("");
 
-  setupTopCardSwipe(slideImages.length);
-  resetCaseTopImageParallax();
   updateCaseSlideArrowsState(slideImages.length);
 }
 
@@ -653,6 +640,7 @@ function updateCaseSlideArrowsState(slideCount) {
 }
 
 function applyViewMode() {
+  if (state.inCaseStudy) return;
   const isGallery = state.viewMode === "gallery";
   els.galleryView.classList.toggle("hidden", !isGallery);
   els.indexView.classList.toggle("hidden", isGallery);
@@ -660,9 +648,15 @@ function applyViewMode() {
 
 function applyCaseStudyMode() {
   els.caseStudyView.classList.toggle("hidden", !state.inCaseStudy);
-  document.body.classList.toggle("case-open", state.inCaseStudy);
+  els.about.classList.toggle("hidden", state.inCaseStudy);
+  els.meet.classList.toggle("hidden", state.inCaseStudy);
+  els.contact.classList.toggle("hidden", state.inCaseStudy);
   if (state.inCaseStudy) {
+    els.galleryView.classList.add("hidden");
+    els.indexView.classList.add("hidden");
     applyMobileInfoState();
+  } else {
+    applyViewMode();
   }
 }
 
@@ -671,6 +665,7 @@ async function openCaseStudy(slug) {
   state.inCaseStudy = true;
   state.mobileInfoCollapsed = isMobileCaseLayout();
   applyCaseStudyMode();
+  scrollToPageTop();
   const project = getSelectedProject();
   await ensureProjectDetailImages(project);
   if (!state.inCaseStudy || state.selectedSlug !== slug) {
