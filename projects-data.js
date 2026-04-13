@@ -2,11 +2,30 @@ window.VANLAB_PROJECTS = [
   {
     slug: "vina-design-storexmoidien",
     name: "Vina Design Store × Moidien",
-    client: "",
-    category: { vi: "", en: "" },
-    technology: "",
-    year: 2025,
-    description: { vi: "", en: "" },
+    client: "Vina Design Store x MoiDien",
+    category: { vi: "Chiến dịch mạng xã hội", en: "Social Campaign" },
+    technology: "Art Direction, Production Design",
+    year: 2026,
+    objective: {
+      en: "Social Campaign",
+      vi: "Chiến dịch mạng xã hội",
+    },
+    scopeOfWork: {
+      en: ["Art Direction", "Production Design"],
+      vi: ["Art Direction", "Production Design"],
+    },
+    description: {
+      en: `Starting the Year of the Horse, the concept plays on the word "Mã" — a dual reference to the zodiac and to giấy mã (joss paper).
+
+The project was inspired by objects made for the dead, where joss paper carries the beliefs and wishes of the living. Crafted from paper yet designed to appear lavish and ornate, it embodies a quiet paradox — fragile in material, but rich in meaning. These shimmering sheets, often printed with abstract patterns, exist between the sacred and the everyday.
+
+In collaboration with Vina Design Store and Moi Dien, the campaign for the "MÃ" collection reinterprets the ornate yet familiar beauty of joss paper through a contemporary lens.`,
+      vi: `Vào năm Ngọ, ý tưởng chơi chữ “Mã” — vừa gợi con giáp, vừa ám chỉ giấy mã.
+
+Dự án lấy cảm hứng từ những vật phẩm dành cho người đã khuất, nơi giấy mã mang theo niềm tin và lời cầu nguyện của người sống. Làm từ giấy nhưng được thiết kế sang trọng và cầu kỳ — một nghịch lý thầm lặng: mỏng manh về chất liệu nhưng dày về ý nghĩa. Những tờ giấy lấp lánh, thường in họa tiết trừu tượng, nằm giữa thiêng liêng và đời thường.
+
+Phối hợp cùng Vina Design Store và Moi Dien, chiến dịch bộ sưu tập “MÃ” đọc lại vẻ đẹp cầu kỳ mà quen thuộc của giấy mã qua một góc nhìn đương đại.`,
+    },
     coverPath: "assets/projects/vina-design-storexmoidien/cover.jpg",
     detailImages: [
       "assets/projects/vina-design-storexmoidien/detail-01.mp4",

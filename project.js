@@ -43,6 +43,7 @@ const pageState = {
   sequence: [],
   imageCount: 0,
   counterObserver: null,
+  videoObserver: null,
   setStart: 0,
   setWidth: 0,
   velocity: 0,
@@ -293,7 +294,7 @@ function createSlide(slide, realIndex, cloneSet) {
     const src = escapeHtml(slide.path);
     const label = escapeHtml(slide.alt);
     wrapper.innerHTML = isVideoPath(slide.path)
-      ? `<video class="project-slide-media" src="${src}" controls playsinline preload="metadata" title="${label}"></video>`
+      ? `<video class="project-slide-media" src="${src}" controls playsinline muted preload="metadata" title="${label}"></video>`
       : `<img src="${src}" alt="${label}" loading="lazy" decoding="async" />`;
   }
   return wrapper;
@@ -344,20 +345,33 @@ function wireCounterObserver() {
   slides.forEach((slide) => pageState.counterObserver.observe(slide));
 }
 
+const PROJECT_VIDEO_IN_VIEW_MIN = 0.45;
+
+function tryPlayProjectVideo(video) {
+  if (!video || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const p = video.play();
+  if (p && typeof p.catch === "function") p.catch(() => {});
+}
+
 function wireProjectVideoPause() {
+  if (pageState.videoObserver) {
+    pageState.videoObserver.disconnect();
+    pageState.videoObserver = null;
+  }
   const videos = pageEls.gallery.querySelectorAll("video.project-slide-media");
   if (!videos.length) return;
-  const observer = new IntersectionObserver(
+  pageState.videoObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         const video = entry.target;
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.5) return;
-        video.pause();
+        const inView = entry.isIntersecting && entry.intersectionRatio >= PROJECT_VIDEO_IN_VIEW_MIN;
+        if (inView) tryPlayProjectVideo(video);
+        else video.pause();
       });
     },
-    { root: pageEls.gallery, threshold: [0, 0.35, 0.5, 0.65] },
+    { root: pageEls.gallery, threshold: [0, 0.25, PROJECT_VIDEO_IN_VIEW_MIN, 0.5, 0.65, 0.85] },
   );
-  videos.forEach((video) => observer.observe(video));
+  videos.forEach((video) => pageState.videoObserver.observe(video));
 }
 
 function runMomentum() {
@@ -411,11 +425,19 @@ function wireHorizontalWheel() {
 }
 
 function renderNotFound() {
+  if (pageState.videoObserver) {
+    pageState.videoObserver.disconnect();
+    pageState.videoObserver = null;
+  }
   pageEls.gallery.innerHTML = `<article class="project-empty">${pageI18n[pageState.language].notFound}</article>`;
   updateCounter(0);
 }
 
 function renderSequence() {
+  if (pageState.videoObserver) {
+    pageState.videoObserver.disconnect();
+    pageState.videoObserver = null;
+  }
   pageEls.gallery.innerHTML = "";
   [-1, 0, 1].forEach((cloneSet) => {
     pageState.sequence.forEach((slide, realIndex) => {

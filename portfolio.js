@@ -317,7 +317,7 @@ function buildCaseSlideMediaHtml(path, projectName, slideIndex) {
   const src = escapeHtmlAttr(path);
   const label = escapeHtmlAttr(`${projectName} detail ${slideIndex + 1}`);
   if (isVideoPath(path)) {
-    return `<video class="case-slide-media" src="${src}" controls playsinline preload="metadata" title="${label}"></video>`;
+    return `<video class="case-slide-media" src="${src}" controls playsinline muted preload="metadata" title="${label}"></video>`;
   }
   return `<img src="${src}" alt="${label}" loading="lazy" decoding="async" />`;
 }
@@ -339,6 +339,14 @@ function warmupImages(paths) {
   });
 }
 
+const CASE_VIDEO_IN_VIEW_MIN = 0.45;
+
+function tryPlayVideoEl(video) {
+  if (!video || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const p = video.play();
+  if (p && typeof p.catch === "function") p.catch(() => {});
+}
+
 function wireCaseVideoPause() {
   if (typeof caseVideoObserverCleanup === "function") {
     caseVideoObserverCleanup();
@@ -351,11 +359,13 @@ function wireCaseVideoPause() {
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.5) return;
-        entry.target.pause();
+        const video = entry.target;
+        const inView = entry.isIntersecting && entry.intersectionRatio >= CASE_VIDEO_IN_VIEW_MIN;
+        if (inView) tryPlayVideoEl(video);
+        else video.pause();
       });
     },
-    { root: track, threshold: [0, 0.35, 0.5, 0.65] },
+    { root: track, threshold: [0, 0.25, CASE_VIDEO_IN_VIEW_MIN, 0.5, 0.65, 0.85] },
   );
   videos.forEach((video) => observer.observe(video));
   caseVideoObserverCleanup = () => {
