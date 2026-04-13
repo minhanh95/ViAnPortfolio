@@ -111,14 +111,21 @@ a {
   color: var(--text);
 }
 
+.header-locale-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex: 0 0 auto;
+}
+
 .lang-toggle {
   display: inline-flex;
   border: 1px solid var(--line);
   border-radius: 8px;
   overflow: hidden;
   background: var(--glass);
-  align-self: flex-start;
   width: fit-content;
+  flex-shrink: 0;
 }
 
 .lang-btn {
@@ -621,6 +628,10 @@ a {
     gap: 0.55rem;
   }
 
+  .header-locale-row {
+    align-self: flex-end;
+  }
+
   .header-nav {
     gap: 0.7rem;
     font-size: 0.74rem;
@@ -686,13 +697,11 @@ a {
     justify-content: space-between;
   }
 
-  .lang-toggle {
-    margin-top: 0.15rem;
-  }
-
-  /* Không cho stretch theo chiều ngang như lang-toggle (header-right: stretch) */
-  .theme-toggle-btn {
+  .header-locale-row {
     align-self: flex-start;
+    width: fit-content;
+    max-width: 100%;
+    margin-top: 0.15rem;
   }
 }
 
