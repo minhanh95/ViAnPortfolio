@@ -917,7 +917,7 @@ body {
 
 .gallery-list {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(1.5rem, 3.5vw, 2.25rem) clamp(1rem, 2vw, 1.35rem);
   align-items: start;
   width: 100%;
@@ -944,7 +944,7 @@ body {
   overflow: hidden;
   position: relative;
   background: transparent;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 4 / 5;
 }
 
 .gallery-media img {
@@ -1023,7 +1023,7 @@ body {
 
 .index-preview img {
   width: 100%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 4 / 5;
   object-fit: cover;
   display: block;
   background: transparent;
@@ -1270,12 +1270,6 @@ body {
 
 .studio-info a {
   color: inherit;
-}
-
-@media (max-width: 1320px) {
-  .gallery-list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 960px) {
