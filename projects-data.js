@@ -1,5 +1,25 @@
 window.VANLAB_PROJECTS = [
   {
+    slug: "vina-design-storexmoidien",
+    name: "Vina Design Store × Moidien",
+    client: "",
+    category: { vi: "", en: "" },
+    technology: "",
+    year: 2025,
+    description: { vi: "", en: "" },
+    coverPath: "assets/projects/vina-design-storexmoidien/cover.jpg",
+    detailImages: [
+      "assets/projects/vina-design-storexmoidien/detail-01.mp4",
+      "assets/projects/vina-design-storexmoidien/detail-02.mp4",
+      "assets/projects/vina-design-storexmoidien/detail-03.jpg",
+      "assets/projects/vina-design-storexmoidien/detail-04.mp4",
+      "assets/projects/vina-design-storexmoidien/detail-05.gif",
+      "assets/projects/vina-design-storexmoidien/detail-06.jpg",
+      "assets/projects/vina-design-storexmoidien/detail-07.mp4",
+      "assets/projects/vina-design-storexmoidien/detail-08.jpg",
+    ],
+  },
+  {
     slug: "no-one-magazine",
     name: "No One Magazine",
     client: "No-one Magazine",
