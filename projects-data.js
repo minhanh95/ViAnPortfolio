@@ -41,15 +41,59 @@ Phối hợp cùng Vina Design Store và Moi Dien, chiến dịch bộ sưu tậ
   {
     slug: "no-one-magazine",
     name: "No One Magazine",
-    client: "No-one Magazine",
-    category: { vi: "Media Campaign", en: "Media Campaign" },
-    technology: "Art Direction, Set Design",
+    client: "No One Magazine",
+    category: { vi: "Chiến dịch mạng xã hội", en: "Social Campaign" },
+    technology: "Art Direction Assistant, Photography, Production",
     year: 2025,
+    objective: {
+      en: "Social Campaign",
+      vi: "Chiến dịch mạng xã hội",
+    },
+    scopeOfWork: {
+      en: ["Art Direction Assistant", "Photography", "Production"],
+      vi: ["Hỗ trợ Art Direction", "Nhiếp ảnh", "Sản xuất"],
+    },
     description: {
-      vi: "Hệ visual cho chiến dịch tạp chí với định hướng thời trang đương đại và xử lý bố cục nhân vật theo tinh thần editorial.",
-      en: "Visual direction for a contemporary editorial campaign with stylized character composition and magazine-led atmosphere.",
+      en: `In collaboration with No One Magazine, a community-driven campaign supporting the queer community, the project draws from the voices of collectives, artists, organisers, historians, and nightlife contributors. Moving between rooftop venues and hidden alleyways across Hanoi and Ho Chi Minh City, it explores dance, electronic music, and the layered expressions of queer identity.
+
+Blending essays, poetry, maps, and photo stories, the publication frames nightlife as something to be felt rather than told — immersive, collective, and alive.
+
+The project was featured on It's Nice That, a recognized international design platform.`,
+      vi: `Phối hợp cùng No One Magazine, một chiến dịch hướng tới cộng đồng ủng hộ cộng đồng queer, dự án lấy cảm hứng từ tiếng nói của các tập thể, nghệ sĩ, người tổ chức, sử gia và những người góp phần vào đời sống đêm. Chuyển động giữa không gian sân thượng và những con hẻm khuất ở Hà Nội và Thành phố Hồ Chí Minh, dự án khám phá vũ đạo, nhạc điện tử và những lớp biểu đạt đa diện của bản sắc queer.
+
+Pha trộn bài luận, thơ, bản đồ và phóng sự ảnh, ấn phẩm định hình đời sống đêm là điều để cảm nhận hơn là để kể — gần gũi, tập thể và sống động.
+
+Dự án được giới thiệu trên It's Nice That, một nền tảng thiết kế quốc tế được công nhận.`,
+    },
+    deliverable: {
+      en: {
+        lead: "Campaign output included",
+        groups: [
+          {
+            title: "Video & photography",
+            items: ["3 promotional videos", "35 product photographs"],
+          },
+        ],
+      },
+      vi: {
+        lead: "Sản phẩm bàn giao gồm",
+        groups: [
+          {
+            title: "Video & nhiếp ảnh",
+            items: ["3 video quảng bá", "35 ảnh sản phẩm"],
+          },
+        ],
+      },
     },
     coverPath: "assets/projects/no-one-magazine/cover.jpg",
+    detailImages: [
+      "assets/projects/no-one-magazine/detail-01.jpg",
+      "assets/projects/no-one-magazine/detail-02.jpg",
+      "assets/projects/no-one-magazine/detail-03.jpg",
+      "assets/projects/no-one-magazine/detail-04.mp4",
+      "assets/projects/no-one-magazine/detail-05.jpg",
+      "assets/projects/no-one-magazine/detail-06.mov",
+    ],
   },
   {
     slug: "lofficiel-beauty-award",
@@ -63,6 +107,16 @@ Phối hợp cùng Vina Design Store và Moi Dien, chiến dịch bộ sưu tậ
       en: "Concept and visual space direction for a beauty award campaign optimized for multi-platform publishing.",
     },
     coverPath: "assets/projects/lofficiel-beauty-award-2025/cover.jpg",
+    detailImages: [
+      "assets/projects/lofficiel-beauty-award-2025/detail-01.jpg",
+      "assets/projects/lofficiel-beauty-award-2025/detail-02.jpg",
+      "assets/projects/lofficiel-beauty-award-2025/detail-03.jpg",
+      "assets/projects/lofficiel-beauty-award-2025/detail-04.jpg",
+      "assets/projects/lofficiel-beauty-award-2025/detail-05.jpg",
+      "assets/projects/lofficiel-beauty-award-2025/detail-07.mp4",
+      "assets/projects/lofficiel-beauty-award-2025/detail-08.jpg",
+      "assets/projects/lofficiel-beauty-award-2025/detail-09.jpg",
+    ],
   },
   {
     slug: "vinamilk-green-farm",
