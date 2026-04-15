@@ -449,7 +449,13 @@ The character design features a fluid silhouette, serving as a metaphor for the 
         ],
       },
     },
-    coverPath: "assets/projects/x3d-robot/cover.gif",
+    coverPath: "assets/projects/x3d-robot/cover.jpg",
+    detailImages: [
+      "assets/projects/x3d-robot/detail-02.jpg",
+      "assets/projects/x3d-robot/detail-03.jpg",
+      "assets/projects/x3d-robot/detail-04.jpg",
+      "assets/projects/x3d-robot/detail-05.jpg",
+    ],
   },
   {
     slug: "invisible-space-studio",
