@@ -155,10 +155,10 @@ Dự án được giới thiệu trên It's Nice That, một nền tảng thiế
     detailImages: [
       "assets/projects/no-one-magazine/detail-01.jpg",
       "assets/projects/no-one-magazine/detail-02.jpg",
-      "assets/projects/no-one-magazine/detail-03.jpg",
-      "assets/projects/no-one-magazine/detail-04.mp4",
-      "assets/projects/no-one-magazine/detail-05.jpg",
-      "assets/projects/no-one-magazine/detail-06.mov",
+      "assets/projects/no-one-magazine/detail-03.mp4",
+      "assets/projects/no-one-magazine/detail-04.jpg",
+      "assets/projects/no-one-magazine/detail-05.mov",
+      "assets/projects/no-one-magazine/detail-06.gif",
     ],
   },
   {

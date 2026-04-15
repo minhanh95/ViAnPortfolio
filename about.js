@@ -4,7 +4,7 @@ const aboutI18n = {
   vi: {
     pageTitle: "VAN.LAB - Giới thiệu",
     brandTagline: "Artist Portfolio - Art Direction, Product Thinking, Spatial Storytelling",
-    viewGallery: "Thư viện",
+    viewGallery: "Feature",
     viewIndex: "Danh mục",
     navAbout: "Giới thiệu",
     heroTitle: "Tuyên ngôn",
@@ -15,7 +15,7 @@ const aboutI18n = {
   en: {
     pageTitle: "VAN.LAB - About",
     brandTagline: "Artist Portfolio - Art Direction, Product Thinking, Spatial Storytelling",
-    viewGallery: "Gallery",
+    viewGallery: "Feature",
     viewIndex: "Index",
     navAbout: "About",
     heroTitle: "Slogan",

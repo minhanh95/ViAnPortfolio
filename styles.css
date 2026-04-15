@@ -118,10 +118,9 @@ a {
 
 .lang-toggle {
   display: inline-flex;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--glass);
+  align-items: center;
+  gap: 0.22rem;
+  background: transparent;
   width: fit-content;
   flex-shrink: 0;
 }
@@ -129,24 +128,28 @@ a {
 .lang-btn {
   appearance: none;
   border: 0;
+  border-radius: 0;
   background: transparent;
   color: var(--muted);
   font-size: 0.74rem;
   letter-spacing: 0.08em;
-  padding: 0.35rem 0.55rem;
+  padding: 0.3rem 0.5rem;
   min-width: 40px;
   cursor: pointer;
   transition: color 0.35s var(--ease-premium), background 0.35s var(--ease-premium);
 }
 
 .lang-btn + .lang-btn {
-  border-left: 1px solid var(--line);
+  border-left: 0;
 }
 
 .lang-btn.active {
-  background: var(--control-active-bg);
+  background: transparent;
   color: var(--text);
   font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
 }
 
 .lang-btn:hover {
@@ -913,19 +916,19 @@ body {
 
 .view-toggle {
   display: inline-flex;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  overflow: hidden;
+  align-items: center;
+  gap: 0.28rem;
 }
 
 .view-btn {
   border: 0;
+  border-radius: 0;
   background: transparent;
-  color: var(--text);
+  color: var(--muted);
   font-size: 0.74rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 0.4rem 0.68rem;
+  padding: 0.34rem 0.58rem;
   cursor: pointer;
   text-decoration: none;
   display: inline-flex;
@@ -935,17 +938,20 @@ body {
 }
 
 .view-btn + .view-btn {
-  border-left: 1px solid var(--line);
+  border-left: 0;
 }
 
 .view-btn.active {
-  background: var(--control-active-bg);
+  background: transparent;
   color: var(--text);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
 }
 
 .theme-toggle-btn {
   appearance: none;
-  border: 1px solid var(--line);
+  border: 0;
   border-radius: 999px;
   background: transparent;
   color: var(--muted);
@@ -972,13 +978,15 @@ html[data-theme="light"] .theme-toggle-btn::before {
 
 .theme-toggle-btn:hover {
   color: var(--text);
-  border-color: var(--accent-bright);
   background: var(--interactive-hover);
   transform: translateY(-1px);
 }
 
 .header-nav a.active-link {
   color: var(--text);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
 }
 
 .hero-section {
@@ -1024,7 +1032,7 @@ html[data-theme="light"] .theme-toggle-btn::before {
 
 .gallery-list {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(1.5rem, 3.5vw, 2.25rem) clamp(1rem, 2vw, 1.35rem);
   align-items: start;
   width: 100%;
@@ -1051,13 +1059,17 @@ html[data-theme="light"] .theme-toggle-btn::before {
   overflow: hidden;
   position: relative;
   background: transparent;
-  aspect-ratio: 4 / 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .gallery-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: clamp(280px, 62vh, 640px);
+  object-fit: contain;
   display: block;
   transform: translate3d(var(--img-px, 0px), var(--img-py, 0px), 0) scale(1);
   transition: transform 0.35s var(--ease-reveal);
@@ -1070,6 +1082,7 @@ html[data-theme="light"] .theme-toggle-btn::before {
   font-weight: 500;
   line-height: 1.25;
   letter-spacing: 0.01em;
+  text-align: center;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1424,8 +1437,8 @@ html[data-theme="light"] .theme-toggle-btn::before {
 
 @media (max-width: 760px) {
   .header-nav {
-    flex-wrap: wrap;
-    gap: 0.45rem 0.7rem;
+    flex-wrap: nowrap;
+    gap: 0.45rem;
   }
 
   .gallery-list {
