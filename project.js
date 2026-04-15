@@ -182,8 +182,108 @@ function escapeHtml(s) {
     .replace(/"/g, "&quot;");
 }
 
+function renderInlineRichText(input) {
+  const source = String(input ?? "");
+  const tokenRegex = /(\[[^\]]+\]\(https?:\/\/[^\s)]+\)|\*\*[^*]+\*\*)/g;
+  let result = "";
+  let cursor = 0;
+  let match = tokenRegex.exec(source);
+
+  while (match) {
+    const [token] = match;
+    const start = match.index;
+    if (start > cursor) result += escapeHtml(source.slice(cursor, start));
+
+    const linkMatch = token.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/);
+    if (linkMatch) {
+      const [, label, href] = linkMatch;
+      result += `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>`;
+    } else if (token.startsWith("**") && token.endsWith("**")) {
+      result += `<strong>${escapeHtml(token.slice(2, -2))}</strong>`;
+    } else {
+      result += escapeHtml(token);
+    }
+
+    cursor = start + token.length;
+    match = tokenRegex.exec(source);
+  }
+
+  if (cursor < source.length) result += escapeHtml(source.slice(cursor));
+  return result;
+}
+
 function isVideoPath(path) {
   return /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(path || "");
+}
+
+function isVimeoPath(path) {
+  return /vimeo\.com/i.test(path || "");
+}
+
+function isYouTubePath(path) {
+  return /(youtube\.com|youtu\.be)/i.test(path || "");
+}
+
+function buildVimeoEmbedUrl(path) {
+  if (!path) return "";
+  try {
+    const source = new URL(path, window.location.href);
+    const host = source.hostname.toLowerCase();
+    let videoId = "";
+    let hash = source.searchParams.get("h") || "";
+
+    if (host.includes("player.vimeo.com")) {
+      const parts = source.pathname.split("/").filter(Boolean);
+      videoId = parts[parts.indexOf("video") + 1] || "";
+    } else {
+      const parts = source.pathname.split("/").filter(Boolean);
+      videoId = parts[0] || "";
+      if (!hash && parts[1]) hash = parts[1];
+    }
+
+    if (!videoId) return path;
+    const embed = new URL(`https://player.vimeo.com/video/${videoId}`);
+    if (hash) embed.searchParams.set("h", hash);
+    embed.searchParams.set("api", "1");
+    embed.searchParams.set("muted", "1");
+    embed.searchParams.set("autopause", "0");
+    embed.searchParams.set("playsinline", "1");
+    return embed.toString();
+  } catch {
+    return path;
+  }
+}
+
+function buildYouTubeEmbedUrl(path) {
+  if (!path) return "";
+  try {
+    const source = new URL(path, window.location.href);
+    const host = source.hostname.toLowerCase();
+    let videoId = "";
+
+    if (host.includes("youtu.be")) {
+      videoId = source.pathname.split("/").filter(Boolean)[0] || "";
+    } else if (host.includes("youtube.com")) {
+      if (source.pathname.startsWith("/watch")) {
+        videoId = source.searchParams.get("v") || "";
+      } else if (source.pathname.startsWith("/embed/")) {
+        videoId = source.pathname.split("/").filter(Boolean)[1] || "";
+      } else if (source.pathname.startsWith("/shorts/")) {
+        videoId = source.pathname.split("/").filter(Boolean)[1] || "";
+      }
+    }
+
+    if (!videoId) return path;
+    const embed = new URL(`https://www.youtube.com/embed/${videoId}`);
+    embed.searchParams.set("autoplay", "1");
+    embed.searchParams.set("mute", "1");
+    embed.searchParams.set("playsinline", "1");
+    embed.searchParams.set("enablejsapi", "1");
+    embed.searchParams.set("rel", "0");
+    return embed.toString();
+  } catch {
+    return path;
+  }
 }
 
 function pickLocalizedField(value, lang) {
@@ -202,24 +302,35 @@ function getScopeLines(scope, lang) {
 function buildDescriptionParagraphs(raw, lang) {
   const text = raw?.[lang] || raw?.en || "";
   if (!text.trim()) return "";
+
   return text
     .split(/\n\n+/)
     .map((block) => block.trim())
     .filter(Boolean)
-    .map((block) => `<p class="project-meta-body">${escapeHtml(block).replace(/\n/g, "<br />")}</p>`)
+    .map((block) => `<p class="project-meta-body">${renderInlineRichText(block).replace(/\n/g, "<br />")}</p>`)
     .join("");
 }
 
 function buildDeliverableSection(project, lang, label) {
   const block = project.deliverable?.[lang] || project.deliverable?.en;
   if (!block) return "";
-  const lead = typeof block.lead === "string" && block.lead.trim() ? `<p class="project-meta-deliverable-lead">${escapeHtml(block.lead)}</p>` : "";
+  const rawLead = typeof block.lead === "string" ? block.lead.trim() : "";
+  const normalizedLead = rawLead.toLowerCase();
+  const normalizedLabel = String(label || "").trim().toLowerCase();
+  const isDuplicateLead =
+    normalizedLead &&
+    (normalizedLead === normalizedLabel || normalizedLead === `${normalizedLabel}s` || normalizedLead === `${normalizedLabel}es`);
+  const lead =
+    rawLead && !isDuplicateLead ? `<p class="project-meta-deliverable-lead">${renderInlineRichText(rawLead)}</p>` : "";
   const groups = Array.isArray(block.groups) ? block.groups : [];
   const groupsHtml = groups
     .map((g) => {
-      const title = escapeHtml(g.title || "");
-      const items = (Array.isArray(g.items) ? g.items : []).map((item) => `<li>${escapeHtml(item)}</li>`).join("");
-      return `<div class="project-meta-deliverable-group"><h3 class="project-meta-deliverable-subtitle">${title}</h3><ul class="project-meta-deliverable-list">${items}</ul></div>`;
+      const title = String(g.title || "").trim();
+      const titleHtml = title ? `<h3 class="project-meta-deliverable-subtitle">${renderInlineRichText(title)}</h3>` : "";
+      const items = (Array.isArray(g.items) ? g.items : [])
+        .map((item) => `<li>${renderInlineRichText(item)}</li>`)
+        .join("");
+      return `<div class="project-meta-deliverable-group">${titleHtml}<ul class="project-meta-deliverable-list">${items}</ul></div>`;
     })
     .join("");
   return `
@@ -268,17 +379,24 @@ function buildMetaMarkup(project) {
   }
 
   const descHtml = buildDescriptionParagraphs(project.description, lang);
-  const deliverableHtml = buildDeliverableSection(project, lang, text.metaDeliverable);
+  const deliverableLabel = pickLocalizedField(project.deliverableLabel, lang).trim() || text.metaDeliverable;
+  const deliverableHtml = buildDeliverableSection(project, lang, deliverableLabel);
 
   return `
     <div class="project-meta-card">
       <h1>${escapeHtml(project.name)}</h1>
-      <div class="project-meta-facts">${factRows.join("")}</div>
-      <section class="project-meta-description-block" aria-label="${escapeHtml(text.metaDescription)}">
-        <h2 class="project-meta-section-title">${escapeHtml(text.metaDescription)}</h2>
-        ${descHtml || "<p class=\"project-meta-body\">—</p>"}
-      </section>
-      ${deliverableHtml}
+      <div class="project-meta-layout">
+        <div class="project-meta-col project-meta-col--left">
+          <div class="project-meta-facts">${factRows.join("")}</div>
+        </div>
+        <div class="project-meta-col project-meta-col--right">
+          <section class="project-meta-description-block" aria-label="${escapeHtml(text.metaDescription)}">
+            <h2 class="project-meta-section-title">${escapeHtml(text.metaDescription)}</h2>
+            ${descHtml || "<p class=\"project-meta-body\">—</p>"}
+          </section>
+          ${deliverableHtml}
+        </div>
+      </div>
     </div>
   `;
 }
@@ -296,9 +414,17 @@ function createSlide(slide, realIndex, cloneSet) {
   } else {
     const src = escapeHtml(slide.path);
     const label = escapeHtml(slide.alt);
-    wrapper.innerHTML = isVideoPath(slide.path)
-      ? `<video class="project-slide-media" src="${src}" controls playsinline muted preload="metadata" title="${label}"></video>`
-      : `<img src="${src}" alt="${label}" loading="lazy" decoding="async" />`;
+    if (isVideoPath(slide.path)) {
+      wrapper.innerHTML = `<video class="project-slide-media" src="${src}" controls playsinline muted preload="metadata" title="${label}"></video>`;
+    } else if (isVimeoPath(slide.path)) {
+      const embedSrc = escapeHtml(buildVimeoEmbedUrl(slide.path));
+      wrapper.innerHTML = `<iframe class="project-slide-media project-slide-media--embed" src="${embedSrc}" title="${label}" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+    } else if (isYouTubePath(slide.path)) {
+      const embedSrc = escapeHtml(buildYouTubeEmbedUrl(slide.path));
+      wrapper.innerHTML = `<iframe class="project-slide-media project-slide-media--embed" src="${embedSrc}" title="${label}" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+    } else {
+      wrapper.innerHTML = `<img src="${src}" alt="${label}" loading="lazy" decoding="async" />`;
+    }
   }
   return wrapper;
 }
@@ -356,25 +482,46 @@ function tryPlayProjectVideo(video) {
   if (p && typeof p.catch === "function") p.catch(() => {});
 }
 
+function setEmbedPlayback(frame, shouldPlay) {
+  if (!frame?.contentWindow || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const src = String(frame.getAttribute("src") || "");
+  if (src.includes("player.vimeo.com")) {
+    frame.contentWindow.postMessage({ method: shouldPlay ? "play" : "pause" }, "https://player.vimeo.com");
+    return;
+  }
+  if (src.includes("youtube.com/embed/")) {
+    frame.contentWindow.postMessage(
+      JSON.stringify({ event: "command", func: shouldPlay ? "playVideo" : "pauseVideo", args: [] }),
+      "https://www.youtube.com",
+    );
+  }
+}
+
 function wireProjectVideoPause() {
   if (pageState.videoObserver) {
     pageState.videoObserver.disconnect();
     pageState.videoObserver = null;
   }
-  const videos = pageEls.gallery.querySelectorAll("video.project-slide-media");
-  if (!videos.length) return;
+  const mediaEls = pageEls.gallery.querySelectorAll("video.project-slide-media, iframe.project-slide-media--embed");
+  if (!mediaEls.length) return;
   pageState.videoObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        const video = entry.target;
+        const media = entry.target;
         const inView = entry.isIntersecting && entry.intersectionRatio >= PROJECT_VIDEO_IN_VIEW_MIN;
-        if (inView) tryPlayProjectVideo(video);
-        else video.pause();
+        if (media instanceof HTMLVideoElement) {
+          if (inView) tryPlayProjectVideo(media);
+          else media.pause();
+          return;
+        }
+        if (media instanceof HTMLIFrameElement) {
+          setEmbedPlayback(media, inView);
+        }
       });
     },
     { root: pageEls.gallery, threshold: [0, 0.25, PROJECT_VIDEO_IN_VIEW_MIN, 0.5, 0.65, 0.85] },
   );
-  videos.forEach((video) => pageState.videoObserver.observe(video));
+  mediaEls.forEach((media) => pageState.videoObserver.observe(media));
 }
 
 function runMomentum() {
