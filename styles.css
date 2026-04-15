@@ -2156,7 +2156,7 @@ body.case-open {
 
 .project-slide--meta {
   flex-basis: min(72vw, 1120px);
-  background: var(--surface);
+  background: transparent;
 }
 
 .project-meta-card {
