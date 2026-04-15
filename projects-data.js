@@ -39,6 +39,72 @@ Phối hợp cùng Vina Design Store và Moi Dien, chiến dịch bộ sưu tậ
     ],
   },
   {
+    slug: "downy-luxe",
+    name: "Downy Luxe",
+    client: "P&G Downy",
+    category: { vi: "Chiến dịch mạng xã hội", en: "Social Campaign" },
+    technology: "Creative Consult, Art Direction, Set Design, Video Production",
+    year: 2026,
+    objective: {
+      en: "Social Campaign",
+      vi: "Chiến dịch mạng xã hội",
+    },
+    scopeOfWork: {
+      en: ["Creative Consult", "Art Direction", "Set Design", "Video Production"],
+      vi: ["Tư vấn sáng tạo", "Art Direction", "Thiết kế set", "Sản xuất video"],
+    },
+    description: {
+      en: `For Downy, the project unfolds as a multi-sensory journey through a series of six films.
+
+With the launch of Downy Luxe, the challenge was to translate highly functional product benefits into a visual language that feels sensorial, elevated, and distinct within the market. Rather than illustrating features directly, the direction focuses on evoking them — allowing the experience to unfold through feeling.
+
+Light, texture, movement, and petals become the core storytellers. They move, react, and transform — capturing softness, fluidity, and diffusion in a way that is both tactile and emotional. The visuals shift between precision and poetry, where performance is not only shown, but sensed.
+
+The result is a series that blurs the line between product and atmosphere — connecting with audiences through memory, sensation, and subtle emotion.`,
+      vi: `Với Downy, dự án mở ra như một hành trình đa giác quan qua sáu tác phẩm phim.
+
+Cùng ra mắt Downy Luxe, thách thức là chuyển những lợi ích sản phẩm mang tính công năng cao sang một ngôn ngữ hình ảnh giàu cảm giác, thăng hoa và khác biệt trên thị trường. Thay vì minh họa tính năng một cách trực tiếp, định hướng tập trung vào gợi mở — để trải nghiệm được mở ra qua cảm nhận.
+
+Ánh sáng, chất liệu, chuyển động và cánh hoa trở thành người kể chuyện trung tâm. Chúng chuyển động, phản ứng và biến hóa — ghi lại độ mềm, sự lưu chuyển và khuếch tán theo cách vừa xúc giác vừa cảm xúc. Hình ảnh chuyển giữa độ chính xác và thi ca, nơi hiệu năng không chỉ được cho thấy mà còn được cảm nhận.
+
+Kết quả là một loạt phim làm mờ ranh giới giữa sản phẩm và không khí — kết nối khán giả qua ký ức, cảm giác và những cảm xúc tinh tế.`,
+    },
+    deliverable: {
+      en: {
+        lead: "Campaign output included",
+        groups: [
+          {
+            title: "Video",
+            items: ["6 films for the Downy Luxe social campaign"],
+          },
+        ],
+      },
+      vi: {
+        lead: "Sản phẩm bàn giao gồm",
+        groups: [
+          {
+            title: "Video",
+            items: ["6 phim cho chiến dịch Downy Luxe trên mạng xã hội"],
+          },
+        ],
+      },
+    },
+    coverPath: "assets/projects/downy-2025/cover.jpg",
+    detailImages: [
+      "assets/projects/downy-2025/detail-01.mp4",
+      "assets/projects/downy-2025/detail-02.mp4",
+      "assets/projects/downy-2025/detail-03.jpg",
+      "assets/projects/downy-2025/detail-04.mp4",
+      "assets/projects/downy-2025/detail-05.mp4",
+      "assets/projects/downy-2025/detail-06.jpg",
+      "assets/projects/downy-2025/detail-07.mp4",
+      "assets/projects/downy-2025/detail-08.jpg",
+      "assets/projects/downy-2025/detail-09.mp4",
+      "assets/projects/downy-2025/detail-10.mp4",
+      "assets/projects/downy-2025/detail-11.mp4",
+    ],
+  },
+  {
     slug: "no-one-magazine",
     name: "No One Magazine",
     client: "No One Magazine",
@@ -98,13 +164,53 @@ Dự án được giới thiệu trên It's Nice That, một nền tảng thiế
   {
     slug: "lofficiel-beauty-award",
     name: "L'Officiel Beauty Award 2025",
-    client: "L'Officiel",
-    category: { vi: "Media Campaign", en: "Media Campaign" },
-    technology: "Art Direction, Set Design",
+    client: "L'Officiel Vietnam",
+    category: { vi: "Chiến dịch Beauty Award", en: "Beauty Award Campaign" },
+    technology: "Art Direction, Photography, Production",
     year: 2025,
+    objective: {
+      en: "Beauty Award Campaign",
+      vi: "Chiến dịch Beauty Award",
+    },
+    scopeOfWork: {
+      en: ["Art Direction", "Photography", "Production"],
+      vi: ["Art Direction", "Nhiếp ảnh", "Sản xuất"],
+    },
     description: {
-      vi: "Dẫn dắt concept và không gian hình ảnh cho chiến dịch giải thưởng làm đẹp, tối ưu cho xuất bản đa nền tảng.",
-      en: "Concept and visual space direction for a beauty award campaign optimized for multi-platform publishing.",
+      en: `In collaboration with L'Officiel, I worked with the team to develop and deliver a photography series for the annual Beauty Choice Awards, centered on nominated beauty products.
+
+Expanding from the core concept of Crystal Age, I developed a visual language that merges minimal purity with an explorative, lab-inspired approach. Sleek and precise, the direction balances scientific rigor with artistic minimalism. Glass, transparency, and fluid forms express clarity and timeless sophistication, while controlled lighting introduces warmth and depth.
+
+The work can be viewed in L'OFFICIEL Beauty Choice Awards 2025.
+
+Executed through a fast-paced production cycle — 2 weeks of preparation, a 2-day shoot, and 1 week of post-production — resulting in 59 final layouts.`,
+      vi: `Phối hợp cùng L'Officiel, tôi cùng team phát triển và bàn giao một loạt ảnh cho Beauty Choice Awards thường niên, xoay quanh các sản phẩm làm đẹp được đề cử.
+
+Bước ra từ lõi ý tưởng Crystal Age, tôi xây dựng ngôn ngữ hình ảnh hòa trộn sự tinh giản tối thiểu với cách tiếp cận mang hơi thở thí nghiệm, phòng lab. Gọn gàng và chính xác, định hướng cân bằng giữa tính khoa học và tối giản nghệ thuật. Kính, độ trong suốt và các dạng lỏng thể hiện sự sắc nét và tinh tế vượt thời gian, trong khi ánh sáng kiểm soát mang lại độ ấm và chiều sâu.
+
+Tác phẩm có thể xem trong khuôn khổ L'OFFICIEL Beauty Choice Awards 2025.
+
+Thực hiện trong một nhịp sản xuất gấp — 2 tuần chuẩn bị, 2 ngày quay và 1 tuần hậu kỳ — cho ra 59 layout hoàn chỉnh.`,
+    },
+    deliverable: {
+      en: {
+        lead: "Campaign output included",
+        groups: [
+          {
+            title: "Photography & layouts",
+            items: ["59 final layouts", "2-week prep, 2-day shoot, 1-week post-production"],
+          },
+        ],
+      },
+      vi: {
+        lead: "Sản phẩm bàn giao gồm",
+        groups: [
+          {
+            title: "Nhiếp ảnh & layout",
+            items: ["59 layout hoàn chỉnh", "2 tuần chuẩn bị, 2 ngày quay, 1 tuần hậu kỳ"],
+          },
+        ],
+      },
     },
     coverPath: "assets/projects/lofficiel-beauty-award-2025/cover.jpg",
     detailImages: [
@@ -130,6 +236,24 @@ Dự án được giới thiệu trên It's Nice That, một nền tảng thiế
       en: "Lead set design for key visuals with a clean, fresh language aligned to brand consistency.",
     },
     coverPath: "assets/projects/vinamilk-green-farm/cover.jpg",
+    detailImages: [
+      "assets/projects/vinamilk-green-farm/detail-01.jpg",
+      "assets/projects/vinamilk-green-farm/detail-02.jpg",
+      "assets/projects/vinamilk-green-farm/detail-03.jpg",
+      "assets/projects/vinamilk-green-farm/detail-04.jpg",
+      "assets/projects/vinamilk-green-farm/detail-05.jpg",
+      "assets/projects/vinamilk-green-farm/detail-06.jpg",
+      "assets/projects/vinamilk-green-farm/detail-07.jpg",
+      "assets/projects/vinamilk-green-farm/detail-08.jpg",
+      "assets/projects/vinamilk-green-farm/detail-09.jpg",
+      "assets/projects/vinamilk-green-farm/detail-10.jpg",
+      "assets/projects/vinamilk-green-farm/detail-11.jpg",
+      "assets/projects/vinamilk-green-farm/detail-12.jpg",
+      "assets/projects/vinamilk-green-farm/detail-13.jpg",
+      "assets/projects/vinamilk-green-farm/detail-14.jpg",
+      "assets/projects/vinamilk-green-farm/detail-15.jpg",
+      "assets/projects/vinamilk-green-farm/detail-16.jpg",
+    ],
   },
   {
     slug: "one-plus",
@@ -143,6 +267,18 @@ Dự án được giới thiệu trên It's Nice That, một nền tảng thiế
       en: "Assistant art direction on a commercial campaign with high visual rhythm and dynamic layout system.",
     },
     coverPath: "assets/projects/one-plus/cover.jpg",
+    detailImages: [
+      "assets/projects/one-plus/detail-01.jpg",
+      "assets/projects/one-plus/detail-02.jpg",
+      "assets/projects/one-plus/detail-03.jpg",
+      "assets/projects/one-plus/detail-04.jpg",
+      "assets/projects/one-plus/detail-05.jpg",
+      "assets/projects/one-plus/detail-06.jpg",
+      "assets/projects/one-plus/detail-07.jpg",
+      "assets/projects/one-plus/detail-08.jpg",
+      "assets/projects/one-plus/detail-09.jpg",
+      "assets/projects/one-plus/detail-10.jpg",
+    ],
   },
   {
     slug: "x3d-robot",
