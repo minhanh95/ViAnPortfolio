@@ -2,28 +2,28 @@ const i18n = {
   vi: {
     pageTitle: "VAN.LAB Portfolio",
     brandTagline: "Artist Portfolio - Art Direction, Product Thinking, Spatial Storytelling",
-    viewGallery: "Gallery",
-    viewIndex: "Index",
-    navAbout: "About",
-    navMeet: "About",
-    navContact: "Contact",
+    viewGallery: "Thư viện",
+    viewIndex: "Danh mục",
+    navAbout: "Giới thiệu",
+    navMeet: "Giới thiệu",
+    navContact: "Liên hệ",
     portfolioLabel: "Portfolio",
-    heroTitle: "Slogan",
+    heroTitle: "Tuyên ngôn",
     heroSubtext:
-      "Vian Nguyen is an Art Director. With a background in spatial studies and illustration, Vian moved into product thinking and spatial storytelling - translating ideas into tangible experiences beyond visuals. The practice grew from art direction through constant experimentation across mediums, shaping both creative thinking and execution. With experience spanning agile teams to large-scale productions, I now lead projects for major brands in Vietnam as Team Lead and Art Director at Invisible Space Studio.",
-    thYear: "Year",
-    thClient: "Client",
-    thType: "Type",
-    infoProject: "Project",
-    infoTechnology: "Statement of Work",
-    infoYear: "Year",
+      "Vian Nguyen là Art Director. Từ nền tảng nghiên cứu không gian và minh họa, Vian mở rộng sang tư duy sản phẩm và kể chuyện không gian để chuyển hóa ý tưởng thành trải nghiệm hữu hình. Qua quá trình thực hành và thử nghiệm liên tục trên nhiều chất liệu, Vian phát triển đồng thời tư duy sáng tạo và năng lực triển khai. Hiện nay, Vian dẫn dắt dự án cho các thương hiệu lớn tại Việt Nam với vai trò Team Lead và Art Director tại Invisible Space Studio.",
+    thYear: "Năm",
+    thClient: "Khách hàng",
+    thType: "Hạng mục",
+    infoProject: "Dự án",
+    infoTechnology: "Phạm vi công việc",
+    infoYear: "Năm",
     caseBack: "Quay lại danh sách",
     caseInfoMore: "Xem chi tiết",
     caseInfoLess: "Ẩn chi tiết",
     slidePrev: "Ảnh trước",
     slideNext: "Ảnh sau",
-    caseInfoTechLabel: "Statement of Work:",
-    caseInfoYearLabel: "Year:",
+    caseInfoTechLabel: "Phạm vi công việc:",
+    caseInfoYearLabel: "Năm:",
     nextProject: "Dự án tiếp theo",
     skillsLabel: "Kỹ năng",
     softwareLabel: "Công cụ",
@@ -38,7 +38,7 @@ const i18n = {
       "Procreate",
       "Slack",
     ],
-    digitalSkillsLabel: "Digital Skill",
+    digitalSkillsLabel: "Kỹ năng số",
     digitalSkillsItems: [
       "Brand audit",
       "Concept Development",
@@ -48,14 +48,14 @@ const i18n = {
       "Layout Design",
       "Animation & 2D production",
     ],
-    analogSkillsLabel: "Analog Skill",
+    analogSkillsLabel: "Kỹ năng thủ công",
     analogSkillsItems: ["Model making", "Set design", "Food styling", "Bookbinding"],
-    languagesLabel: "Language",
-    languagesItems: ["Vietnamese: native", "English: fluent"],
-    aboutStudioLabel: "Clients",
+    languagesLabel: "Ngôn ngữ",
+    languagesItems: ["Tiếng Việt: bản ngữ", "Tiếng Anh: thành thạo"],
+    aboutStudioLabel: "Khách hàng",
     aboutStudioBody:
       "Vinamilk\nHighland\nPizza Hut\nKFC\nCheese Coffee\nAn Miên\nTáo Tào\nVesou\nÉp Phê\nOnePlus\nPS\nHazeline\nColor Key\nNimai\nG.G.G\nDowny\nNo-one Magazine\nL'Officiel\nLife Center Vietnam\nElink English\nInvisible Space Studio\nX3D Studio\nRefinery Media",
-    servicesLabel: "Statement of Work",
+    servicesLabel: "Phạm vi dịch vụ",
     servicesItems: [
       "Art Direction",
       "Set Design",
@@ -63,15 +63,15 @@ const i18n = {
       "Editorial Visual System",
       "Spatial Storytelling",
     ],
-    findUsLabel: "Find Us",
-    newsletterLabel: "Newsletter",
-    newsletterPlaceholder: "Enter your email",
+    findUsLabel: "Kết nối",
+    newsletterLabel: "Bản tin",
+    newsletterPlaceholder: "Nhập email của bạn",
     contactLabel: "Liên hệ",
     phoneLabel: "Điện thoại",
     addressLabel: "Địa chỉ",
     linkedinLabel: "LinkedIn",
-    linkedinValue: "Sẽ cập nhật",
-    previewHint: "Hover để xem preview",
+    linkedinValue: "Đang cập nhật",
+    previewHint: "Di chuột để xem trước",
     themeToggleLabel: "Đổi giao diện",
     themeDarkShort: "Tối",
     themeLightShort: "Sáng",
@@ -237,10 +237,7 @@ const els = {
 
 function updateThemeToggleUi() {
   if (!els.themeToggleBtn || !window.VANLAB_THEME) return;
-  const theme = window.VANLAB_THEME.get();
-  const isDark = theme === "dark";
-  const nextThemeText = isDark ? t("themeLightShort") : t("themeDarkShort");
-  els.themeToggleBtn.textContent = nextThemeText;
+  els.themeToggleBtn.textContent = "";
   els.themeToggleBtn.setAttribute("aria-label", t("themeToggleLabel"));
   els.themeToggleBtn.title = t("themeToggleLabel");
 }
@@ -1285,3 +1282,4 @@ async function initializeApp() {
 }
 
 initializeApp();
+

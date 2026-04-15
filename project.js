@@ -1,7 +1,7 @@
 const pageI18n = {
   vi: {
-    back: "Back",
-    nextProject: "Next project",
+    back: "Quay lại",
+    nextProject: "Dự án tiếp theo",
     metaYear: "Năm",
     metaClient: "Khách hàng",
     metaObjective: "Mục tiêu",
@@ -9,8 +9,8 @@ const pageI18n = {
     metaDescription: "Mô tả",
     metaDeliverable: "Bàn giao",
     metaWebsite: "Website",
-    metaTypeface: "Font chữ",
-    notFound: "Khong tim thay du an.",
+    metaTypeface: "Kiểu chữ",
+    notFound: "Không tìm thấy dự án.",
     themeToggleLabel: "Đổi giao diện",
     themeDarkShort: "Tối",
     themeLightShort: "Sáng",
@@ -67,6 +67,8 @@ const pageEls = {
   gallery: document.getElementById("projectGallery"),
   backLink: document.getElementById("projectBackLink"),
   nextLink: document.getElementById("projectNextLink"),
+  langViBtn: document.getElementById("langViBtn"),
+  langEnBtn: document.getElementById("langEnBtn"),
   themeToggleBtn: document.getElementById("themeToggleBtn"),
 };
 
@@ -91,6 +93,8 @@ function getReturnContext() {
 function updateStaticText() {
   pageEls.backLink.textContent = pageI18n[pageState.language].back;
   pageEls.nextLink.textContent = pageI18n[pageState.language].nextProject;
+  pageEls.langViBtn?.classList.toggle("active", pageState.language === "vi");
+  pageEls.langEnBtn?.classList.toggle("active", pageState.language === "en");
   updateThemeToggleUi();
 }
 
@@ -115,8 +119,7 @@ function buildProjectUrl(slug) {
 function updateThemeToggleUi() {
   if (!pageEls.themeToggleBtn || !window.VANLAB_THEME) return;
   const dict = pageI18n[pageState.language] || pageI18n.en;
-  const theme = window.VANLAB_THEME.get();
-  pageEls.themeToggleBtn.textContent = theme === "dark" ? dict.themeLightShort : dict.themeDarkShort;
+  pageEls.themeToggleBtn.textContent = "";
   pageEls.themeToggleBtn.title = dict.themeToggleLabel;
   pageEls.themeToggleBtn.setAttribute("aria-label", dict.themeToggleLabel);
 }
@@ -514,6 +517,23 @@ function initializePage() {
   pageState.returnScroll = returnScroll;
   document.documentElement.lang = pageState.language;
   updateStaticText();
+  function switchLanguage(language) {
+    if (language !== "vi" && language !== "en") return;
+    pageState.language = language;
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, pageState.language);
+    document.documentElement.lang = pageState.language;
+    updateStaticText();
+    updateOutboundNavLinks();
+    const url = new URL(window.location.href);
+    url.searchParams.set("lang", pageState.language);
+    if (window.VANLAB_THEME) {
+      url.searchParams.set("theme", window.VANLAB_THEME.get());
+    }
+    window.history.replaceState(window.history.state, "", url.toString());
+    renderPage();
+  }
+  pageEls.langViBtn?.addEventListener("click", () => switchLanguage("vi"));
+  pageEls.langEnBtn?.addEventListener("click", () => switchLanguage("en"));
   pageEls.themeToggleBtn?.addEventListener("click", () => {
     window.VANLAB_THEME?.toggle({ syncUrl: true });
   });
@@ -526,3 +546,4 @@ function initializePage() {
 }
 
 initializePage();
+

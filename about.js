@@ -2,12 +2,12 @@ const LANGUAGE_STORAGE_KEY = "vanlab-language";
 
 const aboutI18n = {
   vi: {
-    pageTitle: "VAN.LAB - Gioi thieu",
+    pageTitle: "VAN.LAB - Giới thiệu",
     brandTagline: "Artist Portfolio - Art Direction, Product Thinking, Spatial Storytelling",
-    viewGallery: "Gallery",
-    viewIndex: "Index",
-    navAbout: "About",
-    heroTitle: "Slogan",
+    viewGallery: "Thư viện",
+    viewIndex: "Danh mục",
+    navAbout: "Giới thiệu",
+    heroTitle: "Tuyên ngôn",
     themeToggleLabel: "Đổi giao diện",
     themeDarkShort: "Tối",
     themeLightShort: "Sáng",
@@ -65,8 +65,7 @@ function updateHeaderLinks(language) {
 function updateThemeToggleUi(language) {
   if (!aboutEls.themeToggleBtn || !window.VANLAB_THEME) return;
   const dict = aboutI18n[language] || aboutI18n.en;
-  const theme = window.VANLAB_THEME.get();
-  aboutEls.themeToggleBtn.textContent = theme === "dark" ? dict.themeLightShort : dict.themeDarkShort;
+  aboutEls.themeToggleBtn.textContent = "";
   aboutEls.themeToggleBtn.title = dict.themeToggleLabel;
   aboutEls.themeToggleBtn.setAttribute("aria-label", dict.themeToggleLabel);
 }
@@ -114,3 +113,4 @@ function initializeAboutPage() {
 }
 
 initializeAboutPage();
+
