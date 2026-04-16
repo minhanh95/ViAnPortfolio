@@ -446,7 +446,6 @@ The visual identity translates technical attributes - precision, clarity, and im
       "assets/projects/one-plus/detail-09.jpg",
       "assets/projects/one-plus/detail-10.jpg",
       "https://www.youtube.com/watch?v=Q74UzAoR3rs",
-      "https://www.tiktok.com/@chuyengiaps/video/7613670887778209045",
     ],
   },
   {
