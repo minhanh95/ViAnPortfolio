@@ -364,6 +364,19 @@ function buildDescriptionParagraphs(raw, lang) {
     .join("");
 }
 
+function classifyMetaCopyDensity(raw, lang) {
+  const source = raw?.[lang] || raw?.en || "";
+  const normalized = String(source)
+    .replace(/\[[^\]]+\]\((https?:\/\/[^\s)]+)\)/g, "$1")
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/\s+/g, " ")
+    .trim();
+  const len = normalized.length;
+  if (len <= 700) return "short";
+  if (len <= 1300) return "medium";
+  return "long";
+}
+
 function buildDeliverableSection(project, lang, label) {
   const block = project.deliverable?.[lang] || project.deliverable?.en;
   if (!block) return "";
@@ -398,6 +411,7 @@ function buildDeliverableSection(project, lang, label) {
 function buildMetaMarkup(project) {
   const lang = pageState.language;
   const text = pageI18n[lang];
+  const copyDensity = classifyMetaCopyDensity(project.description, lang);
 
   const objective = pickLocalizedField(project.objective, lang).trim();
   const scopeLines = getScopeLines(project.scopeOfWork, lang);
@@ -436,7 +450,7 @@ function buildMetaMarkup(project) {
   const deliverableHtml = buildDeliverableSection(project, lang, deliverableLabel);
 
   return `
-    <div class="project-meta-card">
+    <div class="project-meta-card project-meta-card--${copyDensity}">
       <h1>${escapeHtml(project.name)}</h1>
       <div class="project-meta-layout">
         <div class="project-meta-col project-meta-col--left">
