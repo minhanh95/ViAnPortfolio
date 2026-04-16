@@ -254,36 +254,54 @@ function buildVimeoEmbedUrl(path) {
   }
 }
 
-function buildYouTubeEmbedUrl(path) {
+function parseYouTubeVideoId(path) {
   if (!path) return "";
   try {
     const source = new URL(path, window.location.href);
     const host = source.hostname.toLowerCase();
-    let videoId = "";
-
     if (host.includes("youtu.be")) {
-      videoId = source.pathname.split("/").filter(Boolean)[0] || "";
-    } else if (host.includes("youtube.com")) {
+      return source.pathname.split("/").filter(Boolean)[0] || "";
+    }
+    if (host.includes("youtube.com")) {
       if (source.pathname.startsWith("/watch")) {
-        videoId = source.searchParams.get("v") || "";
-      } else if (source.pathname.startsWith("/embed/")) {
-        videoId = source.pathname.split("/").filter(Boolean)[1] || "";
-      } else if (source.pathname.startsWith("/shorts/")) {
-        videoId = source.pathname.split("/").filter(Boolean)[1] || "";
+        return source.searchParams.get("v") || "";
+      }
+      if (source.pathname.startsWith("/embed/") || source.pathname.startsWith("/shorts/")) {
+        return source.pathname.split("/").filter(Boolean)[1] || "";
       }
     }
+    return "";
+  } catch {
+    return "";
+  }
+}
 
-    if (!videoId) return path;
-    const embed = new URL(`https://www.youtube.com/embed/${videoId}`);
-    embed.searchParams.set("autoplay", "1");
-    embed.searchParams.set("mute", "1");
-    embed.searchParams.set("playsinline", "1");
-    embed.searchParams.set("enablejsapi", "1");
-    embed.searchParams.set("rel", "0");
-    return embed.toString();
+function buildYouTubeOpenUrl(path) {
+  if (!path) return "";
+  try {
+    return new URL(path, window.location.href).href;
   } catch {
     return path;
   }
+}
+
+function buildYouTubePosterSlideHtml(path, altText) {
+  const href = escapeHtml(buildYouTubeOpenUrl(path));
+  const labelEsc = escapeHtml(altText);
+  const id = parseYouTubeVideoId(path);
+  const maxUrl = id ? `https://i.ytimg.com/vi/${id}/maxresdefault.jpg` : "";
+  const hqUrl = id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : "";
+  const onMaxFail = maxUrl && hqUrl ? escapeHtml(`this.onerror=null;this.src='${hqUrl}'`) : "";
+  const onMaxLoadCheck =
+    maxUrl && hqUrl
+      ? escapeHtml(`this.onload=null;if(this.naturalWidth<400)this.src='${hqUrl}'`)
+      : "";
+  const thumb = maxUrl
+    ? `<img src="${escapeHtml(maxUrl)}" onload="${onMaxLoadCheck}" onerror="${onMaxFail}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" />`
+    : "";
+  return `<a class="project-slide-media project-slide-media--youtube" href="${href}" target="_blank" rel="noopener noreferrer" title="${labelEsc}" aria-label="${labelEsc}, YouTube">
+    <span class="project-slide-youtube-poster">${thumb}<span class="project-slide-youtube-play" aria-hidden="true"></span></span>
+  </a>`;
 }
 
 function pickLocalizedField(value, lang) {
@@ -420,8 +438,7 @@ function createSlide(slide, realIndex, cloneSet) {
       const embedSrc = escapeHtml(buildVimeoEmbedUrl(slide.path));
       wrapper.innerHTML = `<iframe class="project-slide-media project-slide-media--embed" src="${embedSrc}" title="${label}" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
     } else if (isYouTubePath(slide.path)) {
-      const embedSrc = escapeHtml(buildYouTubeEmbedUrl(slide.path));
-      wrapper.innerHTML = `<iframe class="project-slide-media project-slide-media--embed" src="${embedSrc}" title="${label}" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+      wrapper.innerHTML = buildYouTubePosterSlideHtml(slide.path, slide.alt);
     } else {
       wrapper.innerHTML = `<img src="${src}" alt="${label}" loading="lazy" decoding="async" />`;
     }

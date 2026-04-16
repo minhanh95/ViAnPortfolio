@@ -303,6 +303,59 @@ function isVideoPath(path) {
   return /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(path || "");
 }
 
+function isYouTubePath(path) {
+  return /(youtube\.com|youtu\.be)/i.test(path || "");
+}
+
+function parseYouTubeVideoId(path) {
+  if (!path) return "";
+  try {
+    const source = new URL(path, window.location.href);
+    const host = source.hostname.toLowerCase();
+    if (host.includes("youtu.be")) {
+      return source.pathname.split("/").filter(Boolean)[0] || "";
+    }
+    if (host.includes("youtube.com")) {
+      if (source.pathname.startsWith("/watch")) {
+        return source.searchParams.get("v") || "";
+      }
+      if (source.pathname.startsWith("/embed/") || source.pathname.startsWith("/shorts/")) {
+        return source.pathname.split("/").filter(Boolean)[1] || "";
+      }
+    }
+    return "";
+  } catch {
+    return "";
+  }
+}
+
+function buildYouTubeOpenUrl(path) {
+  if (!path) return "";
+  try {
+    return new URL(path, window.location.href).href;
+  } catch {
+    return path;
+  }
+}
+
+function buildYouTubePosterCaseHtml(path, labelAttr) {
+  const href = escapeHtmlAttr(buildYouTubeOpenUrl(path));
+  const id = parseYouTubeVideoId(path);
+  const maxUrl = id ? `https://i.ytimg.com/vi/${id}/maxresdefault.jpg` : "";
+  const hqUrl = id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : "";
+  const onMaxFail = maxUrl && hqUrl ? escapeHtmlAttr(`this.onerror=null;this.src='${hqUrl}'`) : "";
+  const onMaxLoadCheck =
+    maxUrl && hqUrl
+      ? escapeHtmlAttr(`this.onload=null;if(this.naturalWidth<400)this.src='${hqUrl}'`)
+      : "";
+  const thumb = maxUrl
+    ? `<img src="${escapeHtmlAttr(maxUrl)}" onload="${onMaxLoadCheck}" onerror="${onMaxFail}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" />`
+    : "";
+  return `<a class="case-slide-media case-slide-media--youtube" href="${href}" target="_blank" rel="noopener noreferrer" title="${labelAttr}" aria-label="${labelAttr}, YouTube">
+    <span class="case-slide-youtube-poster">${thumb}<span class="case-slide-youtube-play" aria-hidden="true"></span></span>
+  </a>`;
+}
+
 function escapeHtmlAttr(str) {
   return String(str)
     .replace(/&/g, "&amp;")
@@ -316,6 +369,9 @@ function buildCaseSlideMediaHtml(path, projectName, slideIndex) {
   if (isVideoPath(path)) {
     return `<video class="case-slide-media" src="${src}" controls playsinline muted preload="metadata" title="${label}"></video>`;
   }
+  if (isYouTubePath(path)) {
+    return buildYouTubePosterCaseHtml(path, label);
+  }
   return `<img src="${src}" alt="${label}" loading="lazy" decoding="async" />`;
 }
 
@@ -327,6 +383,9 @@ function warmupImages(paths) {
       const video = document.createElement("video");
       video.preload = "metadata";
       video.src = path;
+      return;
+    }
+    if (isYouTubePath(path)) {
       return;
     }
     const image = new Image();

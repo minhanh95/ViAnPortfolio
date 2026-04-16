@@ -334,6 +334,79 @@ Rooted in a commitment to sustainable, modern dairy, the creative direction expl
     ],
   },
   {
+    slug: "kfc-2025",
+    name: "KFC Vietnam",
+    client: "The Friday Agency",
+    category: { vi: "Ra mắt sản phẩm mới", en: "New Product Launch" },
+    technology: "Art Direction, Production Design, Photography, Videography",
+    year: 2025,
+    objective: {
+      en: "New Product Launch",
+      vi: "Ra mắt sản phẩm mới",
+    },
+    scopeOfWork: {
+      en: ["Art Direction", "Production Design", "Photography", "Videography"],
+      vi: ["Art Direction", "Production Design", "Nhiếp ảnh", "Quay phim"],
+    },
+    description: {
+      en: `As **KFC Vietnam** continues to lead the fast-food category through bold flavors and a distinct, youthful attitude, the launch of their spicy fried chicken line called for a high-impact visual campaign. Working alongside the creative director, we shaped work designed to resonate with Vietnam’s vibrant urban youth and flavor-driven consumers.
+
+The art direction amplifies the product’s signature heat and texture through a lens of kinetic energy. High-contrast, bold lighting and dynamic macro compositions translate **crunch** and **spice** into a tactile visual experience. The result is a flavor-forward narrative that balances commercial appeal with an energetic, modern aesthetic—positioning KFC as the ultimate destination for crave-worthy fast food.
+
+**Feature work on** [KFC Vietnam on YouTube](https://www.youtube.com/@KFCVietnam2011).`,
+      vi: `Khi **KFC Vietnam** tiếp tục dẫn dắt phân khúc fast-food bằng hương vị táo bạo và thái độ trẻ trung, đợt ra mắt dòng gà rán cay đòi hỏi một chiến dịch hình ảnh mạnh mẽ. Cùng creative director, chúng tôi phát triển ngôn ngữ thị giác hướng tới giới trẻ đô thị năng động và nhóm người tiêu dùng ưu tiên cảm nhận vị.
+
+Art direction khuếch đại nhiệt độ và kết cấu đặc trưng của sản phẩm qua năng lượng chuyển động. Ánh sáng tương phản cao, quyết liệt cùng các bố cục macro động chuyển hóa **độ giòn** và **độ cay** thành trải nghiệm thị giác xúc giác. Kết quả là một tự sự hướng vị, cân bằng giữa sức hút thương mại và thẩm mỹ hiện đại, định vị KFC là điểm đến cho những trải nghiệm fast-food đầy khao khát.
+
+**Công việc nổi bật trên** [Kênh YouTube KFC Vietnam](https://www.youtube.com/@KFCVietnam2011).`,
+    },
+    deliverable: {
+      en: {
+        lead: "Deliverables",
+        groups: [
+          {
+            title: "",
+            items: [
+              "**2 Key Visuals:** High-impact photography optimized for OOH and digital.",
+              "**3 Social Brand Videos:** Rhythmic, short-form edits designed for high-conversion engagement.",
+            ],
+          },
+        ],
+      },
+      vi: {
+        lead: "Sản phẩm bàn giao",
+        groups: [
+          {
+            title: "",
+            items: [
+              "**2 key visual:** Nhiếp ảnh tác động mạnh, tối ưu cho OOH và digital.",
+              "**3 video thương hiệu cho social:** Phiên bản ngắn nhịp nhàng, hướng tới tương tác và chuyển đổi cao.",
+            ],
+          },
+        ],
+      },
+    },
+    coverPath: "assets/projects/kfc-2025/cover.jpg",
+    detailImages: [
+      "assets/projects/kfc-2025/detail 1.jpg",
+      "assets/projects/kfc-2025/Detail 3.jpg",
+      "assets/projects/kfc-2025/detail 4.jpg",
+      "assets/projects/kfc-2025/detail 5.jpg",
+      "assets/projects/kfc-2025/detail 6.jpg",
+      "assets/projects/kfc-2025/detail 7.jpg",
+      "assets/projects/kfc-2025/Detail 8.jpg",
+      "assets/projects/kfc-2025/Detail 10.jpg",
+      "assets/projects/kfc-2025/Detail 11.mp4",
+      "assets/projects/kfc-2025/Detail 12.mp4",
+      "assets/projects/kfc-2025/detail 14.gif",
+      "https://youtu.be/FdfhGDNGuH4?si=cLY11nJURdfY2dkJ",
+      "https://www.youtube.com/shorts/6OEWG2QDk_Y?si=x1voVRi-WRULQZEK",
+      "https://youtu.be/tl7MY4g_2uc?si=srCVGBZd0hb0ilW5",
+      "https://www.youtube.com/shorts/kbp_B--d-PA?si=y6-zznqorTVWXkft",
+      "https://www.youtube.com/shorts/6DQO1qwH7ow?si=xG8NDGmiTZR_g8xV",
+    ],
+  },
+  {
     slug: "one-plus",
     name: "One Plus",
     client: "OnePlus",
@@ -372,6 +445,7 @@ The visual identity translates technical attributes - precision, clarity, and im
       "assets/projects/one-plus/detail-08.jpg",
       "assets/projects/one-plus/detail-09.jpg",
       "assets/projects/one-plus/detail-10.jpg",
+      "https://www.youtube.com/watch?v=Q74UzAoR3rs",
     ],
   },
   {
@@ -455,6 +529,7 @@ The character design features a fluid silhouette, serving as a metaphor for the 
       "assets/projects/x3d-robot/detail-03.jpg",
       "assets/projects/x3d-robot/detail-04.jpg",
       "assets/projects/x3d-robot/detail-05.jpg",
+      "https://youtu.be/tcEi7EfWRcA?si=B4xn0FgDeebTGlY8",
     ],
   },
   {
