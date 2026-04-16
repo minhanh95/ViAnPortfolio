@@ -307,6 +307,29 @@ function isYouTubePath(path) {
   return /(youtube\.com|youtu\.be)/i.test(path || "");
 }
 
+function isTikTokPath(path) {
+  return /(tiktok\.com|vm\.tiktok\.com)/i.test(path || "");
+}
+
+function normalizeExternalMediaUrl(path) {
+  if (!path) return "";
+  try {
+    const source = new URL(path, window.location.href);
+    return `${source.origin}${source.pathname}`.toLowerCase();
+  } catch {
+    return String(path || "").trim().toLowerCase();
+  }
+}
+
+function getTikTokPosterUrl(path) {
+  const normalized = normalizeExternalMediaUrl(path);
+  const posterMap = {
+    "https://www.tiktok.com/@chuyengiaps/video/7613670887778209045":
+      "assets/projects/one-plus/tiktok-thumb-01.png",
+  };
+  return posterMap[normalized] || "";
+}
+
 function parseYouTubeVideoId(path) {
   if (!path) return "";
   try {
@@ -356,6 +379,17 @@ function buildYouTubePosterCaseHtml(path, labelAttr) {
   </a>`;
 }
 
+function buildTikTokPosterCaseHtml(path, labelAttr) {
+  const href = escapeHtmlAttr(path);
+  const posterUrl = getTikTokPosterUrl(path);
+  const poster = posterUrl
+    ? `<img src="${escapeHtmlAttr(posterUrl)}" alt="" loading="lazy" decoding="async" />`
+    : "";
+  return `<a class="case-slide-media case-slide-media--youtube" href="${href}" target="_blank" rel="noopener noreferrer" title="${labelAttr}" aria-label="${labelAttr}, TikTok">
+    <span class="case-slide-youtube-poster">${poster}<span class="case-slide-youtube-play" aria-hidden="true"></span></span>
+  </a>`;
+}
+
 function escapeHtmlAttr(str) {
   return String(str)
     .replace(/&/g, "&amp;")
@@ -372,6 +406,9 @@ function buildCaseSlideMediaHtml(path, projectName, slideIndex) {
   if (isYouTubePath(path)) {
     return buildYouTubePosterCaseHtml(path, label);
   }
+  if (isTikTokPath(path)) {
+    return buildTikTokPosterCaseHtml(path, label);
+  }
   return `<img src="${src}" alt="${label}" loading="lazy" decoding="async" />`;
 }
 
@@ -385,7 +422,7 @@ function warmupImages(paths) {
       video.src = path;
       return;
     }
-    if (isYouTubePath(path)) {
+    if (isYouTubePath(path) || isTikTokPath(path)) {
       return;
     }
     const image = new Image();

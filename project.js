@@ -224,6 +224,29 @@ function isYouTubePath(path) {
   return /(youtube\.com|youtu\.be)/i.test(path || "");
 }
 
+function isTikTokPath(path) {
+  return /(tiktok\.com|vm\.tiktok\.com)/i.test(path || "");
+}
+
+function normalizeExternalMediaUrl(path) {
+  if (!path) return "";
+  try {
+    const source = new URL(path, window.location.href);
+    return `${source.origin}${source.pathname}`.toLowerCase();
+  } catch {
+    return String(path || "").trim().toLowerCase();
+  }
+}
+
+function getTikTokPosterUrl(path) {
+  const normalized = normalizeExternalMediaUrl(path);
+  const posterMap = {
+    "https://www.tiktok.com/@chuyengiaps/video/7613670887778209045":
+      "assets/projects/one-plus/tiktok-thumb-01.png",
+  };
+  return posterMap[normalized] || "";
+}
+
 function buildVimeoEmbedUrl(path) {
   if (!path) return "";
   try {
@@ -301,6 +324,18 @@ function buildYouTubePosterSlideHtml(path, altText) {
     : "";
   return `<a class="project-slide-media project-slide-media--youtube" href="${href}" target="_blank" rel="noopener noreferrer" title="${labelEsc}" aria-label="${labelEsc}, YouTube">
     <span class="project-slide-youtube-poster">${thumb}<span class="project-slide-youtube-play" aria-hidden="true"></span></span>
+  </a>`;
+}
+
+function buildTikTokPosterSlideHtml(path, altText) {
+  const href = escapeHtml(path);
+  const labelEsc = escapeHtml(altText);
+  const posterUrl = getTikTokPosterUrl(path);
+  const poster = posterUrl
+    ? `<img src="${escapeHtml(posterUrl)}" alt="" loading="lazy" decoding="async" />`
+    : "";
+  return `<a class="project-slide-media project-slide-media--youtube" href="${href}" target="_blank" rel="noopener noreferrer" title="${labelEsc}" aria-label="${labelEsc}, TikTok">
+    <span class="project-slide-youtube-poster">${poster}<span class="project-slide-youtube-play" aria-hidden="true"></span></span>
   </a>`;
 }
 
@@ -439,6 +474,8 @@ function createSlide(slide, realIndex, cloneSet) {
       wrapper.innerHTML = `<iframe class="project-slide-media project-slide-media--embed" src="${embedSrc}" title="${label}" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
     } else if (isYouTubePath(slide.path)) {
       wrapper.innerHTML = buildYouTubePosterSlideHtml(slide.path, slide.alt);
+    } else if (isTikTokPath(slide.path)) {
+      wrapper.innerHTML = buildTikTokPosterSlideHtml(slide.path, slide.alt);
     } else {
       wrapper.innerHTML = `<img src="${src}" alt="${label}" loading="lazy" decoding="async" />`;
     }
