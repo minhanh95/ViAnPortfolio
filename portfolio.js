@@ -324,8 +324,12 @@ function normalizeExternalMediaUrl(path) {
 function getTikTokPosterUrl(path) {
   const normalized = normalizeExternalMediaUrl(path);
   const posterMap = {
+    "https://www.tiktok.com/@chuyengiaps/video/7614063566223707412":
+      "assets/projects/ps/tiktok-thumb-01.jpg",
     "https://www.tiktok.com/@chuyengiaps/video/7613670887778209045":
-      "assets/projects/one-plus/tiktok-thumb-01.png",
+      "assets/projects/ps/tiktok-thumb-02.jpg",
+    "https://www.tiktok.com/@chuyengiaps/video/7613602035212029204":
+      "assets/projects/ps/tiktok-thumb-03.jpg",
   };
   return posterMap[normalized] || "";
 }

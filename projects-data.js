@@ -134,6 +134,328 @@ Trong bối cảnh ra mắt **Downy Luxe**, bài toán đặt ra là chuyển h�
     ],
   },
   {
+    slug: "ps-iris",
+    name: "PS iris",
+    client: "P/S",
+    category: { vi: "Chiến dịch mạng xã hội", en: "Social Campaign" },
+    technology: "Art Direction, Production Design, Photography",
+    year: 2026,
+    objective: {
+      en: "Social Campaign",
+      vi: "Chiến dịch mạng xã hội",
+    },
+    scopeOfWork: {
+      en: ["Art Direction", "Production Design", "Photography"],
+      vi: ["Art Direction", "Production Design", "Nhiếp ảnh"],
+    },
+    description: {
+      en: `**PS iris**
+
+In collaboration with **ZEE Agency**, I led the art direction and set design for the social launch of **P/S Gum Expert** - a specialized solution focused on gentle, restorative gum care.
+
+The campaign's visual strategy was built upon three narrative pillars: **The Relief Seeker**, **The Ingredient & Tech Curious**, and **The Beauty Seeker**. To bring these to life, I developed bespoke art treatments for a series of high-profile influencers and KOLs. This required a delicate balance - integrating the product's clinical precision with the personal aesthetic of each collaborator.
+
+By crafting environments that felt both lifestyle-oriented and scientifically credible, the campaign successfully bridged the gap between daily oral care and premium wellness.`,
+      vi: `**PS iris**
+
+Hợp tác cùng **ZEE Agency**, tôi phụ trách art direction và set design cho chiến dịch social ra mắt **P/S Gum Expert** - giải pháp chuyên biệt hướng đến chăm sóc nướu dịu nhẹ và phục hồi.
+
+Chiến lược thị giác của chiến dịch được xây dựng trên ba trụ cột tự sự: **The Relief Seeker**, **The Ingredient & Tech Curious** và **The Beauty Seeker**. Để hiện thực hóa từng trụ cột, tôi phát triển các art treatment riêng cho nhóm influencer và KOL trọng điểm, đồng thời giữ thế cân bằng tinh tế giữa độ chuẩn xác mang tính lâm sàng của sản phẩm và bản sắc thẩm mỹ cá nhân của từng cộng tác viên.
+
+Thông qua việc kiến tạo các bối cảnh vừa mang tính lifestyle vừa giữ độ tin cậy khoa học, chiến dịch đã kết nối hiệu quả giữa thói quen chăm sóc răng miệng hằng ngày và tinh thần wellness cao cấp.`,
+    },
+    deliverable: {
+      en: {
+        lead: "Deliverables & Services",
+        groups: [
+          {
+            title: "",
+            items: [
+              "**Art Direction:** Developing distinct visual identities for various influencer content pillars.",
+              "**Set Design & Production:** Creating versatile, high-end environments for KOL photography and video.",
+              "**Strategic Integration:** Harmonizing product technology with lifestyle-focused storytelling.",
+            ],
+          },
+        ],
+      },
+      vi: {
+        lead: "Bàn giao & Dịch vụ",
+        groups: [
+          {
+            title: "",
+            items: [
+              "**Art Direction:** Phát triển hệ nhận diện thị giác riêng cho từng trụ cột nội dung influencer.",
+              "**Set Design & Production:** Thiết kế và triển khai bối cảnh linh hoạt, cao cấp cho ảnh và video KOL.",
+              "**Strategic Integration:** Đồng bộ công nghệ sản phẩm với storytelling định hướng lifestyle.",
+            ],
+          },
+        ],
+      },
+    },
+    coverPath: "assets/projects/ps/cover.jpg",
+    detailImages: [
+      "assets/projects/ps/detail-01.jpg",
+      "assets/projects/ps/detail-02.jpg",
+      "assets/projects/ps/detail-03.jpg",
+      "assets/projects/ps/detail-04.jpg",
+      "https://www.tiktok.com/@chuyengiaps/video/7614063566223707412?is_from_webapp=1&sender_device=pc&web_id=7586913395301434887",
+      "https://www.tiktok.com/@chuyengiaps/video/7613670887778209045?is_from_webapp=1&sender_device=pc&web_id=7586913395301434887",
+      "https://www.tiktok.com/@chuyengiaps/video/7613602035212029204?is_from_webapp=1&sender_device=pc&web_id=7586913395301434887",
+    ],
+  },
+  {
+    slug: "vinamilk-sure",
+    name: "Vinamilk Sure",
+    client: "Vinamilk",
+    category: { vi: "Chiến dịch mạng xã hội", en: "Social Campaign" },
+    technology: "Art Direction, Production Design, Photography",
+    year: 2026,
+    objective: {
+      en: "Social Campaign for Re-branding Launch",
+      vi: "Chiến dịch mạng xã hội cho tái định vị thương hiệu",
+    },
+    scopeOfWork: {
+      en: ["Art Direction", "Production Design", "Photography"],
+      vi: ["Art Direction", "Production Design", "Nhiếp ảnh"],
+    },
+    role: {
+      en: "Lead Set Designer",
+      vi: "Lead Set Designer",
+    },
+    description: {
+      en: `**"Hoang Kim Ruc Ro" - The Golden Age**
+
+Partnering with **Sure Vinamilk**, a nutrition brand dedicated to the elderly, I led the set design for a rebranding campaign centered on a "Young at Heart" philosophy. The art direction celebrates life and vitality, utilizing a luminous, golden visual palette to symbolize the "Golden Age" of the audience.
+
+Drawing inspiration from Vietnamese cultural heritage, the creative direction showcases a diverse range of activities and age groups. My role as Lead Set Designer was to craft authentic environments that seamlessly integrated the product into everyday scenes, ensuring the atmosphere felt both aspirational and deeply rooted in local tradition. The result is a vibrant, health-forward narrative that redefines aging through a lens of joy and spirited energy.`,
+      vi: `**"Hoang Kim Ruc Ro" - The Golden Age**
+
+Hợp tác cùng **Sure Vinamilk**, thương hiệu dinh dưỡng dành cho người cao tuổi, tôi phụ trách lead set design cho chiến dịch re-branding lấy triết lý "Young at Heart" làm trung tâm. Art direction tôn vinh sức sống và tinh thần lạc quan thông qua bảng màu vàng rực, tượng trưng cho "thời kỳ hoàng kim" của nhóm đối tượng.
+
+Lấy cảm hứng từ di sản văn hóa Việt Nam, định hướng sáng tạo khắc họa đa dạng hoạt động và nhiều nhóm tuổi khác nhau. Ở vai trò Lead Set Designer, tôi tập trung kiến tạo các bối cảnh chân thực, tích hợp sản phẩm tự nhiên vào đời sống thường nhật để tổng thể vừa mang tính truyền cảm hứng, vừa bám rễ trong chất liệu bản địa. Kết quả là một tự sự thị giác giàu năng lượng, định hướng sức khỏe và tái định nghĩa hành trình lão hóa bằng niềm vui cùng tinh thần trẻ trung.`,
+    },
+    deliverable: {
+      en: {
+        lead: "Deliverable",
+        groups: [
+          {
+            title: "",
+            items: [
+              "**Lead Set Design:** Conceptualization and spatial execution of all campaign environments, leading the art team of four.",
+              "**Photography Series:** 21 High-fidelity brand assets.",
+              "**Set Design:** Cultural motif integration and lighting strategy.",
+              "**Art Direction Assistance:** Supported the overarching visual narrative and brand alignment.",
+            ],
+          },
+        ],
+      },
+      vi: {
+        lead: "Bàn giao",
+        groups: [
+          {
+            title: "",
+            items: [
+              "**Lead Set Design:** Xây dựng ý niệm và triển khai không gian cho toàn bộ bối cảnh chiến dịch, dẫn dắt đội art gồm 4 thành viên.",
+              "**Photography Series:** 21 brand assets độ trung thực cao.",
+              "**Set Design:** Tích hợp họa tiết văn hóa và chiến lược ánh sáng.",
+              "**Art Direction Assistance:** Hỗ trợ định hướng tự sự thị giác tổng thể và độ nhất quán thương hiệu.",
+            ],
+          },
+        ],
+      },
+    },
+    coverPath: "assets/projects/vinamilk-sure/cover.jpg",
+    detailImages: [
+      "assets/projects/vinamilk-sure/detail-01.jpg",
+      "assets/projects/vinamilk-sure/detail-02.jpg",
+      "assets/projects/vinamilk-sure/detail-03.jpg",
+      "assets/projects/vinamilk-sure/detail-04.jpg",
+      "assets/projects/vinamilk-sure/detail-05.jpg",
+      "assets/projects/vinamilk-sure/detail-06.jpg",
+      "assets/projects/vinamilk-sure/detail-07.jpg",
+      "assets/projects/vinamilk-sure/detail-08.jpg",
+      "assets/projects/vinamilk-sure/detail-09.jpg",
+      "assets/projects/vinamilk-sure/detail-10.jpg",
+      "assets/projects/vinamilk-sure/detail-11.jpg",
+      "assets/projects/vinamilk-sure/detail-12.jpg",
+      "assets/projects/vinamilk-sure/detail-13.jpg",
+      "assets/projects/vinamilk-sure/detail-14.jpg",
+      "assets/projects/vinamilk-sure/detail-15.jpg",
+      "assets/projects/vinamilk-sure/detail-16.jpg",
+      "assets/projects/vinamilk-sure/detail-17.jpg",
+      "assets/projects/vinamilk-sure/detail-18.jpg",
+      "assets/projects/vinamilk-sure/detail-19.jpg",
+      "assets/projects/vinamilk-sure/detail-20.jpg",
+    ],
+  },
+  {
+    slug: "vinamilk-scu",
+    name: "Vinamilk SCU",
+    client: "Vinamilk",
+    category: { vi: "Social Ads", en: "Social Ads" },
+    technology: "Art Direction, Set Design, Food Styling, Production",
+    year: 2025,
+    objective: {
+      en: "Social Ads",
+      vi: "Quảng cáo mạng xã hội",
+    },
+    scopeOfWork: {
+      en: ["Art Direction", "Set Design", "Food Styling", "Production"],
+      vi: ["Art Direction", "Set Design", "Food Styling", "Production"],
+    },
+    description: {
+      en: `Building on the success of the Green Farm debut, I led the art direction and production for a series of social campaigns introducing two new premium flavor profiles.
+
+In collaboration with **Densu Render**, the visual strategy focused on "elevated naturalism." By utilizing the raw, organic ingredients of the product as primary design elements, I bridged the gap between food styling and fine art. The set design was engineered to feel light, airy, and premium, reinforcing the brand's commitment to sustainable quality. Every frame was crafted to highlight the delicate textures and freshness that define the Green Farm experience.
+
+**Campaign Performance** A short-form social advertisements optimized for a high-impact, two-month flight across Social Media Platform.`,
+      vi: `Tiếp nối thành công từ lần ra mắt Green Farm, tôi phụ trách art direction và production cho chuỗi social campaign giới thiệu hai hương vị cao cấp mới.
+
+Hợp tác cùng **Densu Render**, chiến lược thị giác tập trung vào tinh thần "elevated naturalism." Bằng cách sử dụng chính các nguyên liệu hữu cơ, thô mộc của sản phẩm làm thành phần thiết kế chủ đạo, tôi kết nối food styling với ngôn ngữ mỹ thuật đương đại. Set design được xây dựng theo hướng nhẹ, thoáng và cao cấp, qua đó củng cố cam kết về chất lượng bền vững của thương hiệu. Mỗi khung hình đều được trau chuốt để làm nổi bật kết cấu tinh tế và độ tươi mới đặc trưng của trải nghiệm Green Farm.
+
+**Campaign Performance** Chuỗi social ads định dạng ngắn được tối ưu để tạo tác động cao trong đợt triển khai kéo dài hai tháng trên các nền tảng mạng xã hội.`,
+    },
+    deliverable: {
+      en: {
+        lead: "Deliverables & Services",
+        groups: [
+          {
+            title: "",
+            items: [
+              "**Art Direction:** Establishing a consistent visual evolution for the sub-brand's expansion.",
+              "**Set Design & Food Styling:** Crafting organic, ingredient-focused compositions.",
+            ],
+          },
+        ],
+      },
+      vi: {
+        lead: "Bàn giao & Dịch vụ",
+        groups: [
+          {
+            title: "",
+            items: [
+              "**Art Direction:** Thiết lập tiến trình phát triển thị giác nhất quán cho mở rộng sub-brand.",
+              "**Set Design & Food Styling:** Xây dựng bố cục hữu cơ, lấy nguyên liệu làm trung tâm.",
+            ],
+          },
+        ],
+      },
+    },
+    coverPath: "assets/projects/vinamilk-scu/cover.jpg",
+    detailImages: [
+      "assets/projects/vinamilk-scu/detail-01.mov",
+      "assets/projects/vinamilk-scu/detail-02.mov",
+      "assets/projects/vinamilk-scu/detail-03.mov",
+    ],
+  },
+  {
+    slug: "cheese-coffee",
+    name: "Cheese Coffee",
+    client: "Cheese Coffee",
+    category: { vi: "Chiến dịch theo mùa", en: "Seasonal Campaign" },
+    technology: "Art Direction, Table-top Set Design",
+    year: 2024,
+    objective: {
+      en: "Seasonal Campaign",
+      vi: "Chiến dịch theo mùa",
+    },
+    scopeOfWork: {
+      en: ["Art Direction", "Table-top Set Design"],
+      vi: ["Art Direction", "Table-top Set Design"],
+    },
+    description: {
+      en: `For Cheese Coffee's seasonal campaign, I developed a visual narrative centered on a **"Mystical & Classic"** aesthetic to launch the brand's signature Galaxy-inspired glassware. The art direction utilizes a sophisticated palette of warm, earthy neutrals - creating a grounded, timeless backdrop that allows the iridescent "hero" product to truly shine.
+
+To elevate the campaign's allure, I engineered a high-contrast lighting strategy, utilizing precision spotlights and subtle "sparkle" accents to mimic a starlit atmosphere. This interplay of deep shadows and shimmering highlights enhances the transparency and premium texture of the glass, transforming a functional object into a mystical centerpiece.`,
+      vi: `Cho chiến dịch theo mùa của Cheese Coffee, tôi phát triển một tự sự thị giác xoay quanh thẩm mỹ **"Mystical & Classic"** nhằm ra mắt dòng ly lấy cảm hứng từ ngân hà của thương hiệu. Art direction sử dụng bảng màu trung tính ấm, thiên về sắc đất để tạo nền thị giác vững và vượt thời gian, giúp sản phẩm "hero" ánh ngũ sắc thực sự nổi bật.
+
+Để tăng sức hút cho chiến dịch, tôi xây dựng chiến lược ánh sáng tương phản cao với spotlight chính xác và các điểm nhấn "sparkle" tinh tế, mô phỏng bầu không khí đầy sao. Sự tương tác giữa mảng tối sâu và vùng sáng lấp lánh làm nổi bật độ trong suốt cùng bề mặt cao cấp của chất liệu kính, chuyển hóa một vật dụng chức năng thành tâm điểm giàu chất huyền ảo.`,
+    },
+    deliverable: {
+      en: {
+        lead: "Deliverable",
+        groups: [
+          {
+            title: "",
+            items: ["**2 Hero Key Visuals:** Premium assets designed for seasonal digital and in-store promotion."],
+          },
+        ],
+      },
+      vi: {
+        lead: "Bàn giao",
+        groups: [
+          {
+            title: "",
+            items: ["**2 Hero Key Visuals:** Bộ hình ảnh cao cấp cho truyền thông mùa vụ trên digital và tại cửa hàng."],
+          },
+        ],
+      },
+    },
+    coverPath: "assets/projects/cheese-coffee/cover.jpg",
+    detailImages: [
+      "assets/projects/cheese-coffee/detail-01.jpg",
+      "assets/projects/cheese-coffee/detail-02.jpg",
+    ],
+  },
+  {
+    slug: "pizza-hut",
+    name: "Pizza Hut",
+    client: "Pizza Hut Vietnam",
+    category: { vi: "Ra mắt sản phẩm mới", en: "New Product Launch" },
+    technology: "Art Direction, Set Design",
+    year: 2025,
+    objective: {
+      en: "New Product Launch",
+      vi: "Ra mắt sản phẩm mới",
+    },
+    scopeOfWork: {
+      en: ["Art Direction", "Set Design"],
+      vi: ["Art Direction", "Set Design"],
+    },
+    description: {
+      en: `Pizza Hut Vietnam approached us to craft a bold, stylized visual world for their **"Ngon Mới Thế"** product launch - a campaign designed to spotlight premium toppings, artisanal dough, and elevated flavor profiles.
+
+In collaboration with the Director, I translated this "newness" into a quirky, cinematic "tasting-room" universe. By moving away from traditional fast-food tropes, we utilized theatrical production design and a "stylized-realism" palette to celebrate the craftsmanship behind the ingredients. Every element - from the saturated set textures to the high-fidelity food cinematography - was engineered to reposition the brand through a lens of curated, premium-forward dining.`,
+      vi: `Pizza Hut Vietnam tìm đến chúng tôi để xây dựng một thế giới thị giác táo bạo, giàu tính tạo hình cho chiến dịch ra mắt sản phẩm **"Ngon Mới Thế"** - chiến dịch nhấn mạnh topping cao cấp, đế bánh thủ công và trải nghiệm hương vị nâng tầm.
+
+Phối hợp cùng Director, tôi chuyển hóa tinh thần "mới" này thành một vũ trụ "tasting-room" vừa lạ vừa điện ảnh. Bằng cách rời xa các mô-típ fast-food quen thuộc, chúng tôi sử dụng production design mang tính sân khấu và bảng màu "stylized-realism" để tôn vinh sự chỉn chu phía sau từng nguyên liệu. Mỗi yếu tố - từ bề mặt set đậm sắc độ đến ngôn ngữ quay food cinematography giàu chi tiết - đều được thiết kế nhằm tái định vị thương hiệu theo hướng trải nghiệm ẩm thực tuyển chọn, cao cấp hơn.`,
+    },
+    deliverable: {
+      en: {
+        lead: "Deliverables & Services",
+        groups: [
+          {
+            title: "",
+            items: ["**5 Cinematic Social Films:** A series of short-form videos focused on character-driven storytelling and craft."],
+          },
+        ],
+      },
+      vi: {
+        lead: "Bàn giao & Dịch vụ",
+        groups: [
+          {
+            title: "",
+            items: ["**5 Cinematic Social Films:** Chuỗi video ngắn tập trung vào storytelling theo nhân vật và tinh thần craft."],
+          },
+        ],
+      },
+    },
+    coverPath: "assets/projects/pizza-hut/cover.jpg",
+    detailImages: [
+      "assets/projects/pizza-hut/detail-01.mp4",
+      "assets/projects/pizza-hut/detail-02.jpg",
+      "assets/projects/pizza-hut/detail-03.mp4",
+      "assets/projects/pizza-hut/detail-04.jpg",
+      "assets/projects/pizza-hut/detail-05.mp4",
+      "assets/projects/pizza-hut/detail-06.jpg",
+      "assets/projects/pizza-hut/detail-07.mp4",
+      "assets/projects/pizza-hut/detail-08.jpg",
+      "assets/projects/pizza-hut/detail-09.mp4",
+      "assets/projects/pizza-hut/detail-10.jpg",
+      "assets/projects/pizza-hut/detail-11.mp4",
+    ],
+  },
+  {
     slug: "no-one-magazine",
     name: "No One Magazine",
     client: "No One Magazine",
@@ -331,6 +653,109 @@ Rooted in a commitment to sustainable, modern dairy, the creative direction expl
       "assets/projects/vinamilk-green-farm/detail-14.jpg",
       "assets/projects/vinamilk-green-farm/detail-15.jpg",
       "assets/projects/vinamilk-green-farm/detail-16.jpg",
+    ],
+  },
+  {
+    slug: "color-key",
+    name: "Color Key",
+    client: "Color Key",
+    category: { vi: "Chiến dịch theo mùa", en: "Seasonal Campaign" },
+    technology: "Assistant Art Direction, Set Design, Table-top Set Design",
+    year: 2025,
+    objective: {
+      en: "Seasonal Campaign",
+      vi: "Chiến dịch theo mùa",
+    },
+    scopeOfWork: {
+      en: ["Assistant Art Direction", "Set Design", "Table-top Set Design"],
+      vi: ["Assistant Art Direction", "Set Design", "Table-top Set Design"],
+    },
+    description: {
+      en: `In collaboration with **Tomochi**, I supported the visual execution for the **ColorKey** Red Velvet lipstick collection. Centered on the theme **"Sắc son ColorKey,"** the creative direction draws inspiration from classical spring landscapes, translated through a modern, minimalist lens.
+
+The art direction utilizes floral elements as architectural accents to enhance the vibrant tones of the collection. To maintain a contemporary edge, we integrated a sophisticated gradient-based lighting strategy, creating a seamless transition between traditional spring motifs and sleek, modern layouts. My focus on **Table-top Set Design** ensured that the product remained the focal point, framed by a delicate balance of nature-inspired textures and clean, high-fashion aesthetics.`,
+      vi: `Hợp tác cùng **Tomochi**, tôi hỗ trợ triển khai hình ảnh cho bộ sưu tập son Red Velvet của **ColorKey**. Lấy chủ đề **"Sắc son ColorKey,"** định hướng sáng tạo khai thác cảm hứng từ phong cảnh mùa xuân cổ điển, được chuyển ngữ qua lăng kính hiện đại và tối giản.
+
+Art direction sử dụng các yếu tố hoa lá như điểm nhấn kiến trúc để tôn lên sắc độ rực rỡ của bộ sưu tập. Để giữ tinh thần đương đại, chúng tôi tích hợp chiến lược ánh sáng chuyển sắc tinh tế, tạo nhịp chuyển mượt mà giữa mô-típ xuân truyền thống và bố cục hiện đại, gọn gàng. Trọng tâm của tôi ở phần **Table-top Set Design** giúp sản phẩm luôn là điểm nhìn chính, được bao quanh bởi sự cân bằng giữa chất liệu lấy cảm hứng thiên nhiên và thẩm mỹ thời trang cao cấp.`,
+    },
+    deliverable: {
+      en: {
+        lead: "Deliverables & Services",
+        groups: [
+          {
+            title: "",
+            items: ["**Photography Series:** 5 High-fidelity brand assets optimized for digital platforms."],
+          },
+        ],
+      },
+      vi: {
+        lead: "Bàn giao & Dịch vụ",
+        groups: [
+          {
+            title: "",
+            items: ["**Photography Series:** 5 brand assets độ trung thực cao, tối ưu cho nền tảng số."],
+          },
+        ],
+      },
+    },
+    coverPath: "assets/projects/Color Key/cover.jpg",
+    detailImages: [
+      "assets/projects/Color Key/detail-01.jpg",
+      "assets/projects/Color Key/detail-02.jpg",
+      "assets/projects/Color Key/detail-03.jpg",
+      "assets/projects/Color Key/detail-04.jpg",
+      "assets/projects/Color Key/detail-05.jpg",
+    ],
+  },
+  {
+    slug: "highland-mo-man",
+    name: "Highland Mơ Mận",
+    client: "Highland Coffee",
+    category: { vi: "Ra mắt sản phẩm mới", en: "New Product Launch" },
+    technology: "Art Direction, Photography, Set Design",
+    year: 2025,
+    objective: {
+      en: "New Product Launch",
+      vi: "Ra mắt sản phẩm mới",
+    },
+    scopeOfWork: {
+      en: ["Art Direction", "Photography", "Set Design"],
+      vi: ["Art Direction", "Nhiếp ảnh", "Set Design"],
+    },
+    description: {
+      en: `As the definitive leader in Vietnam's coffee landscape, **Highlands Coffee** sought to redefine the seasonal experience for the Mid-Autumn Festival. Collaborating closely with the Creative Director, I spearheaded the creative direction and production for the launch of their signature Plum-based collection.
+
+The campaign centers on a concept of **liquid metamorphosis**, using surrealist compositions where the product appears to emerge organically from the fruit. By balancing hyper-realistic textures - the viscous glow of honey, the crystalline structure of crushed ice, and vibrant juice droplets - with an ethereal, diffused lighting strategy, we crafted a visual world that is both festive and modern.`,
+      vi: `Là thương hiệu dẫn đầu trong bức tranh cà phê tại Việt Nam, **Highlands Coffee** mong muốn tái định nghĩa trải nghiệm mùa vụ cho dịp Trung Thu. Phối hợp chặt chẽ cùng Creative Director, tôi phụ trách định hướng sáng tạo và sản xuất cho bộ sưu tập thức uống vị mơ mận.
+
+Chiến dịch xoay quanh ý niệm **liquid metamorphosis**, với các bố cục siêu thực nơi sản phẩm như trồi lên một cách tự nhiên từ trái cây. Bằng việc cân bằng chất liệu siêu thực - ánh mật sánh, kết cấu tinh thể của đá bào và các giọt nước ép rực sắc - cùng chiến lược ánh sáng khuếch tán, giàu chất thơ, chúng tôi kiến tạo một thế giới hình ảnh vừa lễ hội vừa hiện đại.`,
+    },
+    deliverable: {
+      en: {
+        lead: "Deliverables & Services",
+        groups: [
+          {
+            title: "",
+            items: ["**3 Hero Key Visuals:** Premium assets for nationwide product launch and OOH."],
+          },
+        ],
+      },
+      vi: {
+        lead: "Bàn giao & Dịch vụ",
+        groups: [
+          {
+            title: "",
+            items: ["**3 Hero Key Visuals:** Bộ hình ảnh cao cấp cho chiến dịch ra mắt toàn quốc và OOH."],
+          },
+        ],
+      },
+    },
+    coverPath: "assets/projects/highland-mo-man/cover.jpg",
+    detailImages: [
+      "assets/projects/highland-mo-man/detail-01.jpg",
+      "assets/projects/highland-mo-man/detail-02.jpg",
+      "assets/projects/highland-mo-man/detail-03.gif",
+      "assets/projects/highland-mo-man/detail-04.jpg",
     ],
   },
   {
