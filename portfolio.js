@@ -156,6 +156,17 @@ const i18n = {
 };
 
 const projects = Array.isArray(window.VANLAB_PROJECTS) ? window.VANLAB_PROJECTS : [];
+const FEATURED_PROJECT_SLUGS = [
+  "invisible-space-studio",
+  "vina-design-storexmoidien",
+  "no-one-magazine",
+  "lofficiel-beauty-award",
+  "downy-luxe",
+  "vinamilk-green-farm",
+  "one-plus",
+  "x3d-robot",
+  "kfc-2025",
+];
 const initialQuery = new URLSearchParams(window.location.search);
 const initialViewParam = initialQuery.get("view");
 const initialViewMode = initialViewParam === "index" ? "index" : "gallery";
@@ -164,6 +175,9 @@ const initialScrollY = Number.isFinite(initialScrollParam) && initialScrollParam
 const initialSelectedParam = initialQuery.get("selected");
 
 const sortedProjects = [...projects].sort((a, b) => b.year - a.year);
+const featuredProjects = FEATURED_PROJECT_SLUGS.map((slug) =>
+  sortedProjects.find((project) => project.slug === slug),
+).filter(Boolean);
 const defaultLanguage = "en";
 const LANGUAGE_STORAGE_KEY = "vanlab-language";
 
@@ -602,7 +616,8 @@ function attachGalleryMediaParallax(media) {
 
 function renderGallery() {
   els.galleryList.innerHTML = "";
-  state.items.forEach((project) => {
+  const galleryItems = featuredProjects.length ? featuredProjects : state.items;
+  galleryItems.forEach((project) => {
     const item = document.createElement("article");
     item.className = "gallery-item";
     item.dataset.slug = project.slug;
