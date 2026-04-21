@@ -213,6 +213,7 @@ let caseSlideWheelCleanup = null;
 let caseVideoObserverCleanup = null;
 const detailResolvePromises = new Map();
 const imageWarmupCache = new Set();
+const INDEX_PREVIEW_OFFSET = 12;
 
 const els = {
   siteHeader: document.getElementById("siteHeader"),
@@ -648,14 +649,19 @@ function renderIndexTable() {
       <td>${project.client}</td>
       <td>${getLocalizedValue(project.category)}</td>
     `;
-    row.addEventListener("mouseenter", () => renderIndexPreview(project));
+    row.addEventListener("mouseenter", (event) => {
+      renderIndexPreview(project);
+      positionIndexPreview(event);
+      toggleIndexPreviewVisibility(true);
+    });
+    row.addEventListener("mousemove", positionIndexPreview);
+    row.addEventListener("mouseleave", () => toggleIndexPreviewVisibility(false));
     row.addEventListener("click", () => {
       setSelectedProject(project.slug);
       openCaseStudy(project.slug);
     });
     els.tableBody.appendChild(row);
   });
-  renderIndexPreview(getSelectedProject());
 }
 
 function renderIndexPreview(project) {
@@ -670,6 +676,32 @@ function renderIndexPreview(project) {
       <p>${project.year} - ${project.client} - ${getLocalizedValue(project.category)}</p>
     </div>
   `;
+}
+
+function toggleIndexPreviewVisibility(visible) {
+  if (!els.indexPreview) return;
+  els.indexPreview.classList.toggle("is-visible", visible);
+}
+
+function positionIndexPreview(event) {
+  if (!els.indexPreview || !event) return;
+  const previewWidth = els.indexPreview.offsetWidth || 260;
+  const previewHeight = els.indexPreview.offsetHeight || 360;
+  const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+  const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+
+  let left = event.clientX + INDEX_PREVIEW_OFFSET;
+  let top = event.clientY - previewHeight / 2;
+
+  if (left + previewWidth > viewportWidth - 12) {
+    left = event.clientX - previewWidth - INDEX_PREVIEW_OFFSET;
+  }
+  if (top + previewHeight > viewportHeight - 12) {
+    top = event.clientY - previewHeight - INDEX_PREVIEW_OFFSET;
+  }
+
+  els.indexPreview.style.left = `${Math.max(12, left)}px`;
+  els.indexPreview.style.top = `${Math.max(12, top)}px`;
 }
 
 function formatCaseSlideCounter(current, total) {
