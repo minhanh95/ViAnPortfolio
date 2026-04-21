@@ -109,7 +109,7 @@ function buildProjectUrl(slug) {
   const detailUrl = new URL("./project.html", window.location.href);
   detailUrl.searchParams.set("slug", slug);
   detailUrl.searchParams.set("lang", pageState.language);
-  detailUrl.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "dark");
+  detailUrl.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "light");
   detailUrl.searchParams.set("fromView", pageState.returnView);
   detailUrl.searchParams.set("fromScroll", String(pageState.returnScroll));
   detailUrl.searchParams.set("selected", slug);

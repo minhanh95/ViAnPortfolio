@@ -26,6 +26,7 @@ const aboutI18n = {
 };
 
 const aboutEls = {
+  brandHomeLink: document.getElementById("brandHomeLink"),
   brandTagline: document.getElementById("brandTagline"),
   viewGalleryBtn: document.getElementById("viewGalleryBtn"),
   viewIndexBtn: document.getElementById("viewIndexBtn"),
@@ -50,7 +51,10 @@ function setText(node, value) {
 }
 
 function updateHeaderLinks(language) {
-  const theme = window.VANLAB_THEME ? window.VANLAB_THEME.get() : "dark";
+  const theme = window.VANLAB_THEME ? window.VANLAB_THEME.get() : "light";
+  if (aboutEls.brandHomeLink) {
+    aboutEls.brandHomeLink.href = `./index.html?view=gallery&lang=${language}&theme=${theme}`;
+  }
   if (aboutEls.viewGalleryBtn) {
     aboutEls.viewGalleryBtn.href = `./index.html?view=gallery&lang=${language}&theme=${theme}`;
   }

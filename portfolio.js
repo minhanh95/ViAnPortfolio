@@ -202,6 +202,7 @@ const imageWarmupCache = new Set();
 
 const els = {
   siteHeader: document.getElementById("siteHeader"),
+  brandHomeLink: document.getElementById("brandHomeLink"),
   about: document.getElementById("about"),
   meet: document.getElementById("meet"),
   contact: document.getElementById("contact"),
@@ -519,6 +520,10 @@ function renderStaticText() {
 
   document.documentElement.lang = state.language;
   document.title = t("pageTitle");
+  if (els.brandHomeLink) {
+    const theme = window.VANLAB_THEME?.get() ?? "light";
+    els.brandHomeLink.href = `./index.html?view=gallery&lang=${state.language}&theme=${theme}`;
+  }
 
   setText("brandTagline", t("brandTagline"));
   setText("viewGalleryBtn", t("viewGallery"));
@@ -927,7 +932,7 @@ function applyCaseStudyMode() {
 async function openCaseStudy(slug) {
   const currentUrl = new URL(window.location.href);
   currentUrl.searchParams.set("lang", state.language);
-  currentUrl.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "dark");
+  currentUrl.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "light");
   currentUrl.searchParams.set("view", state.viewMode);
   currentUrl.searchParams.set("scroll", String(Math.round(window.scrollY)));
   currentUrl.searchParams.set("selected", slug);
@@ -936,7 +941,7 @@ async function openCaseStudy(slug) {
   const url = new URL("./project.html", window.location.href);
   url.searchParams.set("slug", slug);
   url.searchParams.set("lang", state.language);
-  url.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "dark");
+  url.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "light");
   url.searchParams.set("fromView", state.viewMode);
   url.searchParams.set("fromScroll", String(Math.round(window.scrollY)));
   url.searchParams.set("selected", slug);
@@ -1170,7 +1175,7 @@ function syncListStateToUrl() {
   if (state.inCaseStudy) return;
   const url = new URL(window.location.href);
   url.searchParams.set("lang", state.language);
-  url.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "dark");
+  url.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "light");
   url.searchParams.set("view", state.viewMode);
   if (state.selectedSlug) {
     url.searchParams.set("selected", state.selectedSlug);
