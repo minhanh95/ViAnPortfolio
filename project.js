@@ -485,17 +485,19 @@ function createSlide(slide, realIndex, cloneSet) {
   } else {
     const src = escapeHtml(slide.path);
     const label = escapeHtml(slide.alt);
+    const captionText = String(slide.caption || "").trim();
+    const captionHtml = `<figcaption class="project-slide-caption">${renderInlineRichText(captionText)}</figcaption>`;
     if (isVideoPath(slide.path)) {
-      wrapper.innerHTML = `<video class="project-slide-media" src="${src}" controls playsinline muted preload="metadata" title="${label}"></video>`;
+      wrapper.innerHTML = `${captionHtml}<video class="project-slide-media" src="${src}" controls playsinline muted preload="metadata" title="${label}"></video>`;
     } else if (isVimeoPath(slide.path)) {
       const embedSrc = escapeHtml(buildVimeoEmbedUrl(slide.path));
-      wrapper.innerHTML = `<iframe class="project-slide-media project-slide-media--embed" src="${embedSrc}" title="${label}" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+      wrapper.innerHTML = `${captionHtml}<iframe class="project-slide-media project-slide-media--embed" src="${embedSrc}" title="${label}" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
     } else if (isYouTubePath(slide.path)) {
-      wrapper.innerHTML = buildYouTubePosterSlideHtml(slide.path, slide.alt);
+      wrapper.innerHTML = `${captionHtml}${buildYouTubePosterSlideHtml(slide.path, slide.alt)}`;
     } else if (isTikTokPath(slide.path)) {
-      wrapper.innerHTML = buildTikTokPosterSlideHtml(slide.path, slide.alt);
+      wrapper.innerHTML = `${captionHtml}${buildTikTokPosterSlideHtml(slide.path, slide.alt)}`;
     } else {
-      wrapper.innerHTML = `<img src="${src}" alt="${label}" loading="lazy" decoding="async" />`;
+      wrapper.innerHTML = `${captionHtml}<img src="${src}" alt="${label}" loading="lazy" decoding="async" />`;
     }
   }
   return wrapper;
@@ -708,6 +710,11 @@ async function renderPage() {
 
   const details = await resolveDetailImages(project);
   const orderedImages = [project.coverPath, ...details.filter((path) => path !== project.coverPath)];
+  const localizedDescriptions = Array.isArray(project.detailDescriptions?.[pageState.language])
+    ? project.detailDescriptions[pageState.language]
+    : Array.isArray(project.detailDescriptions?.en)
+      ? project.detailDescriptions.en
+      : [];
   pageState.imageCount = orderedImages.length;
 
   pageState.sequence = [
@@ -715,7 +722,10 @@ async function renderPage() {
     ...orderedImages.map((path, index) => ({
       type: "image",
       path,
-      alt: `${project.name} ${index === 0 ? "cover" : `detail ${index}`}`,
+      alt:
+        String(localizedDescriptions[index] || "").trim() ||
+        `${project.name} ${index === 0 ? "cover" : `detail ${index}`}`,
+      caption: String(localizedDescriptions[index] || "").trim(),
       counterIndex: index,
     })),
   ];
