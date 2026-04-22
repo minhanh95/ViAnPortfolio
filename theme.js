@@ -1,6 +1,6 @@
 (function initVanlabTheme() {
   const STORAGE_KEY = "vanlab-theme";
-  const DEFAULT_THEME = "light";
+  const DEFAULT_THEME = "dark";
   const META_LIGHT = "#FFFCF5";
   const META_DARK = "#050505";
 

@@ -228,6 +228,7 @@ let caseSlideWheelCleanup = null;
 let caseVideoObserverCleanup = null;
 let galleryLazyObserver = null;
 let galleryRevealObserver = null;
+let galleryFocusCleanup = null;
 const detailResolvePromises = new Map();
 const imageWarmupCache = new Set();
 const INDEX_PREVIEW_OFFSET = 12;
@@ -633,6 +634,7 @@ function updateGalleryInfoPanel(project, visible = true) {
   if (!els.galleryProjectInfo) return;
   if (!project) {
     els.galleryProjectInfo.classList.remove("is-visible");
+    els.galleryProjectInfo.classList.remove("is-left", "is-right");
     return;
   }
   const objective = getLocalizedValue(project.objective) || getLocalizedValue(project.category);
@@ -644,26 +646,81 @@ function updateGalleryInfoPanel(project, visible = true) {
   els.galleryProjectInfo.classList.toggle("is-visible", visible);
 }
 
+function positionGalleryInfoPanel(targetItem) {
+  if (!els.galleryProjectInfo || !targetItem) return;
+  if (window.matchMedia("(max-width: 1024px)").matches) return;
+  const focusLayout = els.galleryList?.closest(".gallery-focus-layout");
+  if (!focusLayout) return;
+  const panel = els.galleryProjectInfo;
+  const mediaRect = targetItem.querySelector(".gallery-media")?.getBoundingClientRect();
+  const rect = mediaRect || targetItem.getBoundingClientRect();
+  const layoutRect = focusLayout.getBoundingClientRect();
+  const isEven = targetItem.matches(".gallery-item:nth-child(even)");
+  panel.classList.toggle("is-left", isEven);
+  panel.classList.toggle("is-right", !isEven);
+  const gap = 4;
+  const panelWidth = panel.offsetWidth || 220;
+  const panelHeight = panel.offsetHeight || 200;
+  const preferredLeft = isEven
+    ? rect.left - layoutRect.left - panelWidth - gap
+    : rect.right - layoutRect.left + gap;
+  const minLeft = 0;
+  const maxLeft = Math.max(0, layoutRect.width - panelWidth);
+  const left = Math.max(minLeft, Math.min(preferredLeft, maxLeft));
+  const preferredTop = rect.top - layoutRect.top + rect.height * 0.5 - panelHeight * 0.5;
+  const minTop = 0;
+  const maxTop = Math.max(0, focusLayout.offsetHeight - panelHeight);
+  const top = Math.max(minTop, Math.min(preferredTop, maxTop));
+  panel.style.left = `${left}px`;
+  panel.style.top = `${top}px`;
+}
+
 function wireGalleryFocusEffects(galleryItems) {
   if (!els.galleryList || !galleryItems.length) return;
   const fallbackProject = galleryItems[0]?.projectData || null;
+  const focusLayout = els.galleryList.closest(".gallery-focus-layout");
+  if (typeof galleryFocusCleanup === "function") {
+    galleryFocusCleanup();
+    galleryFocusCleanup = null;
+  }
+  let activeHoverItem = null;
 
   const clearHover = () => {
     els.galleryList.classList.remove("is-focus-mode");
+    if (focusLayout) focusLayout.classList.remove("is-focus-mode");
     galleryItems.forEach(({ node }) => node.classList.remove("is-hovered"));
+    activeHoverItem = null;
     updateGalleryInfoPanel(fallbackProject, false);
+    if (els.galleryProjectInfo) {
+      els.galleryProjectInfo.style.left = "";
+      els.galleryProjectInfo.style.top = "";
+    }
   };
 
   galleryItems.forEach(({ node, projectData }) => {
     node.addEventListener("mouseenter", () => {
       els.galleryList.classList.add("is-focus-mode");
+      if (focusLayout) focusLayout.classList.add("is-focus-mode");
       galleryItems.forEach(({ node: otherNode }) => otherNode.classList.remove("is-hovered"));
       node.classList.add("is-hovered");
+      activeHoverItem = node;
       updateGalleryInfoPanel(projectData, true);
+      positionGalleryInfoPanel(node);
     });
   });
 
+  const syncPanelPosition = () => {
+    if (!activeHoverItem) return;
+    positionGalleryInfoPanel(activeHoverItem);
+  };
+  window.addEventListener("scroll", syncPanelPosition, { passive: true });
+  window.addEventListener("resize", syncPanelPosition);
   els.galleryList.onmouseleave = clearHover;
+  galleryFocusCleanup = () => {
+    window.removeEventListener("scroll", syncPanelPosition);
+    window.removeEventListener("resize", syncPanelPosition);
+    els.galleryList.onmouseleave = null;
+  };
   updateGalleryInfoPanel(fallbackProject, false);
 }
 
@@ -1441,15 +1498,29 @@ function initScrollReveal() {
 
 function wireHeaderGlassEffect() {
   const threshold = 12;
-  const setScrolled = (scroll) => {
-    els.siteHeader.classList.toggle("scrolled", scroll > threshold);
+  const hideThreshold = 110;
+  let lastScroll = 0;
+
+  const setHeaderState = (scroll) => {
+    const safeScroll = Math.max(0, Number(scroll) || 0);
+    const delta = safeScroll - lastScroll;
+    const isNearTop = safeScroll < hideThreshold;
+    els.siteHeader.classList.toggle("scrolled", safeScroll > threshold);
+    if (isNearTop) {
+      els.siteHeader.classList.remove("is-hidden");
+    } else if (delta > 2) {
+      els.siteHeader.classList.add("is-hidden");
+    } else if (delta < -2) {
+      els.siteHeader.classList.remove("is-hidden");
+    }
+    lastScroll = safeScroll;
   };
 
   if (lenisInstance) {
-    lenisInstance.on("scroll", ({ scroll }) => setScrolled(scroll));
-    setScrolled(lenisInstance.scroll);
+    lenisInstance.on("scroll", ({ scroll }) => setHeaderState(scroll));
+    setHeaderState(lenisInstance.scroll);
   } else {
-    const onScroll = () => setScrolled(window.scrollY);
+    const onScroll = () => setHeaderState(window.scrollY);
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
   }
