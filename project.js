@@ -35,7 +35,9 @@ const pageI18n = {
 
 const pageState = {
   language: "en",
-  projects: Array.isArray(window.VANLAB_PROJECTS) ? [...window.VANLAB_PROJECTS].sort((a, b) => b.year - a.year) : [],
+  projects: Array.isArray(window.VANLAB_PROJECTS)
+    ? [...window.VANLAB_PROJECTS].filter((project) => project.slug !== "ps-iris").sort((a, b) => b.year - a.year)
+    : [],
   currentSlug: "",
   returnSelectedSlug: "",
   returnView: "feature",
@@ -690,10 +692,10 @@ function updateOutboundNavLinks() {
   if (!window.VANLAB_THEME) return;
   const project = pageState.projects.find((item) => item.slug === pageState.currentSlug);
   if (!project) return;
-  const backUrl = new URL("./index.html", window.location.href);
+  const backPage = pageState.returnView === "index" ? "./projects.html" : "./index.html";
+  const backUrl = new URL(backPage, window.location.href);
   backUrl.searchParams.set("lang", pageState.language);
   backUrl.searchParams.set("theme", window.VANLAB_THEME.get());
-  backUrl.searchParams.set("view", pageState.returnView);
   backUrl.searchParams.set("scroll", String(pageState.returnScroll));
   backUrl.searchParams.set("selected", pageState.currentSlug);
   pageEls.backLink.href = backUrl.toString();

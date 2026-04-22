@@ -157,7 +157,10 @@ const i18n = {
   },
 };
 
-const projects = Array.isArray(window.VANLAB_PROJECTS) ? window.VANLAB_PROJECTS : [];
+const HIDDEN_PROJECT_SLUGS = new Set(["ps-iris"]);
+const projects = Array.isArray(window.VANLAB_PROJECTS)
+  ? window.VANLAB_PROJECTS.filter((project) => !HIDDEN_PROJECT_SLUGS.has(project.slug))
+  : [];
 const FEATURED_PROJECT_SLUGS = [
   "invisible-space-studio",
   "vina-design-storexmoidien",
@@ -171,7 +174,9 @@ const FEATURED_PROJECT_SLUGS = [
 ];
 const initialQuery = new URLSearchParams(window.location.search);
 const initialViewParam = initialQuery.get("view");
-const initialViewMode = initialViewParam === "index" ? "index" : "feature";
+const pageMode = document.body?.dataset?.page;
+const initialViewMode =
+  pageMode === "projects" ? "index" : pageMode === "feature" ? "feature" : initialViewParam === "index" ? "index" : "feature";
 const initialScrollParam = Number(initialQuery.get("scroll"));
 const initialScrollY = Number.isFinite(initialScrollParam) && initialScrollParam >= 0 ? initialScrollParam : null;
 const initialSelectedParam = initialQuery.get("selected");
@@ -541,7 +546,7 @@ function renderStaticText() {
   document.title = t("pageTitle");
   if (els.brandHomeLink) {
     const theme = window.VANLAB_THEME?.get() ?? "light";
-    els.brandHomeLink.href = `./index.html?view=feature&lang=${state.language}&theme=${theme}`;
+    els.brandHomeLink.href = `./index.html?lang=${state.language}&theme=${theme}`;
   }
 
   setText("brandTagline", t("brandTagline"));
@@ -620,6 +625,7 @@ function attachGalleryMediaParallax(media) {
 }
 
 function renderGallery() {
+  if (!els.galleryList) return;
   cleanupGalleryObservers();
   els.galleryList.innerHTML = "";
   const featuredSlugs = new Set(featuredProjects.map((project) => project.slug));
@@ -704,6 +710,7 @@ function wireGalleryReveal() {
 }
 
 function renderIndexTable() {
+  if (!els.tableBody) return;
   els.tableBody.innerHTML = "";
   state.items.forEach((project) => {
     const row = document.createElement("tr");
@@ -730,6 +737,7 @@ function renderIndexTable() {
 }
 
 function renderIndexPreview(project) {
+  if (!els.indexPreview) return;
   if (!project) {
     els.indexPreview.innerHTML = `<p>${t("previewHint")}</p>`;
     return;
@@ -1021,21 +1029,21 @@ function updateCaseSlideArrowsState(slideCount) {
 function applyViewMode() {
   if (state.inCaseStudy) return;
   const isGallery = state.viewMode === "feature";
-  els.about.classList.toggle("hidden", !isGallery);
-  els.galleryView.classList.toggle("hidden", !isGallery);
-  els.indexView.classList.toggle("hidden", isGallery);
+  if (els.about) els.about.classList.toggle("hidden", !isGallery);
+  if (els.galleryView) els.galleryView.classList.toggle("hidden", !isGallery);
+  if (els.indexView) els.indexView.classList.toggle("hidden", isGallery);
 }
 
 function applyCaseStudyMode() {
-  els.caseStudyView.classList.toggle("hidden", !state.inCaseStudy);
-  els.about.classList.toggle("hidden", state.inCaseStudy);
-  els.meet.classList.toggle("hidden", state.inCaseStudy);
+  if (els.caseStudyView) els.caseStudyView.classList.toggle("hidden", !state.inCaseStudy);
+  if (els.about) els.about.classList.toggle("hidden", state.inCaseStudy);
+  if (els.meet) els.meet.classList.toggle("hidden", state.inCaseStudy);
   if (els.contact) {
     els.contact.classList.toggle("hidden", state.inCaseStudy);
   }
   if (state.inCaseStudy) {
-    els.galleryView.classList.add("hidden");
-    els.indexView.classList.add("hidden");
+    if (els.galleryView) els.galleryView.classList.add("hidden");
+    if (els.indexView) els.indexView.classList.add("hidden");
     applyMobileInfoState();
   } else {
     applyViewMode();
@@ -1300,6 +1308,30 @@ function syncListStateToUrl() {
 }
 
 function switchViewMode(mode) {
+  if (mode === "feature" && pageMode === "projects") {
+    const url = new URL("./index.html", window.location.href);
+    url.searchParams.set("lang", state.language);
+    url.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "light");
+    if (state.selectedSlug) url.searchParams.set("selected", state.selectedSlug);
+    window.location.href = url.toString();
+    return;
+  }
+  if (mode === "index" && pageMode === "feature") {
+    const url = new URL("./projects.html", window.location.href);
+    url.searchParams.set("lang", state.language);
+    url.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "light");
+    if (state.selectedSlug) url.searchParams.set("selected", state.selectedSlug);
+    window.location.href = url.toString();
+    return;
+  }
+  if (mode === "index" && pageMode === "projects") {
+    const url = new URL("./projects.html", window.location.href);
+    url.searchParams.set("lang", state.language);
+    url.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "light");
+    if (state.selectedSlug) url.searchParams.set("selected", state.selectedSlug);
+    window.location.href = url.toString();
+    return;
+  }
   state.viewMode = mode;
   state.inCaseStudy = false;
   state.mobileInfoCollapsed = true;
@@ -1448,8 +1480,12 @@ function initLenisSmoothScroll() {
 els.langViBtn.addEventListener("click", () => switchLanguage("vi"));
 els.langEnBtn.addEventListener("click", () => switchLanguage("en"));
 els.themeToggleBtn?.addEventListener("click", switchTheme);
-els.viewGalleryBtn.addEventListener("click", () => switchViewMode("feature"));
-els.viewIndexBtn.addEventListener("click", () => switchViewMode("index"));
+if (els.viewGalleryBtn?.tagName === "BUTTON") {
+  els.viewGalleryBtn.addEventListener("click", () => switchViewMode("feature"));
+}
+if (els.viewIndexBtn?.tagName === "BUTTON") {
+  els.viewIndexBtn.addEventListener("click", () => switchViewMode("index"));
+}
 els.caseBackBtn.addEventListener("click", closeCaseStudy);
 els.caseInfoToggleBtn.addEventListener("click", () => {
   state.mobileInfoCollapsed = !state.mobileInfoCollapsed;

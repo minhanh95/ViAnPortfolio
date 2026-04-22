@@ -7,7 +7,7 @@ const aboutI18n = {
     viewGallery: "Feature",
     viewIndex: "Danh mục",
     navAbout: "Giới thiệu",
-    heroTitle: "Tuyên ngôn",
+    heroTitle: "Hồ sơ năng lực",
     themeToggleLabel: "Đổi giao diện",
     themeDarkShort: "Tối",
     themeLightShort: "Sáng",
@@ -18,7 +18,7 @@ const aboutI18n = {
     viewGallery: "Feature",
     viewIndex: "Index",
     navAbout: "About",
-    heroTitle: "Slogan",
+    heroTitle: "Professional Profile",
     themeToggleLabel: "Switch theme",
     themeDarkShort: "Dark",
     themeLightShort: "Light",
@@ -53,13 +53,13 @@ function setText(node, value) {
 function updateHeaderLinks(language) {
   const theme = window.VANLAB_THEME ? window.VANLAB_THEME.get() : "light";
   if (aboutEls.brandHomeLink) {
-    aboutEls.brandHomeLink.href = `./index.html?view=feature&lang=${language}&theme=${theme}`;
+    aboutEls.brandHomeLink.href = `./index.html?lang=${language}&theme=${theme}`;
   }
   if (aboutEls.viewGalleryBtn) {
-    aboutEls.viewGalleryBtn.href = `./index.html?view=feature&lang=${language}&theme=${theme}`;
+    aboutEls.viewGalleryBtn.href = `./index.html?lang=${language}&theme=${theme}`;
   }
   if (aboutEls.viewIndexBtn) {
-    aboutEls.viewIndexBtn.href = `./index.html?view=index&lang=${language}&theme=${theme}`;
+    aboutEls.viewIndexBtn.href = `./projects.html?lang=${language}&theme=${theme}`;
   }
   if (aboutEls.navAbout) {
     aboutEls.navAbout.href = `./about.html?lang=${language}&theme=${theme}`;

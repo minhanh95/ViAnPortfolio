@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="./styles.css" />
     <script src="./theme.js"></script>
   </head>
-  <body data-page="feature">
+  <body data-page="projects">
     <header class="site-header" id="siteHeader">
       <a class="brand" id="brandHomeLink" href="./index.html">
         <p class="brand-logo">VAN.LAB</p>
@@ -19,8 +19,8 @@
       </a>
       <nav class="header-nav">
         <div class="view-toggle" role="tablist" aria-label="View mode">
-          <a id="viewGalleryBtn" class="view-btn active" href="./index.html" role="tab" aria-selected="true">Feature</a>
-          <a id="viewIndexBtn" class="view-btn" href="./projects.html" role="tab" aria-selected="false">Index</a>
+          <a id="viewGalleryBtn" class="view-btn" href="./index.html" role="tab" aria-selected="false">Feature</a>
+          <a id="viewIndexBtn" class="view-btn active" href="./projects.html" role="tab" aria-selected="true">Index</a>
         </div>
         <a href="./about.html" id="navMeet"></a>
       </nav>
@@ -34,13 +34,20 @@
     </header>
 
     <main class="main-layout">
-      <section id="about" class="hero-section reveal">
-        <h1 id="heroTitle" class="heading-display"></h1>
-        <p class="hero-subtext" id="heroSubtext"></p>
-      </section>
-
-      <section id="galleryView" class="content-view reveal">
-        <div id="galleryList" class="gallery-list"></div>
+      <section id="indexView" class="content-view reveal">
+        <div class="index-wrap">
+          <table class="projects-table" id="projectsTable">
+            <thead>
+              <tr>
+                <th id="thYear"></th>
+                <th id="thClient"></th>
+                <th id="thType"></th>
+              </tr>
+            </thead>
+            <tbody id="projectsTableBody"></tbody>
+          </table>
+          <aside id="indexPreview" class="index-preview" aria-hidden="true"></aside>
+        </div>
       </section>
 
       <section id="caseStudyView" class="case-study hidden">
