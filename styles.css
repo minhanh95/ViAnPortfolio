@@ -1034,20 +1034,78 @@ html[data-theme="light"] .theme-toggle-btn::before {
 }
 
 .gallery-list {
-  column-count: 4;
-  column-gap: clamp(0.9rem, 1.8vw, 1.2rem);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.95rem, 2.2vw, 1.4rem);
   width: 100%;
+  max-width: min(980px, 100%);
+  margin-inline: auto;
+  align-items: start;
+}
+
+.gallery-focus-layout {
+  width: min(1380px, 100%);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(230px, 290px);
+  gap: clamp(1rem, 2vw, 1.8rem);
+  align-items: start;
+}
+
+.gallery-project-info {
+  position: sticky;
+  top: clamp(5.4rem, 9vh, 7rem);
+  border-left: 1px solid var(--line);
+  padding-left: clamp(0.8rem, 1.6vw, 1.1rem);
+  color: var(--label-fg);
+  opacity: 0;
+  transform: translateX(8px);
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+.gallery-project-info.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.gallery-project-title {
+  margin: 0 0 0.9rem;
+  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  line-height: 1.24;
+  color: var(--text);
+}
+
+.gallery-project-meta {
+  margin: 0;
+  display: grid;
+  gap: 0.78rem;
+}
+
+.gallery-project-meta div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.gallery-project-meta dt {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.gallery-project-meta dd {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.88rem;
+  line-height: 1.45;
 }
 
 .gallery-item {
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   gap: 0.65rem;
-  width: 100%;
+  width: min(100%, 36rem);
   margin: 0 0 clamp(1rem, 2vw, 1.4rem);
-  break-inside: avoid;
-  -webkit-column-break-inside: avoid;
-  page-break-inside: avoid;
   border-radius: 14px;
   padding: 0.45rem;
   background: color-mix(in srgb, var(--surface) 86%, transparent);
@@ -1058,6 +1116,27 @@ html[data-theme="light"] .theme-toggle-btn::before {
   opacity: 0;
   transform: translateY(16px);
   transition: transform 0.35s var(--ease-reveal), opacity 0.35s var(--ease-reveal), box-shadow 0.35s var(--ease-reveal);
+}
+
+.gallery-list.is-focus-mode .gallery-item {
+  opacity: 0.32;
+}
+
+.gallery-list.is-focus-mode .gallery-item.is-hovered {
+  opacity: 1;
+}
+
+.gallery-item:nth-child(odd) {
+  grid-column: 1;
+  width: 88%;
+  justify-self: center;
+}
+
+.gallery-item:nth-child(even) {
+  grid-column: 2;
+  width: 72%;
+  justify-self: center;
+  margin-top: clamp(1rem, 3vw, 2rem);
 }
 
 .gallery-item.in-view {
@@ -1484,12 +1563,37 @@ html[data-theme="light"] .theme-toggle-btn::before {
 }
 
 @media (max-width: 960px) {
+  .gallery-focus-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(210px, 250px);
+  }
+
   .gallery-list {
-    column-count: 3;
+    gap: 0.95rem;
+  }
+
+  .gallery-item:nth-child(odd) {
+    width: 92%;
+  }
+
+  .gallery-item:nth-child(even) {
+    width: 78%;
   }
 }
 
 @media (max-width: 1024px) {
+  .gallery-focus-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-project-info {
+    position: static;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    padding: 0.8rem 0 0;
+    margin-top: 0.4rem;
+    transform: none;
+  }
+
   .index-wrap {
     grid-template-columns: 1fr;
   }
@@ -1521,8 +1625,22 @@ html[data-theme="light"] .theme-toggle-btn::before {
 }
 
 @media (max-width: 520px) {
+  .gallery-project-info {
+    display: none;
+  }
+
   .gallery-list {
-    column-count: 2;
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .gallery-item,
+  .gallery-item:nth-child(odd),
+  .gallery-item:nth-child(even) {
+    grid-column: auto;
+    width: 100%;
+    justify-self: stretch;
+    margin-top: 0;
   }
 }
 
@@ -1533,7 +1651,7 @@ html[data-theme="light"] .theme-toggle-btn::before {
   }
 
   .gallery-list {
-    column-gap: 0.8rem;
+    gap: 0.8rem;
   }
 
   .projects-table th:nth-child(3),
@@ -1553,7 +1671,7 @@ html[data-theme="light"] .theme-toggle-btn::before {
 
 @media (max-width: 420px) {
   .gallery-list {
-    column-count: 1;
+    gap: 0.72rem;
   }
 }
 

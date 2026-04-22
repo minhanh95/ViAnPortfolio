@@ -40,7 +40,30 @@
       </section>
 
       <section id="galleryView" class="content-view reveal">
-        <div id="galleryList" class="gallery-list"></div>
+        <div class="gallery-focus-layout">
+          <div id="galleryList" class="gallery-list"></div>
+          <aside id="galleryProjectInfo" class="gallery-project-info" aria-live="polite">
+            <h3 id="galleryInfoTitle" class="gallery-project-title"></h3>
+            <dl class="gallery-project-meta">
+              <div>
+                <dt id="galleryInfoYearLabel">Year</dt>
+                <dd id="galleryInfoYear"></dd>
+              </div>
+              <div>
+                <dt id="galleryInfoClientLabel">Client</dt>
+                <dd id="galleryInfoClient"></dd>
+              </div>
+              <div>
+                <dt id="galleryInfoObjectiveLabel">Objective</dt>
+                <dd id="galleryInfoObjective"></dd>
+              </div>
+              <div>
+                <dt id="galleryInfoScopeLabel">Scope of work</dt>
+                <dd id="galleryInfoScope"></dd>
+              </div>
+            </dl>
+          </aside>
+        </div>
       </section>
 
       <section id="caseStudyView" class="case-study hidden">

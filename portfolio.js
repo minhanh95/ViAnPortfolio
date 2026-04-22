@@ -73,6 +73,10 @@ const i18n = {
     linkedinValue: "Đang cập nhật",
     previewHint: "Di chuột để xem trước",
     previewViewDetail: "Xem chi tiết",
+    galleryInfoYear: "Năm",
+    galleryInfoClient: "Khách hàng",
+    galleryInfoObjective: "Mục tiêu",
+    galleryInfoScope: "Phạm vi công việc",
     themeToggleLabel: "Đổi giao diện",
     themeDarkShort: "Tối",
     themeLightShort: "Sáng",
@@ -151,6 +155,10 @@ const i18n = {
     linkedinValue: "To be updated",
     previewHint: "Hover to preview",
     previewViewDetail: "View detail",
+    galleryInfoYear: "Year",
+    galleryInfoClient: "Client",
+    galleryInfoObjective: "Objective",
+    galleryInfoScope: "Scope of work",
     themeToggleLabel: "Switch theme",
     themeDarkShort: "Dark",
     themeLightShort: "Light",
@@ -258,6 +266,16 @@ const els = {
   themeToggleBtn: document.getElementById("themeToggleBtn"),
   viewGalleryBtn: document.getElementById("viewGalleryBtn"),
   viewIndexBtn: document.getElementById("viewIndexBtn"),
+  galleryProjectInfo: document.getElementById("galleryProjectInfo"),
+  galleryInfoTitle: document.getElementById("galleryInfoTitle"),
+  galleryInfoYear: document.getElementById("galleryInfoYear"),
+  galleryInfoClient: document.getElementById("galleryInfoClient"),
+  galleryInfoObjective: document.getElementById("galleryInfoObjective"),
+  galleryInfoScope: document.getElementById("galleryInfoScope"),
+  galleryInfoYearLabel: document.getElementById("galleryInfoYearLabel"),
+  galleryInfoClientLabel: document.getElementById("galleryInfoClientLabel"),
+  galleryInfoObjectiveLabel: document.getElementById("galleryInfoObjectiveLabel"),
+  galleryInfoScopeLabel: document.getElementById("galleryInfoScopeLabel"),
 };
 
 function updateThemeToggleUi() {
@@ -581,6 +599,10 @@ function renderStaticText() {
   setText("addressLabel", t("addressLabel"));
   setText("linkedinLabel", t("linkedinLabel"));
   setText("linkedinValue", t("linkedinValue"));
+  setText("galleryInfoYearLabel", t("galleryInfoYear"));
+  setText("galleryInfoClientLabel", t("galleryInfoClient"));
+  setText("galleryInfoObjectiveLabel", t("galleryInfoObjective"));
+  setText("galleryInfoScopeLabel", t("galleryInfoScope"));
   els.caseBackBtn.textContent = t("caseBack");
   applyMobileInfoState();
   els.caseSlidePrevBtn.setAttribute("aria-label", t("slidePrev"));
@@ -599,6 +621,50 @@ function renderStaticText() {
 function renderListItems(target, items) {
   if (!target || !Array.isArray(items)) return;
   target.innerHTML = items.map((item) => `<li>${item}</li>`).join("");
+}
+
+function getScopeText(project) {
+  const scope = getLocalizedValue(project.scopeOfWork);
+  if (Array.isArray(scope)) return scope.filter(Boolean).join(", ");
+  return String(scope || project.technology || "");
+}
+
+function updateGalleryInfoPanel(project, visible = true) {
+  if (!els.galleryProjectInfo) return;
+  if (!project) {
+    els.galleryProjectInfo.classList.remove("is-visible");
+    return;
+  }
+  const objective = getLocalizedValue(project.objective) || getLocalizedValue(project.category);
+  els.galleryInfoTitle.textContent = project.name || "";
+  els.galleryInfoYear.textContent = String(project.year || "");
+  els.galleryInfoClient.textContent = project.client || "";
+  els.galleryInfoObjective.textContent = objective || "";
+  els.galleryInfoScope.textContent = getScopeText(project);
+  els.galleryProjectInfo.classList.toggle("is-visible", visible);
+}
+
+function wireGalleryFocusEffects(galleryItems) {
+  if (!els.galleryList || !galleryItems.length) return;
+  const fallbackProject = galleryItems[0]?.projectData || null;
+
+  const clearHover = () => {
+    els.galleryList.classList.remove("is-focus-mode");
+    galleryItems.forEach(({ node }) => node.classList.remove("is-hovered"));
+    updateGalleryInfoPanel(fallbackProject, false);
+  };
+
+  galleryItems.forEach(({ node, projectData }) => {
+    node.addEventListener("mouseenter", () => {
+      els.galleryList.classList.add("is-focus-mode");
+      galleryItems.forEach(({ node: otherNode }) => otherNode.classList.remove("is-hovered"));
+      node.classList.add("is-hovered");
+      updateGalleryInfoPanel(projectData, true);
+    });
+  });
+
+  els.galleryList.onmouseleave = clearHover;
+  updateGalleryInfoPanel(fallbackProject, false);
 }
 
 function attachGalleryMediaParallax(media) {
@@ -631,6 +697,7 @@ function renderGallery() {
   const featuredSlugs = new Set(featuredProjects.map((project) => project.slug));
   const remainingProjects = state.items.filter((project) => !featuredSlugs.has(project.slug));
   const galleryItems = featuredProjects.length ? [...featuredProjects, ...remainingProjects] : state.items;
+  const wiredItems = [];
   galleryItems.forEach((project) => {
     const item = document.createElement("article");
     item.className = "gallery-item";
@@ -651,7 +718,9 @@ function renderGallery() {
     });
     els.galleryList.appendChild(item);
     attachGalleryMediaParallax(item.querySelector(".gallery-media"));
+    wiredItems.push({ node: item, projectData: project });
   });
+  wireGalleryFocusEffects(wiredItems);
   wireGalleryLazyLoad();
   wireGalleryReveal();
 }
