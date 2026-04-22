@@ -53,10 +53,10 @@ function setText(node, value) {
 function updateHeaderLinks(language) {
   const theme = window.VANLAB_THEME ? window.VANLAB_THEME.get() : "light";
   if (aboutEls.brandHomeLink) {
-    aboutEls.brandHomeLink.href = `./index.html?view=gallery&lang=${language}&theme=${theme}`;
+    aboutEls.brandHomeLink.href = `./index.html?view=feature&lang=${language}&theme=${theme}`;
   }
   if (aboutEls.viewGalleryBtn) {
-    aboutEls.viewGalleryBtn.href = `./index.html?view=gallery&lang=${language}&theme=${theme}`;
+    aboutEls.viewGalleryBtn.href = `./index.html?view=feature&lang=${language}&theme=${theme}`;
   }
   if (aboutEls.viewIndexBtn) {
     aboutEls.viewIndexBtn.href = `./index.html?view=index&lang=${language}&theme=${theme}`;

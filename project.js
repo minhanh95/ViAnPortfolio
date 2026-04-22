@@ -38,7 +38,7 @@ const pageState = {
   projects: Array.isArray(window.VANLAB_PROJECTS) ? [...window.VANLAB_PROJECTS].sort((a, b) => b.year - a.year) : [],
   currentSlug: "",
   returnSelectedSlug: "",
-  returnView: "gallery",
+  returnView: "feature",
   returnScroll: 0,
   sequence: [],
   imageCount: 0,
@@ -84,7 +84,7 @@ function getQueryLanguage() {
 function getReturnContext() {
   const query = new URLSearchParams(window.location.search);
   const returnSelectedSlug = query.get("selected") || "";
-  const returnView = query.get("fromView") === "index" ? "index" : "gallery";
+  const returnView = query.get("fromView") === "index" ? "index" : "feature";
   const rawScroll = Number(query.get("fromScroll"));
   const returnScroll = Number.isFinite(rawScroll) && rawScroll >= 0 ? Math.round(rawScroll) : 0;
   return { returnSelectedSlug, returnView, returnScroll };
@@ -488,16 +488,16 @@ function createSlide(slide, realIndex, cloneSet) {
     const captionText = String(slide.caption || "").trim();
     const captionHtml = `<figcaption class="project-slide-caption">${renderInlineRichText(captionText)}</figcaption>`;
     if (isVideoPath(slide.path)) {
-      wrapper.innerHTML = `${captionHtml}<video class="project-slide-media" src="${src}" controls playsinline muted preload="metadata" title="${label}"></video>`;
+      wrapper.innerHTML = `<video class="project-slide-media" src="${src}" controls playsinline muted preload="metadata" title="${label}"></video>${captionHtml}`;
     } else if (isVimeoPath(slide.path)) {
       const embedSrc = escapeHtml(buildVimeoEmbedUrl(slide.path));
-      wrapper.innerHTML = `${captionHtml}<iframe class="project-slide-media project-slide-media--embed" src="${embedSrc}" title="${label}" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+      wrapper.innerHTML = `<iframe class="project-slide-media project-slide-media--embed" src="${embedSrc}" title="${label}" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>${captionHtml}`;
     } else if (isYouTubePath(slide.path)) {
-      wrapper.innerHTML = `${captionHtml}${buildYouTubePosterSlideHtml(slide.path, slide.alt)}`;
+      wrapper.innerHTML = `${buildYouTubePosterSlideHtml(slide.path, slide.alt)}${captionHtml}`;
     } else if (isTikTokPath(slide.path)) {
-      wrapper.innerHTML = `${captionHtml}${buildTikTokPosterSlideHtml(slide.path, slide.alt)}`;
+      wrapper.innerHTML = `${buildTikTokPosterSlideHtml(slide.path, slide.alt)}${captionHtml}`;
     } else {
-      wrapper.innerHTML = `${captionHtml}<img src="${src}" alt="${label}" loading="lazy" decoding="async" />`;
+      wrapper.innerHTML = `<img src="${src}" alt="${label}" loading="lazy" decoding="async" />${captionHtml}`;
     }
   }
   return wrapper;

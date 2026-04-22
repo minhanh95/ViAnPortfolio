@@ -72,6 +72,7 @@ const i18n = {
     linkedinLabel: "LinkedIn",
     linkedinValue: "Đang cập nhật",
     previewHint: "Di chuột để xem trước",
+    previewViewDetail: "Xem chi tiết",
     themeToggleLabel: "Đổi giao diện",
     themeDarkShort: "Tối",
     themeLightShort: "Sáng",
@@ -149,6 +150,7 @@ const i18n = {
     linkedinLabel: "LinkedIn",
     linkedinValue: "To be updated",
     previewHint: "Hover to preview",
+    previewViewDetail: "View detail",
     themeToggleLabel: "Switch theme",
     themeDarkShort: "Dark",
     themeLightShort: "Light",
@@ -169,7 +171,7 @@ const FEATURED_PROJECT_SLUGS = [
 ];
 const initialQuery = new URLSearchParams(window.location.search);
 const initialViewParam = initialQuery.get("view");
-const initialViewMode = initialViewParam === "index" ? "index" : "gallery";
+const initialViewMode = initialViewParam === "index" ? "index" : "feature";
 const initialScrollParam = Number(initialQuery.get("scroll"));
 const initialScrollY = Number.isFinite(initialScrollParam) && initialScrollParam >= 0 ? initialScrollParam : null;
 const initialSelectedParam = initialQuery.get("selected");
@@ -211,6 +213,8 @@ let listScrollYBeforeCase = 0;
 let caseSlideObserver = null;
 let caseSlideWheelCleanup = null;
 let caseVideoObserverCleanup = null;
+let galleryLazyObserver = null;
+let galleryRevealObserver = null;
 const detailResolvePromises = new Map();
 const imageWarmupCache = new Set();
 const INDEX_PREVIEW_OFFSET = 12;
@@ -537,7 +541,7 @@ function renderStaticText() {
   document.title = t("pageTitle");
   if (els.brandHomeLink) {
     const theme = window.VANLAB_THEME?.get() ?? "light";
-    els.brandHomeLink.href = `./index.html?view=gallery&lang=${state.language}&theme=${theme}`;
+    els.brandHomeLink.href = `./index.html?view=feature&lang=${state.language}&theme=${theme}`;
   }
 
   setText("brandTagline", t("brandTagline"));
@@ -582,7 +586,7 @@ function renderStaticText() {
 
   els.langViBtn.classList.toggle("active", state.language === "vi");
   els.langEnBtn.classList.toggle("active", state.language === "en");
-  els.viewGalleryBtn.classList.toggle("active", state.viewMode === "gallery");
+  els.viewGalleryBtn.classList.toggle("active", state.viewMode === "feature");
   els.viewIndexBtn.classList.toggle("active", state.viewMode === "index");
   updateThemeToggleUi();
 }
@@ -616,8 +620,11 @@ function attachGalleryMediaParallax(media) {
 }
 
 function renderGallery() {
+  cleanupGalleryObservers();
   els.galleryList.innerHTML = "";
-  const galleryItems = featuredProjects.length ? featuredProjects : state.items;
+  const featuredSlugs = new Set(featuredProjects.map((project) => project.slug));
+  const remainingProjects = state.items.filter((project) => !featuredSlugs.has(project.slug));
+  const galleryItems = featuredProjects.length ? [...featuredProjects, ...remainingProjects] : state.items;
   galleryItems.forEach((project) => {
     const item = document.createElement("article");
     item.className = "gallery-item";
@@ -625,7 +632,10 @@ function renderGallery() {
     item.classList.toggle("active", project.slug === state.selectedSlug);
     item.innerHTML = `
       <div class="gallery-media">
-        <img src="${project.coverPath}" alt="${project.name} cover" loading="lazy" decoding="async" />
+        <img data-src="${project.coverPath}" alt="${project.name} cover" loading="lazy" decoding="async" />
+        <div class="gallery-media-overlay" aria-hidden="true">
+          <span class="gallery-media-overlay-label">${t("previewViewDetail")}</span>
+        </div>
       </div>
       <p class="gallery-title heading-display">${project.name}</p>
     `;
@@ -636,6 +646,61 @@ function renderGallery() {
     els.galleryList.appendChild(item);
     attachGalleryMediaParallax(item.querySelector(".gallery-media"));
   });
+  wireGalleryLazyLoad();
+  wireGalleryReveal();
+}
+
+function cleanupGalleryObservers() {
+  if (galleryLazyObserver) {
+    galleryLazyObserver.disconnect();
+    galleryLazyObserver = null;
+  }
+  if (galleryRevealObserver) {
+    galleryRevealObserver.disconnect();
+    galleryRevealObserver = null;
+  }
+}
+
+function wireGalleryLazyLoad() {
+  const lazyImages = Array.from(els.galleryList.querySelectorAll("img[data-src]"));
+  if (!lazyImages.length) return;
+  galleryLazyObserver = new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const image = entry.target;
+        const source = image.dataset.src;
+        if (source) image.src = source;
+        image.removeAttribute("data-src");
+        image.addEventListener(
+          "load",
+          () => {
+            image.classList.add("is-loaded");
+          },
+          { once: true },
+        );
+        observer.unobserve(image);
+      });
+    },
+    { root: null, rootMargin: "400px 0px", threshold: 0.01 },
+  );
+  lazyImages.forEach((image) => galleryLazyObserver.observe(image));
+}
+
+function wireGalleryReveal() {
+  const cards = Array.from(els.galleryList.querySelectorAll(".gallery-item"));
+  if (!cards.length) return;
+  galleryRevealObserver = new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("in-view");
+        observer.unobserve(entry.target);
+      });
+    },
+    { root: null, rootMargin: "0px 0px -6% 0px", threshold: 0.08 },
+  );
+  cards.forEach((card) => galleryRevealObserver.observe(card));
 }
 
 function renderIndexTable() {
@@ -955,7 +1020,8 @@ function updateCaseSlideArrowsState(slideCount) {
 
 function applyViewMode() {
   if (state.inCaseStudy) return;
-  const isGallery = state.viewMode === "gallery";
+  const isGallery = state.viewMode === "feature";
+  els.about.classList.toggle("hidden", !isGallery);
   els.galleryView.classList.toggle("hidden", !isGallery);
   els.indexView.classList.toggle("hidden", isGallery);
 }
@@ -1382,7 +1448,7 @@ function initLenisSmoothScroll() {
 els.langViBtn.addEventListener("click", () => switchLanguage("vi"));
 els.langEnBtn.addEventListener("click", () => switchLanguage("en"));
 els.themeToggleBtn?.addEventListener("click", switchTheme);
-els.viewGalleryBtn.addEventListener("click", () => switchViewMode("gallery"));
+els.viewGalleryBtn.addEventListener("click", () => switchViewMode("feature"));
 els.viewIndexBtn.addEventListener("click", () => switchViewMode("index"));
 els.caseBackBtn.addEventListener("click", closeCaseStudy);
 els.caseInfoToggleBtn.addEventListener("click", () => {
