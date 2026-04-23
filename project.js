@@ -63,6 +63,7 @@ const SCROLL_PHYSICS = {
   MOMENTUM_DECAY: 0.97,
   VELOCITY_TO_PIXEL: 42,
 };
+const LANDSCAPE_MEDIA_RATIO = 1.2;
 
 const pageEls = {
   counter: document.getElementById("projectCounter"),
@@ -527,27 +528,31 @@ function createSlide(slide, realIndex, cloneSet) {
       wrapper.innerHTML = `${buildTikTokPosterSlideHtml(slide.path, slide.alt)}${captionHtml}`;
     } else {
       wrapper.innerHTML = `<img src="${src}" alt="${label}" loading="lazy" decoding="async" />${captionHtml}`;
-      const imageEl = wrapper.querySelector("img");
-      if (imageEl) {
-        const applyLandscapeClass = () => {
-          if (!imageEl.naturalWidth || !imageEl.naturalHeight) return;
-          const isLandscape = imageEl.naturalWidth / imageEl.naturalHeight >= 1.2;
-          const changed = wrapper.classList.toggle("project-slide--landscape-enhanced", isLandscape);
-          if (changed) {
-            requestAnimationFrame(() => {
-              updateLoopMetrics();
-              recenterIfNeeded();
-            });
-          }
-        };
-        if (imageEl.complete) applyLandscapeClass();
-        else {
-          imageEl.addEventListener("load", applyLandscapeClass, { once: true });
-        }
-      }
     }
   }
   return wrapper;
+}
+
+function applyLandscapeClassForImage(img) {
+  if (!(img instanceof HTMLImageElement)) return;
+  const slide = img.closest(".project-slide--image");
+  if (!slide || slide.classList.contains("project-slide--media-fill-vertical")) return;
+  const naturalW = Number(img.naturalWidth || 0);
+  const naturalH = Number(img.naturalHeight || 0);
+  if (!naturalW || !naturalH) return;
+  slide.classList.toggle("project-slide--media-landscape", naturalW / naturalH >= LANDSCAPE_MEDIA_RATIO);
+}
+
+function wireLandscapeMediaSizing() {
+  const images = pageEls.gallery.querySelectorAll(".project-slide--image img");
+  images.forEach((img) => {
+    if (!(img instanceof HTMLImageElement)) return;
+    if (img.complete) {
+      applyLandscapeClassForImage(img);
+      return;
+    }
+    img.addEventListener("load", () => applyLandscapeClassForImage(img), { once: true });
+  });
 }
 
 function updateLoopMetrics() {
@@ -566,19 +571,11 @@ function recenterIfNeeded() {
   const leftEdge = pageState.setStart;
   const rightEdge = pageState.setStart + pageState.setWidth;
   let next = pageEls.gallery.scrollLeft;
-  let wrapped = false;
-  while (next < leftEdge) {
-    next += pageState.setWidth;
-    wrapped = true;
-  }
-  while (next >= rightEdge) {
-    next -= pageState.setWidth;
-    wrapped = true;
-  }
+  if (next < leftEdge) next += pageState.setWidth;
+  else if (next >= rightEdge) next -= pageState.setWidth;
   if (next !== pageEls.gallery.scrollLeft) {
     pageEls.gallery.scrollLeft = next;
   }
-  return wrapped;
 }
 
 function wireCounterObserver() {
@@ -670,15 +667,7 @@ function runMomentum() {
 
   pageState.velocity *= SCROLL_PHYSICS.MOMENTUM_DECAY;
   pageEls.gallery.scrollLeft += pageState.velocity * SCROLL_PHYSICS.VELOCITY_TO_PIXEL;
-  const wrapped = recenterIfNeeded();
-  if (wrapped) {
-    // Crossing loop boundary with high residual velocity causes a perceived
-    // "jump to next slide". Dampen hard to keep continuity near wrap points.
-    pageState.velocity *= 0.3;
-    if (Math.abs(pageState.velocity) < SCROLL_PHYSICS.MIN_VELOCITY * 4) {
-      pageState.velocity = 0;
-    }
-  }
+  recenterIfNeeded();
   pageState.momentumRaf = requestAnimationFrame(runMomentum);
 }
 
@@ -737,6 +726,7 @@ function renderSequence() {
       pageEls.gallery.appendChild(node);
     });
   });
+  wireLandscapeMediaSizing();
 
   requestAnimationFrame(() => {
     const middleSlides = Array.from(pageEls.gallery.querySelectorAll('.project-slide[data-clone-set="0"]'));
@@ -848,7 +838,10 @@ function initializePage() {
   // Re-measure after late media decode to avoid stale loop width.
   pageEls.gallery.addEventListener(
     "load",
-    () => {
+    (event) => {
+      if (event?.target instanceof HTMLImageElement) {
+        applyLandscapeClassForImage(event.target);
+      }
       updateLoopMetrics();
     },
     true,
