@@ -89,12 +89,12 @@ Hợp tác cùng **Vina Design Store** và **Moi Dien**, chiến dịch tái ng�
     description: {
       en: `Created for **Downy**, this project is a multi-sensory journey told through a series of six brand films.
 
-With the launch of **Downy Luxe**, the challenge was to translate functional product benefits into an elevated, sensorial visual language that stands apart in the market. Rather than illustrating features literally, the direction evokes them - allowing the brand experience to unfold through feeling.
+With the launch of **Downy Luxe**, the challenge was to translate functional product benefits into an elevated, sensorial visual language that stands apart in the market. Rather than illustrating features literally, the direction evokes them—allowing the brand experience to unfold through feeling.
 
 Light, texture, movement, and flora serve as the core storytellers. By capturing the way elements react and transform, the art direction distills softness and diffusion into a tactile, emotional experience. The visuals navigate the space between precision and poetry, ensuring performance is not only shown, but sensed. The result is a series that blurs the line between product and atmosphere, connecting with the audience through memory and subtle emotion.`,
       vi: `Được thực hiện cho **Downy**, dự án là một hành trình đa giác quan được kể qua sáu phim thương hiệu.
 
-Trong bối cảnh ra mắt **Downy Luxe**, bài toán đặt ra là chuyển hóa lợi ích công năng của sản phẩm thành một ngôn ngữ hình ảnh giàu cảm giác, cao cấp và khác biệt trên thị trường. Thay vì mô tả tính năng theo lối trực diện, định hướng sáng tạo ưu tiên gợi mở để trải nghiệm thương hiệu được cảm nhận bằng cảm xúc.
+Trong bối cảnh ra mắt **Downy Luxe**, bài toán đặt ra là chuyển hóa lợi ích công năng của sản phẩm thành một ngôn ngữ hình ảnh giàu cảm giác, cao cấp và khác biệt trên thị trường. Thay vì mô tả tính năng theo lối trực diện, định hướng sáng tạo ưu tiên gợi mở—để trải nghiệm thương hiệu được cảm nhận bằng cảm xúc.
 
 Ánh sáng, chất liệu, chuyển động và hệ thực vật trở thành những lớp kể chuyện chủ đạo. Việc ghi lại cách các yếu tố tương tác và chuyển hóa giúp cô đọng cảm nhận về độ mềm và độ khuếch tán thành một trải nghiệm vừa xúc giác vừa cảm xúc. Ngôn ngữ thị giác vận hành giữa độ chính xác và chất thơ, để hiệu năng không chỉ được nhìn thấy mà còn được cảm nhận rõ rệt. Kết quả là một chuỗi phim làm mờ ranh giới giữa sản phẩm và bầu không khí, kết nối khán giả qua ký ức và những rung động tinh tế.`,
     },
@@ -103,7 +103,7 @@ Trong bối cảnh ra mắt **Downy Luxe**, bài toán đặt ra là chuyển h�
         lead: "Deliverables",
         groups: [
           {
-            title: "Video",
+            title: "",
             items: ["6 High-Sensory Brand Films"],
           },
         ],
@@ -112,25 +112,70 @@ Trong bối cảnh ra mắt **Downy Luxe**, bài toán đặt ra là chuyển h�
         lead: "Sản phẩm bàn giao gồm",
         groups: [
           {
-            title: "Video",
-            items: ["6 phim cho chiến dịch Downy Luxe trên mạng xã hội"],
+            title: "",
+            items: ["6 phim thương hiệu High-Sensory"],
           },
         ],
       },
     },
     coverPath: "assets/projects/downy-2025/cover.jpg",
+    detailDescriptions: {
+      en: [
+        "",
+        "Long-wear Fragrance",
+        "",
+        "nature talent",
+        "Clean Girl Aesthetic- Harmony",
+        "",
+        "Fabric to Skin Care",
+        "",
+        "Long-wear Fragrance",
+        "",
+        "",
+        "",
+        "Odor Defense",
+        "",
+        "Harmony Sun Scent",
+        "",
+        "Mystique Scent",
+      ],
+      vi: [
+        "",
+        "Long-wear Fragrance",
+        "",
+        "nature talent",
+        "Clean Girl Aesthetic- Harmony",
+        "",
+        "Fabric to Skin Care",
+        "",
+        "Long-wear Fragrance",
+        "",
+        "",
+        "",
+        "Odor Defense",
+        "",
+        "Harmony Sun Scent",
+        "",
+        "Mystique Scent",
+      ],
+    },
     detailImages: [
       "assets/projects/downy-2025/detail-01.mp4",
-      "assets/projects/downy-2025/detail-02.mp4",
-      "assets/projects/downy-2025/detail-03.jpg",
+      "assets/projects/downy-2025/detail-02.jpg",
+      "assets/projects/downy-2025/detail-03.mp4",
       "assets/projects/downy-2025/detail-04.mp4",
-      "assets/projects/downy-2025/detail-05.mp4",
-      "assets/projects/downy-2025/detail-06.jpg",
-      "assets/projects/downy-2025/detail-07.mp4",
-      "assets/projects/downy-2025/detail-08.jpg",
-      "assets/projects/downy-2025/detail-09.mp4",
+      "assets/projects/downy-2025/detail-05.jpg",
+      "assets/projects/downy-2025/detail-06.mp4",
+      "assets/projects/downy-2025/detail-07.jpg",
+      "assets/projects/downy-2025/detail-08.mp4",
+      "assets/projects/downy-2025/detail-09.jpg",
       "assets/projects/downy-2025/detail-10.mp4",
-      "assets/projects/downy-2025/detail-11.mp4",
+      "assets/projects/downy-2025/detail-11.jpg",
+      "assets/projects/downy-2025/detail-12.mp4",
+      "assets/projects/downy-2025/detail-13.jpg",
+      "assets/projects/downy-2025/detail-14.mp4",
+      "assets/projects/downy-2025/detail-15.jpg",
+      "assets/projects/downy-2025/detail-16.mp4",
     ],
   },
   {
@@ -509,15 +554,44 @@ Dự án được giới thiệu trên **It's Nice That**, nền tảng quốc t
       },
     },
     coverPath: "assets/projects/no-one-magazine/cover.jpg",
+    detailDescriptions: {
+      en: [
+        "",
+        "front cover",
+        "back cover",
+        "loto inspiration",
+        "glimpse composition exploration",
+        "",
+        "",
+        "",
+        "",
+        "glimpse of BTS",
+        "",
+      ],
+      vi: [
+        "",
+        "Bìa trước",
+        "Bìa sau",
+        "Loto inspiration",
+        "Glimpse — khám phá bố cục",
+        "",
+        "",
+        "",
+        "",
+        "Glimpse hậu trường",
+        "",
+      ],
+    },
     detailImages: [
       "assets/projects/no-one-magazine/detail-01.jpg",
       "assets/projects/no-one-magazine/detail-02.jpg",
       "assets/projects/no-one-magazine/detail-03.jpg",
       "assets/projects/no-one-magazine/detail-04.mov",
-      "assets/projects/no-one-magazine/detail-05.mp4",
-      "assets/projects/no-one-magazine/detail-06.jpg",
+      "assets/projects/no-one-magazine/detail-05.jpg",
+      "assets/projects/no-one-magazine/detail-06.mp4",
       "assets/projects/no-one-magazine/detail-07.jpg",
-      "assets/projects/no-one-magazine/detail-08.gif",
+      "assets/projects/no-one-magazine/detail-08.jpg",
+      "assets/projects/no-one-magazine/detail-09.gif",
       "https://vimeo.com/1097288332/ac23838024?login=true#_=_",
     ],
   },
@@ -589,23 +663,23 @@ Mở rộng từ ý niệm trung tâm **"Crystal Age,"** tôi xây dựng một 
     name: "Vinamilk Green Farm",
     client: "Vinamilk",
     category: { vi: "Ra mắt sản phẩm mới", en: "New Product Launch" },
-    technology: "Art Direction, Production Design, Photography, Video Production",
+    technology: "Art Assistant, Set Design, Food Styling, Photography, Video Production",
     year: 2025,
     objective: {
       en: "New Product Launch",
       vi: "Ra mắt sản phẩm mới",
     },
     scopeOfWork: {
-      en: ["Art Direction", "Production Design", "Photography", "Video Production"],
-      vi: ["Art Direction", "Production Design", "Nhiếp ảnh", "Sản xuất video"],
+      en: ["Art Assistant", "Set Design", "Food Styling", "Photography", "Video Production"],
+      vi: ["Art Assistant", "Set Design", "Food Styling", "Nhiếp ảnh", "Sản xuất video"],
     },
     description: {
-      vi: `Hợp tác cùng **Vinamilk**, tôi tham gia vào giai đoạn ra mắt **Green Farm** - dòng sản phẩm cao cấp giới thiệu hai ngành hàng mới: sữa chua uống và granola vị.
+      vi: `Hợp tác cùng **Vinamilk**, tôi đồng hành trong giai đoạn ra mắt **Green Farm**—dòng phụ cao cấp giới thiệu Sữa chua uống và Granola hương vị mới.
 
-Bắt nguồn từ định hướng về ngành sữa hiện đại và bền vững, sáng tạo tập trung vào **mối cộng sinh giữa con người, thiên nhiên và cảm quan**. Tinh thần này được cô đọng trong ý niệm trung tâm: **"Taste of Wonder."** Nhằm kết nối với nhóm khách hàng tinh chọn và quan tâm sức khỏe, art direction chuyển tải cảm giác tươi mới qua một ngôn ngữ thị giác mềm mại, tinh luyện. Bằng cách cân bằng tinh thần tối giản với các lớp chất liệu hữu cơ giàu sắc độ, chiến dịch định vị Green Farm như một chuẩn mực giàu cảm hứng cho trải nghiệm sữa theo định hướng sinh thái.`,
-      en: `In partnership with **Vinamilk**, I contributed in the debut of **Green Farm** - a premium sub-brand introducing their new Drinking Yogurt and Flavoured Granola lines.
+Xuất phát từ cam kết về ngành sữa hiện đại và bền vững, định hướng sáng tạo khám phá **mối cộng sinh giữa con người, thiên nhiên và cảm quan**. Tầm nhìn này được cô đọng thành ý niệm cốt lõi: **"Taste of Wonder"**. Hướng tới khách hàng tinh chọn và quan tâm sức khỏe, art direction chuyển tải tinh thần **"tươi mới"** qua một ngôn ngữ thị giác mềm mại, tinh luyện. Bằng cách cân bằng giữa sự chừng mực tối giản và các lớp chất liệu hữu cơ rực rỡ, chiến dịch định vị **Green Farm** như một tham chiếu đầy gợi mở cho trải nghiệm sữa gắn với ý thức sinh thái.`,
+      en: `In partnership with **Vinamilk**, I contributed to the debut of **Green Farm**—a premium sub-brand introducing their new Drinking Yogurt and Flavoured Granola lines.
 
-Rooted in a commitment to sustainable, modern dairy, the creative direction explores the **symbiosis of humanity, nature, and sensation**. This vision is distilled into the core concept: **"Taste of Wonder."** To appeal to a discerning, health-conscious audience, the art direction translates the essence of freshness into a soft, refined visual language. By balancing minimalist poise with vibrant, organic textures, the campaign positions Green Farm as an evocative benchmark for eco-conscious dairy experiences.`,
+Rooted in a commitment to sustainable, modern dairy, the creative direction explores the **symbiosis of humanity, nature, and sensation**. This vision is distilled into the core concept: **"Taste of Wonder"**. To appeal to a discerning, health-conscious audience, the art direction translates the essence of "freshness" into a soft, refined visual language. By balancing minimalist poise with vibrant, organic textures, the campaign positions **Green Farm** as an evocative benchmark for eco-conscious dairy experiences.`,
     },
     deliverable: {
       en: {
@@ -617,7 +691,7 @@ Rooted in a commitment to sustainable, modern dairy, the creative direction expl
           },
           {
             title: "Photography",
-            items: ["3 key visuals", "29 social assets"],
+            items: ["3 Key Visuals & 29 Social Assets"],
           },
         ],
       },
@@ -630,19 +704,69 @@ Rooted in a commitment to sustainable, modern dairy, the creative direction expl
           },
           {
             title: "Nhiếp ảnh",
-            items: ["3 key visual", "29 social asset"],
+            items: ["3 Key Visuals & 29 Social Assets"],
           },
         ],
       },
     },
     coverPath: "assets/projects/vinamilk-green-farm/cover.jpg",
+    detailDescriptions: {
+      en: [
+        "",
+        "KV Drinking Yogurt",
+        "[Video feature here](https://web.facebook.com/reel/747760367608070)",
+        "KV Honey Yogurt",
+        "[Video feature here](https://www.facebook.com/reel/790706356847596?_rdc=1&_rdr#)",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+      ],
+      vi: [
+        "",
+        "KV Drinking Yogurt",
+        "[Video tại đây](https://web.facebook.com/reel/747760367608070)",
+        "KV Honey Yogurt",
+        "[Video tại đây](https://www.facebook.com/reel/790706356847596?_rdc=1&_rdr#)",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+      ],
+    },
     detailImages: [
       "assets/projects/vinamilk-green-farm/detail-01.jpg",
-      "assets/projects/vinamilk-green-farm/detail-02.jpg",
+      "assets/projects/vinamilk-green-farm/detail-02.mp4",
       "assets/projects/vinamilk-green-farm/detail-03.jpg",
-      "assets/projects/vinamilk-green-farm/detail-04.jpg",
+      "assets/projects/vinamilk-green-farm/detail-04.mp4",
       "assets/projects/vinamilk-green-farm/detail-05.jpg",
-      "assets/projects/vinamilk-green-farm/detail-06.jpg",
+      "assets/projects/vinamilk-green-farm/detail-06.mp4",
       "assets/projects/vinamilk-green-farm/detail-07.jpg",
       "assets/projects/vinamilk-green-farm/detail-08.jpg",
       "assets/projects/vinamilk-green-farm/detail-09.jpg",
@@ -653,6 +777,11 @@ Rooted in a commitment to sustainable, modern dairy, the creative direction expl
       "assets/projects/vinamilk-green-farm/detail-14.jpg",
       "assets/projects/vinamilk-green-farm/detail-15.jpg",
       "assets/projects/vinamilk-green-farm/detail-16.jpg",
+      "assets/projects/vinamilk-green-farm/detail-17.jpg",
+      "assets/projects/vinamilk-green-farm/detail-18.jpg",
+      "assets/projects/vinamilk-green-farm/detail-19.jpg",
+      "assets/projects/vinamilk-green-farm/detail-20.jpg",
+      "assets/projects/vinamilk-green-farm/detail-21.jpg",
     ],
   },
   {
@@ -958,14 +1087,14 @@ The character design features a fluid silhouette, serving as a metaphor for the 
   },
   {
     slug: "invisible-space-studio",
-    name: "Invisible Space Studio",
+    name: "Invisible Space Studio Profile",
     client: "Invisible Space Studio",
     category: { vi: "Chiến dịch & hình ảnh studio", en: "Social campaign & studio assets" },
     technology: "Creative Proposal, Art Direction, Production, Set Design",
     year: 2025,
     summary: {
-      en: "Quirkiness × Authenticity — playful profile work for the studio’s social channels and website.",
-      vi: "Quirkiness × Authenticity — ảnh profile mang tinh nghịch cho kênh social và website studio.",
+      en: "Social campaign and website imagery: studio profiles rooted in Người Cầm Đèn and Quirkiness × Authenticity.",
+      vi: "Chiến dịch social và hình ảnh website: chuỗi profile studio bám triết lý Người Cầm Đèn và Quirkiness × Authenticity.",
     },
     objective: {
       en: "Social Campaign + Image asset for Studio Website",
@@ -978,18 +1107,18 @@ The character design features a fluid silhouette, serving as a metaphor for the 
     description: {
       en: `**Quirkiness × Authenticity**
 
-A playful profile series designed to reveal the "internal" spirit of **Invisible Space Studio**. This shoot celebrates individuality by capturing candid, honest moments through a lens of intentional imperfection.
+To honor the internal spirit of Invisible Space Studio, I developed a series of profiles centered on the philosophy of the **Người Cầm Đèn**—the lantern-bearing pioneer and storyteller.
 
-The visual tone is effortless and raw, utilizing spontaneous gestures and subtle details to surface unique personalities. By juxtaposing thoughtful styling with organic compositions, the art direction hints at the "seen and unseen" - layering meaning without over-staging.
+Moving beyond the clinical nature of traditional headshots, the creative direction embraces **Quirkiness × Authenticity**, utilizing a raw, effortless aesthetic to surface the unique personalities within the collective. By juxtaposing thoughtful styling with intentional imperfection, the art direction navigates the space between **the seen and the unseen**, crafting an emotionally resonant narrative that captures the team exactly as they are: expressive, visionary, and real.
 
-Rooted in a human-centered, emotion-driven approach, the project captures the team as they are: expressive, individual, and real.`,
+My role encompassed the end-to-end creative to art direction and set design, translating a deep-rooted studio philosophy into a human-centered visual identity.`,
       vi: `**Quirkiness × Authenticity**
 
-Chuỗi ảnh profile được xây dựng với tinh thần vui tươi nhằm bộc lộ "nội tại" của **Invisible Space Studio**. Bộ ảnh tôn vinh cá tính riêng thông qua các khoảnh khắc chân thực, tự nhiên và những chủ đích "không hoàn hảo" được kiểm soát.
+Nhằm tôn vinh tinh thần nội tại của Invisible Space Studio, tôi phát triển một chuỗi profile xoay quanh triết lý **Người Cầm Đèn**—hình mẫu người tiên phong cầm đèn và kể chuyện.
 
-Sắc thái thị giác giữ độ mộc và nhẹ, tận dụng cử chỉ ngẫu hứng cùng chi tiết tinh tế để làm nổi bật từng cá nhân. Bằng việc đặt styling có chủ đích cạnh bố cục giàu tính hữu cơ, art direction gợi mở lớp nghĩa giữa "hữu hình và vô hình" mà không tạo cảm giác dàn dựng.
+Vượt lên vẻ lạnh lẽo của headshot truyền thống, định hướng sáng tạo theo đuổi **Quirkiness × Authenticity**, với thẩm mỹ thô và nhẹ nhàng để làm nổi bật từng cá tính trong tập thể. Bằng cách đặt styling có chủ đích cạnh sự không hoàn hảo có chủ đích, art direction điều hướng khoảng giữa **hữu hình và vô hình**, dệt một câu chuyện đầy cảm xúc và ghi nhận đội ngũ đúng như họ vốn thế: biểu đạt, có tầm nhìn và chân thực.
 
-Lấy con người và cảm xúc làm trung tâm, dự án ghi lại đúng chân dung tập thể: biểu đạt, khác biệt và chân thực.`,
+Vai trò của tôi trải dài từ creative toàn phần đến art direction và set design, chuyển hóa triết lý gốc rễ của studio thành một bản sắc thị giác lấy con người làm trung tâm.`,
     },
     deliverable: {
       en: {
@@ -997,11 +1126,11 @@ Lấy con người và cảm xúc làm trung tâm, dự án ghi lại đúng ch�
         groups: [
           {
             title: "Portraits",
-            items: ["11 close-up profiles", "11 full-body portraits with set design"],
+            items: ["11 Close-up Profiles", "11 Full-body Portraits with Set Design"],
           },
           {
-            title: "Team & culture",
-            items: ["3 full-team assets", "1 co-founder feature", "4 departmental portraits (PM, Production, Media, Graphic Design)"],
+            title: "Team & Culture",
+            items: ["3 Full-Team Assets", "1 Co-Founder Feature", "4 Departmental Portraits (PM, Production, Media, Graphic Design)"],
           },
         ],
       },
@@ -1030,7 +1159,7 @@ Lấy con người và cảm xúc làm trung tâm, dự án ghi lại đúng ch�
     detailDescriptions: {
       en: [
         "",
-        "Nguoi cam den",
+        "Người Cầm Đèn",
         "Headshot",
         "Media team",
         "Design team",
@@ -1064,7 +1193,7 @@ Lấy con người và cảm xúc làm trung tâm, dự án ghi lại đúng ch�
         "Run",
         "Run",
         "Run",
-        "Run, Forest",
+        "RRun, Forest",
         "Run",
         "[Feature in Invisible Space Studio](https://www.instagram.com/reel/DNGEsCIyJSb/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==)",
       ],
