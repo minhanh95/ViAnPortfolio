@@ -51,6 +51,7 @@ const pageState = {
   velocity: 0,
   momentumRaf: null,
   lastWheelAt: Date.now(),
+  hasUserInteracted: false,
 };
 const LANGUAGE_STORAGE_KEY = "vanlab-language";
 
@@ -719,9 +720,13 @@ function queueMomentumFromWheel(event) {
 }
 
 function wireHorizontalWheel() {
+  pageEls.gallery.addEventListener("pointerdown", () => {
+    pageState.hasUserInteracted = true;
+  });
   pageEls.gallery.addEventListener(
     "wheel",
     (event) => {
+      pageState.hasUserInteracted = true;
       event.preventDefault();
       queueMomentumFromWheel(event);
     },
@@ -757,6 +762,7 @@ function renderSequence() {
   requestAnimationFrame(() => {
     const middleSlides = Array.from(pageEls.gallery.querySelectorAll('.project-slide[data-clone-set="0"]'));
     if (!middleSlides.length) return;
+    pageState.hasUserInteracted = false;
     updateLoopMetrics();
     // Open on intro frame: metadata + first image visible
     pageEls.gallery.scrollLeft = pageState.setStart;
@@ -868,7 +874,11 @@ function initializePage() {
       if (event?.target instanceof HTMLImageElement) {
         applyLandscapeClassForImage(event.target);
       }
-      updateLoopMetrics();
+      if (!updateLoopMetrics()) return;
+      // Keep opening frame anchored while media is still resolving layout.
+      if (!pageState.hasUserInteracted) {
+        pageEls.gallery.scrollLeft = pageState.setStart;
+      }
     },
     true,
   );
