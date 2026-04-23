@@ -314,9 +314,16 @@ function buildYouTubeOpenUrl(path) {
   }
 }
 
-function buildYouTubePosterSlideHtml(path, altText) {
+function buildYouTubePosterSlideHtml(path, altText, customPosterPath) {
   const href = escapeHtml(buildYouTubeOpenUrl(path));
   const labelEsc = escapeHtml(altText);
+  const custom = String(customPosterPath || "").trim();
+  if (custom) {
+    const posterSrc = escapeHtml(custom);
+    return `<a class="project-slide-media project-slide-media--youtube" href="${href}" target="_blank" rel="noopener noreferrer" title="${labelEsc}" aria-label="${labelEsc}, YouTube">
+    <span class="project-slide-youtube-poster"><img src="${posterSrc}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" /><span class="project-slide-youtube-play" aria-hidden="true"></span></span>
+  </a>`;
+  }
   const id = parseYouTubeVideoId(path);
   const maxUrl = id ? `https://i.ytimg.com/vi/${id}/maxresdefault.jpg` : "";
   const hqUrl = id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : "";
@@ -495,7 +502,8 @@ function createSlide(slide, realIndex, cloneSet) {
       const embedSrc = escapeHtml(buildVimeoEmbedUrl(slide.path));
       wrapper.innerHTML = `<iframe class="project-slide-media project-slide-media--embed" src="${embedSrc}" title="${label}" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>${captionHtml}`;
     } else if (isYouTubePath(slide.path)) {
-      wrapper.innerHTML = `${buildYouTubePosterSlideHtml(slide.path, slide.alt)}${captionHtml}`;
+      const ytPoster = String(slide.youtubePosterPath || "").trim();
+      wrapper.innerHTML = `${buildYouTubePosterSlideHtml(slide.path, slide.alt, ytPoster)}${captionHtml}`;
     } else if (isTikTokPath(slide.path)) {
       wrapper.innerHTML = `${buildTikTokPosterSlideHtml(slide.path, slide.alt)}${captionHtml}`;
     } else {
@@ -721,15 +729,21 @@ async function renderPage() {
 
   pageState.sequence = [
     { type: "meta", html: buildMetaMarkup(project), counterIndex: -1 },
-    ...orderedImages.map((path, index) => ({
-      type: "image",
-      path,
-      alt:
-        String(localizedDescriptions[index] || "").trim() ||
-        `${project.name} ${index === 0 ? "cover" : `detail ${index}`}`,
-      caption: String(localizedDescriptions[index] || "").trim(),
-      counterIndex: index,
-    })),
+    ...orderedImages.map((path, index) => {
+      const ytPosterRaw = String(project.youtubePosterPath || "").trim();
+      const youtubePosterPath =
+        isYouTubePath(path) && ytPosterRaw && !isYouTubePath(ytPosterRaw) ? ytPosterRaw : "";
+      return {
+        type: "image",
+        path,
+        alt:
+          String(localizedDescriptions[index] || "").trim() ||
+          `${project.name} ${index === 0 ? "cover" : `detail ${index}`}`,
+        caption: String(localizedDescriptions[index] || "").trim(),
+        counterIndex: index,
+        youtubePosterPath,
+      };
+    }),
   ];
 
   document.title = `${project.name} - VAN.LAB`;

@@ -409,8 +409,15 @@ function buildYouTubeOpenUrl(path) {
   }
 }
 
-function buildYouTubePosterCaseHtml(path, labelAttr) {
+function buildYouTubePosterCaseHtml(path, labelAttr, customPosterPath) {
   const href = escapeHtmlAttr(buildYouTubeOpenUrl(path));
+  const custom = String(customPosterPath || "").trim();
+  if (custom && !/(youtube\.com|youtu\.be)/i.test(custom)) {
+    const posterSrc = escapeHtmlAttr(custom);
+    return `<a class="case-slide-media case-slide-media--youtube" href="${href}" target="_blank" rel="noopener noreferrer" title="${labelAttr}" aria-label="${labelAttr}, YouTube">
+    <span class="case-slide-youtube-poster"><img src="${posterSrc}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" /><span class="case-slide-youtube-play" aria-hidden="true"></span></span>
+  </a>`;
+  }
   const id = parseYouTubeVideoId(path);
   const maxUrl = id ? `https://i.ytimg.com/vi/${id}/maxresdefault.jpg` : "";
   const hqUrl = id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : "";
@@ -445,14 +452,14 @@ function escapeHtmlAttr(str) {
     .replace(/</g, "&lt;");
 }
 
-function buildCaseSlideMediaHtml(path, projectName, slideIndex) {
+function buildCaseSlideMediaHtml(path, projectName, slideIndex, youtubePosterPath) {
   const src = escapeHtmlAttr(path);
   const label = escapeHtmlAttr(`${projectName} detail ${slideIndex + 1}`);
   if (isVideoPath(path)) {
     return `<video class="case-slide-media" src="${src}" controls playsinline muted preload="metadata" title="${label}"></video>`;
   }
   if (isYouTubePath(path)) {
-    return buildYouTubePosterCaseHtml(path, label);
+    return buildYouTubePosterCaseHtml(path, label, youtubePosterPath);
   }
   if (isTikTokPath(path)) {
     return buildTikTokPosterCaseHtml(path, label);
@@ -980,6 +987,7 @@ function renderCaseStudy() {
 
   const slideImages = normalizeSlideImages(project);
   warmupImages(slideImages);
+  if (project.youtubePosterPath) warmupImages([project.youtubePosterPath]);
 
   els.caseTitle.textContent = project.name;
   els.caseType.textContent = getLocalizedValue(project.category);
@@ -993,11 +1001,12 @@ function renderCaseStudy() {
     state.caseSlideIndex = 0;
   }
 
+  const ytPoster = String(project.youtubePosterPath || "").trim();
   els.caseSlideTrack.innerHTML = slideImages
     .map(
       (path, imageIndex) => `
         <figure class="case-image-item" data-slide-index="${imageIndex}">
-          ${buildCaseSlideMediaHtml(path, project.name, imageIndex)}
+          ${buildCaseSlideMediaHtml(path, project.name, imageIndex, isYouTubePath(path) ? ytPoster : "")}
         </figure>`,
     )
     .join("");
