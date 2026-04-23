@@ -532,7 +532,13 @@ function createSlide(slide, realIndex, cloneSet) {
         const applyLandscapeClass = () => {
           if (!imageEl.naturalWidth || !imageEl.naturalHeight) return;
           const isLandscape = imageEl.naturalWidth / imageEl.naturalHeight >= 1.2;
-          wrapper.classList.toggle("project-slide--landscape-enhanced", isLandscape);
+          const changed = wrapper.classList.toggle("project-slide--landscape-enhanced", isLandscape);
+          if (changed) {
+            requestAnimationFrame(() => {
+              updateLoopMetrics();
+              recenterIfNeeded();
+            });
+          }
         };
         if (imageEl.complete) applyLandscapeClass();
         else {
@@ -560,11 +566,19 @@ function recenterIfNeeded() {
   const leftEdge = pageState.setStart;
   const rightEdge = pageState.setStart + pageState.setWidth;
   let next = pageEls.gallery.scrollLeft;
-  if (next < leftEdge) next += pageState.setWidth;
-  else if (next >= rightEdge) next -= pageState.setWidth;
+  let wrapped = false;
+  while (next < leftEdge) {
+    next += pageState.setWidth;
+    wrapped = true;
+  }
+  while (next >= rightEdge) {
+    next -= pageState.setWidth;
+    wrapped = true;
+  }
   if (next !== pageEls.gallery.scrollLeft) {
     pageEls.gallery.scrollLeft = next;
   }
+  return wrapped;
 }
 
 function wireCounterObserver() {
@@ -656,7 +670,15 @@ function runMomentum() {
 
   pageState.velocity *= SCROLL_PHYSICS.MOMENTUM_DECAY;
   pageEls.gallery.scrollLeft += pageState.velocity * SCROLL_PHYSICS.VELOCITY_TO_PIXEL;
-  recenterIfNeeded();
+  const wrapped = recenterIfNeeded();
+  if (wrapped) {
+    // Crossing loop boundary with high residual velocity causes a perceived
+    // "jump to next slide". Dampen hard to keep continuity near wrap points.
+    pageState.velocity *= 0.3;
+    if (Math.abs(pageState.velocity) < SCROLL_PHYSICS.MIN_VELOCITY * 4) {
+      pageState.velocity = 0;
+    }
+  }
   pageState.momentumRaf = requestAnimationFrame(runMomentum);
 }
 
