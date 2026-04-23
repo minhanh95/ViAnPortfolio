@@ -229,6 +229,7 @@ let caseVideoObserverCleanup = null;
 let galleryLazyObserver = null;
 let galleryRevealObserver = null;
 let galleryFocusCleanup = null;
+let lastGalleryInfoKey = "";
 const detailResolvePromises = new Map();
 const imageWarmupCache = new Set();
 const INDEX_PREVIEW_OFFSET = 12;
@@ -687,20 +688,34 @@ function getScopeText(project) {
   return String(scope || project.technology || "");
 }
 
+function animateGalleryInfoText() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (!els.galleryProjectInfo) return;
+  els.galleryProjectInfo.classList.remove("is-text-animating");
+  // Force reflow so animation can replay on each project hover.
+  void els.galleryProjectInfo.offsetWidth;
+  els.galleryProjectInfo.classList.add("is-text-animating");
+}
+
 function updateGalleryInfoPanel(project, visible = true) {
   if (!els.galleryProjectInfo) return;
   if (!project) {
     els.galleryProjectInfo.classList.remove("is-visible");
     els.galleryProjectInfo.classList.remove("is-left", "is-right");
+    lastGalleryInfoKey = "";
     return;
   }
   const objective = getLocalizedValue(project.objective) || getLocalizedValue(project.category);
+  const scopeText = getScopeText(project);
+  const nextInfoKey = `${project.name || ""}|${project.year || ""}|${project.client || ""}|${objective || ""}|${scopeText}`;
   els.galleryInfoTitle.textContent = project.name || "";
   els.galleryInfoYear.textContent = String(project.year || "");
   els.galleryInfoClient.textContent = project.client || "";
   els.galleryInfoObjective.textContent = objective || "";
-  els.galleryInfoScope.textContent = getScopeText(project);
+  els.galleryInfoScope.textContent = scopeText;
   els.galleryProjectInfo.classList.toggle("is-visible", visible);
+  if (visible && nextInfoKey !== lastGalleryInfoKey) animateGalleryInfoText();
+  lastGalleryInfoKey = nextInfoKey;
 }
 
 function positionGalleryInfoPanel(targetItem) {
@@ -712,18 +727,32 @@ function positionGalleryInfoPanel(targetItem) {
   const mediaRect = targetItem.querySelector(".gallery-media")?.getBoundingClientRect();
   const rect = mediaRect || targetItem.getBoundingClientRect();
   const layoutRect = focusLayout.getBoundingClientRect();
-  const isEven = targetItem.matches(".gallery-item:nth-child(even)");
-  panel.classList.toggle("is-left", isEven);
-  panel.classList.toggle("is-right", !isEven);
-  const gap = 4;
+  const prefersLeft = targetItem.matches(".gallery-item:nth-child(even)");
+  const gap = 14;
   const panelWidth = panel.offsetWidth || 220;
   const panelHeight = panel.offsetHeight || 200;
-  const preferredLeft = isEven
-    ? rect.left - layoutRect.left - panelWidth - gap
-    : rect.right - layoutRect.left + gap;
   const minLeft = 0;
   const maxLeft = Math.max(0, layoutRect.width - panelWidth);
+  const rectLeft = rect.left - layoutRect.left;
+  const rectRight = rect.right - layoutRect.left;
+  const leftCandidate = rectLeft - panelWidth - gap;
+  const rightCandidate = rectRight + gap;
+  const canPlaceLeft = leftCandidate >= minLeft;
+  const canPlaceRight = rightCandidate <= maxLeft;
+  const availableLeft = Math.max(0, rectLeft - gap);
+  const availableRight = Math.max(0, layoutRect.width - rectRight - gap);
+
+  let placeOnLeft = prefersLeft;
+  if (prefersLeft && !canPlaceLeft && canPlaceRight) placeOnLeft = false;
+  if (!prefersLeft && !canPlaceRight && canPlaceLeft) placeOnLeft = true;
+  if (!canPlaceLeft && !canPlaceRight) placeOnLeft = availableLeft >= availableRight;
+
+  panel.classList.toggle("is-left", placeOnLeft);
+  panel.classList.toggle("is-right", !placeOnLeft);
+
+  const preferredLeft = placeOnLeft ? leftCandidate : rightCandidate;
   const left = Math.max(minLeft, Math.min(preferredLeft, maxLeft));
+
   const preferredTop = rect.top - layoutRect.top + rect.height * 0.5 - panelHeight * 0.5;
   const minTop = 0;
   const maxTop = Math.max(0, focusLayout.offsetHeight - panelHeight);
