@@ -31,16 +31,14 @@ const i18n = {
       "Adobe Illustrator",
       "Adobe Photoshop",
       "Adobe InDesign",
-      "Adobe After Effects",
-      "Microsoft Office",
       "Figma",
       "Blender",
       "Procreate",
       "Slack",
+      "Microsoft Office",
     ],
     digitalSkillsLabel: "Kỹ năng số",
     digitalSkillsItems: [
-      "Brand audit",
       "Concept Development",
       "Visual Development & Design",
       "Spatial & Set design",
@@ -55,13 +53,14 @@ const i18n = {
     aboutStudioLabel: "Khách hàng",
     aboutStudioBody:
       "Vinamilk\nHighland\nPizza Hut\nKFC\nCheese Coffee\nAn Miên\nTáo Tào\nVesou\nÉp Phê\nOnePlus\nPS\nHazeline\nColor Key\nNimai\nG.G.G\nDowny\nNo-one Magazine\nL'Officiel\nLife Center Vietnam\nElink English\nInvisible Space Studio\nX3D Studio\nRefinery Media",
-    servicesLabel: "Phạm vi dịch vụ",
+    servicesLabel: "Dịch vụ",
     servicesItems: [
+      "Campaign Collateral",
       "Art Direction",
+      "UI Direction",
       "Set Design",
-      "Visual Identity",
-      "Editorial Visual System",
-      "Spatial Storytelling",
+      "Production Design",
+      "Food Styling",
     ],
     findUsLabel: "Kết nối",
     newsletterLabel: "Bản tin",
@@ -92,7 +91,7 @@ const i18n = {
     portfolioLabel: "Portfolio",
     heroTitle: "Slogan",
     heroSubtext:
-      "Vian Nguyen is an Art Director. With a background in spatial studies and illustration, Vian moved into product thinking and spatial storytelling - translating ideas into tangible experiences beyond visuals. The practice grew from art direction through constant experimentation across mediums, shaping both creative thinking and execution. With experience spanning agile teams to large-scale productions, I now lead projects for major brands in Vietnam as Team Lead and Art Director at Invisible Space Studio.",
+      "I am a multidisciplinary Art Director with a creative lineage rooted in Design with minors in <strong>spatial design and illustration</strong>. This foundation allows me to approach every project with a unique dual perspective: the technical rigor of an architect and the expressive soul of an artist. My work exists at the intersection of commercial precision and raw human emotion, bridging the gap between brand objectives and visceral storytelling.<br /><br />As a <strong>creative developer</strong>, I navigate a diverse spectrum of scales - from high-impact commercial sets for major Vietnamese brands to avant-garde runway narratives and community-driven editorials. I specialize in translating complex concepts into immersive physical worlds, ensuring that whether the output is a global campaign or an intimate portrait, the result is a balanced, intentional, and evocative experience.",
     thYear: "Year",
     thClient: "Client",
     thType: "Type",
@@ -113,16 +112,14 @@ const i18n = {
       "Adobe Illustrator",
       "Adobe Photoshop",
       "Adobe InDesign",
-      "Adobe After Effects",
-      "Microsoft Office",
       "Figma",
       "Blender",
       "Procreate",
       "Slack",
+      "Microsoft Office",
     ],
     digitalSkillsLabel: "Digital Skill",
     digitalSkillsItems: [
-      "Brand audit",
       "Concept Development",
       "Visual Development & Design",
       "Spatial & Set design",
@@ -137,13 +134,14 @@ const i18n = {
     aboutStudioLabel: "Clients",
     aboutStudioBody:
       "Vinamilk\nHighland\nPizza Hut\nKFC\nCheese Coffee\nAn Miên\nTáo Tào\nVesou\nÉp Phê\nOnePlus\nPS\nHazeline\nColor Key\nNimai\nG.G.G\nDowny\nNo-one Magazine\nL'Officiel\nLife Center Vietnam\nElink English\nInvisible Space Studio\nX3D Studio\nRefinery Media",
-    servicesLabel: "Services",
+    servicesLabel: "Service",
     servicesItems: [
+      "Campaign Collateral",
       "Art Direction",
+      "UI Direction",
       "Set Design",
-      "Visual Identity",
-      "Editorial Visual System",
-      "Spatial Storytelling",
+      "Production Design",
+      "Food Styling",
     ],
     findUsLabel: "Find Us",
     newsletterLabel: "Newsletter",
@@ -634,7 +632,8 @@ function renderStaticText() {
   setText("navContact", t("navContact"));
   setText("portfolioLabel", t("portfolioLabel"));
   setText("heroTitle", t("heroTitle"));
-  setText("heroSubtext", t("heroSubtext"));
+  const heroSubtextNode = document.getElementById("heroSubtext");
+  if (heroSubtextNode) heroSubtextNode.innerHTML = t("heroSubtext");
   setText("thYear", t("thYear"));
   setText("thClient", t("thClient"));
   setText("thType", t("thType"));

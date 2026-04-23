@@ -1577,7 +1577,12 @@ html[data-theme="light"] .theme-toggle-btn::before {
 }
 
 .about-page .skills-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: clamp(0.9rem, 2vw, 1.4rem);
+}
+
+.about-page .skills-grid > .skill-card:first-child {
+  grid-column: auto;
 }
 
 .about-page .skill-card {
@@ -1608,7 +1613,7 @@ html[data-theme="light"] .theme-toggle-btn::before {
 }
 
 .about-main-grid > article:first-child {
-  grid-column: span 2;
+  grid-column: auto;
 }
 
 .about-main-grid p {
@@ -1617,6 +1622,7 @@ html[data-theme="light"] .theme-toggle-btn::before {
 }
 
 #aboutServicesList,
+#aboutIndustryList,
 #aboutContactList {
   list-style: none;
   margin: 0;
@@ -1624,6 +1630,7 @@ html[data-theme="light"] .theme-toggle-btn::before {
 }
 
 #aboutServicesList li,
+#aboutIndustryList li,
 #aboutContactList li {
   margin: 0.25rem 0;
   font-size: 0.87rem;
@@ -1705,7 +1712,7 @@ html[data-theme="light"] .theme-toggle-btn::before {
   }
 
   .about-main-grid > article:first-child {
-    grid-column: span 2;
+    grid-column: auto;
   }
 
   .skills-grid {
