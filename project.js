@@ -358,6 +358,22 @@ function pickLocalizedField(value, lang) {
   return value[lang] || value.en || "";
 }
 
+function getAssetFileName(path) {
+  return String(path || "").split("/").pop() || "";
+}
+
+function getProjectDetailDisplayMode(project, path, index) {
+  const modeMap = project?.detailDisplayMode;
+  if (!modeMap || typeof modeMap !== "object") return "contain";
+  const byName = String(modeMap[getAssetFileName(path)] || "").toLowerCase();
+  if (byName === "cover-vertical") return "cover-vertical";
+  if (byName === "cover") return "cover";
+  const byIndex = String(modeMap[String(index + 1)] || "").toLowerCase();
+  if (byIndex === "cover-vertical") return "cover-vertical";
+  if (byIndex === "cover") return "cover";
+  return "contain";
+}
+
 function getScopeLines(scope, lang) {
   if (!scope) return [];
   if (Array.isArray(scope)) return scope;
@@ -484,6 +500,9 @@ function buildMetaMarkup(project) {
 function createSlide(slide, realIndex, cloneSet) {
   const wrapper = document.createElement(slide.type === "meta" ? "article" : "figure");
   wrapper.className = `project-slide ${slide.type === "meta" ? "project-slide--meta" : "project-slide--image"}`;
+  if (slide.type === "image" && slide.displayMode === "cover-vertical") {
+    wrapper.classList.add("project-slide--media-fill-vertical");
+  }
   wrapper.dataset.realIndex = String(realIndex);
   wrapper.dataset.cloneSet = String(cloneSet);
   wrapper.dataset.counterIndex = String(slide.counterIndex ?? -1);
@@ -508,26 +527,43 @@ function createSlide(slide, realIndex, cloneSet) {
       wrapper.innerHTML = `${buildTikTokPosterSlideHtml(slide.path, slide.alt)}${captionHtml}`;
     } else {
       wrapper.innerHTML = `<img src="${src}" alt="${label}" loading="lazy" decoding="async" />${captionHtml}`;
+      const imageEl = wrapper.querySelector("img");
+      if (imageEl) {
+        const applyLandscapeClass = () => {
+          if (!imageEl.naturalWidth || !imageEl.naturalHeight) return;
+          const isLandscape = imageEl.naturalWidth / imageEl.naturalHeight >= 1.2;
+          wrapper.classList.toggle("project-slide--landscape-enhanced", isLandscape);
+        };
+        if (imageEl.complete) applyLandscapeClass();
+        else {
+          imageEl.addEventListener("load", applyLandscapeClass, { once: true });
+        }
+      }
     }
   }
   return wrapper;
 }
 
-function recenterIfNeeded() {
-  if (!pageState.setWidth) return;
-  // Keep the viewport around the middle clone set so both directions
-  // can wrap infinitely even when a project has only a cover image.
-  const min = pageState.setStart - pageState.setWidth * 0.25;
-  const max = pageState.setStart + pageState.setWidth * 0.75;
-  let guard = 0;
+function updateLoopMetrics() {
+  const firstMiddle = pageEls.gallery.querySelector('.project-slide[data-clone-set="0"]');
+  const firstNext = pageEls.gallery.querySelector('.project-slide[data-clone-set="1"]');
+  if (!firstMiddle || !firstNext) return false;
+  pageState.setStart = firstMiddle.offsetLeft;
+  pageState.setWidth = firstNext.offsetLeft - firstMiddle.offsetLeft;
+  return pageState.setWidth > 0;
+}
 
-  while (pageEls.gallery.scrollLeft < min && guard < 3) {
-    pageEls.gallery.scrollLeft += pageState.setWidth;
-    guard += 1;
-  }
-  while (pageEls.gallery.scrollLeft > max && guard < 6) {
-    pageEls.gallery.scrollLeft -= pageState.setWidth;
-    guard += 1;
+function recenterIfNeeded() {
+  if (!pageState.setWidth && !updateLoopMetrics()) return;
+  // Recenter only when we actually cross into side clone sets.
+  // Earlier thresholds (like 75% width) can cause visible jumps mid-scroll.
+  const leftEdge = pageState.setStart;
+  const rightEdge = pageState.setStart + pageState.setWidth;
+  let next = pageEls.gallery.scrollLeft;
+  if (next < leftEdge) next += pageState.setWidth;
+  else if (next >= rightEdge) next -= pageState.setWidth;
+  if (next !== pageEls.gallery.scrollLeft) {
+    pageEls.gallery.scrollLeft = next;
   }
 }
 
@@ -683,11 +719,7 @@ function renderSequence() {
   requestAnimationFrame(() => {
     const middleSlides = Array.from(pageEls.gallery.querySelectorAll('.project-slide[data-clone-set="0"]'));
     if (!middleSlides.length) return;
-    const first = middleSlides[0];
-    const last = middleSlides[middleSlides.length - 1];
-    const lastRight = last.offsetLeft + last.offsetWidth;
-    pageState.setStart = first.offsetLeft;
-    pageState.setWidth = lastRight - first.offsetLeft;
+    updateLoopMetrics();
     // Open on intro frame: metadata + first image visible
     pageEls.gallery.scrollLeft = pageState.setStart;
     updateCounter(0);
@@ -736,6 +768,7 @@ async function renderPage() {
       return {
         type: "image",
         path,
+        displayMode: getProjectDetailDisplayMode(project, path, index),
         alt:
           String(localizedDescriptions[index] || "").trim() ||
           `${project.name} ${index === 0 ? "cover" : `detail ${index}`}`,
@@ -786,6 +819,18 @@ function initializePage() {
     updateThemeToggleUi();
     updateOutboundNavLinks();
   });
+  window.addEventListener("resize", () => {
+    updateLoopMetrics();
+    recenterIfNeeded();
+  });
+  // Re-measure after late media decode to avoid stale loop width.
+  pageEls.gallery.addEventListener(
+    "load",
+    () => {
+      updateLoopMetrics();
+    },
+    true,
+  );
   wireHorizontalWheel();
   renderPage();
 }

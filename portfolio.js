@@ -467,6 +467,31 @@ function buildCaseSlideMediaHtml(path, projectName, slideIndex, youtubePosterPat
   return `<img src="${src}" alt="${label}" loading="lazy" decoding="async" />`;
 }
 
+function getAssetFileName(path) {
+  return String(path || "").split("/").pop() || "";
+}
+
+function getDetailCaption(project, path, imageIndex) {
+  const captions = project?.detailCaptions;
+  if (!captions || typeof captions !== "object") return "";
+  const byName = getLocalizedValue(captions[getAssetFileName(path)]);
+  if (byName) return String(byName);
+  const byIndex = getLocalizedValue(captions[String(imageIndex + 1)]);
+  return byIndex ? String(byIndex) : "";
+}
+
+function getDetailDisplayMode(project, path, imageIndex) {
+  const modeMap = project?.detailDisplayMode;
+  if (!modeMap || typeof modeMap !== "object") return "contain";
+  const byName = String(modeMap[getAssetFileName(path)] || "").toLowerCase();
+  if (byName === "cover") return "cover";
+  if (byName === "cover-vertical") return "cover-vertical";
+  const byIndex = String(modeMap[String(imageIndex + 1)] || "").toLowerCase();
+  if (byIndex === "cover") return "cover";
+  if (byIndex === "cover-vertical") return "cover-vertical";
+  return "contain";
+}
+
 function warmupImages(paths) {
   paths.forEach((path) => {
     if (!path || imageWarmupCache.has(path)) return;
@@ -1004,10 +1029,21 @@ function renderCaseStudy() {
   const ytPoster = String(project.youtubePosterPath || "").trim();
   els.caseSlideTrack.innerHTML = slideImages
     .map(
-      (path, imageIndex) => `
-        <figure class="case-image-item" data-slide-index="${imageIndex}">
+      (path, imageIndex) => {
+        const caption = getDetailCaption(project, path, imageIndex);
+        const mode = getDetailDisplayMode(project, path, imageIndex);
+        return `
+        <figure class="case-image-item${
+          mode === "cover"
+            ? " case-image-item--media-cover"
+            : mode === "cover-vertical"
+              ? " case-image-item--media-cover-vertical"
+              : ""
+        }" data-slide-index="${imageIndex}">
           ${buildCaseSlideMediaHtml(path, project.name, imageIndex, isYouTubePath(path) ? ytPoster : "")}
-        </figure>`,
+          ${caption ? `<figcaption class="case-image-caption">${escapeHtmlAttr(caption)}</figcaption>` : ""}
+        </figure>`;
+      },
     )
     .join("");
 
