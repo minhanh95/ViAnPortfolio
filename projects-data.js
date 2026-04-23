@@ -429,9 +429,8 @@ Hợp tác cùng **Densu Render**, chiến lược thị giác tập trung vào 
     },
     coverPath: "assets/projects/vinamilk-scu/cover.jpg",
     detailImages: [
-      "assets/projects/vinamilk-scu/detail-01.mp4",
-      "assets/projects/vinamilk-scu/detail-02.mp4",
-      "assets/projects/vinamilk-scu/detail-03.mp4",
+      "https://www.facebook.com/reel/897362946479871",
+      "https://web.facebook.com/reel/1463891114808419",
     ],
   },
   {

@@ -355,6 +355,10 @@ function isTikTokPath(path) {
   return /(tiktok\.com|vm\.tiktok\.com)/i.test(path || "");
 }
 
+function isFacebookPath(path) {
+  return /(facebook\.com|fb\.watch)/i.test(path || "");
+}
+
 function normalizeExternalMediaUrl(path) {
   if (!path) return "";
   try {
@@ -445,6 +449,21 @@ function buildTikTokPosterCaseHtml(path, labelAttr) {
   </a>`;
 }
 
+function buildFacebookEmbedUrl(path) {
+  if (!path) return "";
+  try {
+    const source = new URL(path, window.location.href).href;
+    const embed = new URL("https://www.facebook.com/plugins/video.php");
+    embed.searchParams.set("href", source);
+    embed.searchParams.set("show_text", "false");
+    embed.searchParams.set("autoplay", "false");
+    embed.searchParams.set("mute", "0");
+    return embed.toString();
+  } catch {
+    return "";
+  }
+}
+
 function escapeHtmlAttr(str) {
   return String(str)
     .replace(/&/g, "&amp;")
@@ -463,6 +482,12 @@ function buildCaseSlideMediaHtml(path, projectName, slideIndex, youtubePosterPat
   }
   if (isTikTokPath(path)) {
     return buildTikTokPosterCaseHtml(path, label);
+  }
+  if (isFacebookPath(path)) {
+    const embed = buildFacebookEmbedUrl(path);
+    if (embed) {
+      return `<iframe class="case-slide-media case-slide-media--embed" src="${escapeHtmlAttr(embed)}" title="${label}" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+    }
   }
   return `<img src="${src}" alt="${label}" loading="lazy" decoding="async" />`;
 }

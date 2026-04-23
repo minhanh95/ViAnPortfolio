@@ -231,6 +231,10 @@ function isTikTokPath(path) {
   return /(tiktok\.com|vm\.tiktok\.com)/i.test(path || "");
 }
 
+function isFacebookPath(path) {
+  return /(facebook\.com|fb\.watch)/i.test(path || "");
+}
+
 function normalizeExternalMediaUrl(path) {
   if (!path) return "";
   try {
@@ -281,6 +285,21 @@ function buildVimeoEmbedUrl(path) {
     return embed.toString();
   } catch {
     return path;
+  }
+}
+
+function buildFacebookEmbedUrl(path) {
+  if (!path) return "";
+  try {
+    const source = new URL(path, window.location.href).href;
+    const embed = new URL("https://www.facebook.com/plugins/video.php");
+    embed.searchParams.set("href", source);
+    embed.searchParams.set("show_text", "false");
+    embed.searchParams.set("autoplay", "false");
+    embed.searchParams.set("mute", "0");
+    return embed.toString();
+  } catch {
+    return "";
   }
 }
 
@@ -521,6 +540,13 @@ function createSlide(slide, realIndex, cloneSet) {
     } else if (isVimeoPath(slide.path)) {
       const embedSrc = escapeHtml(buildVimeoEmbedUrl(slide.path));
       wrapper.innerHTML = `<iframe class="project-slide-media project-slide-media--embed" src="${embedSrc}" title="${label}" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>${captionHtml}`;
+    } else if (isFacebookPath(slide.path)) {
+      const embedSrc = escapeHtml(buildFacebookEmbedUrl(slide.path));
+      if (embedSrc) {
+        wrapper.innerHTML = `<iframe class="project-slide-media project-slide-media--embed" src="${embedSrc}" title="${label}" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>${captionHtml}`;
+      } else {
+        wrapper.innerHTML = `<a class="project-slide-media project-slide-media--youtube" href="${src}" target="_blank" rel="noopener noreferrer">${label}</a>${captionHtml}`;
+      }
     } else if (isYouTubePath(slide.path)) {
       const ytPoster = String(slide.youtubePosterPath || "").trim();
       wrapper.innerHTML = `${buildYouTubePosterSlideHtml(slide.path, slide.alt, ytPoster)}${captionHtml}`;
