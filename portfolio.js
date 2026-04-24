@@ -857,6 +857,8 @@ function renderGallery() {
   const galleryItems = featuredProjects.length ? [...featuredProjects, ...remainingProjects] : state.items;
   const wiredItems = [];
   galleryItems.forEach((project) => {
+    const objective = getLocalizedValue(project.objective) || getLocalizedValue(project.category) || "";
+    const scopeText = getScopeText(project);
     const item = document.createElement("article");
     item.className = "gallery-item";
     item.dataset.slug = project.slug;
@@ -866,6 +868,27 @@ function renderGallery() {
         <img data-src="${project.coverPath}" alt="${project.name} cover" loading="lazy" decoding="async" />
         <div class="gallery-media-overlay" aria-hidden="true">
           <span class="gallery-media-overlay-label">${t("previewViewDetail")}</span>
+          <div class="gallery-mobile-info">
+            <p class="gallery-mobile-info-title">${escapeHtmlAttr(project.name || "")}</p>
+            <dl class="gallery-mobile-info-meta">
+              <div>
+                <dt>${escapeHtmlAttr(t("galleryInfoYear"))}</dt>
+                <dd>${escapeHtmlAttr(String(project.year || ""))}</dd>
+              </div>
+              <div>
+                <dt>${escapeHtmlAttr(t("galleryInfoClient"))}</dt>
+                <dd>${escapeHtmlAttr(project.client || "")}</dd>
+              </div>
+              <div>
+                <dt>${escapeHtmlAttr(t("galleryInfoObjective"))}</dt>
+                <dd>${escapeHtmlAttr(objective)}</dd>
+              </div>
+              <div>
+                <dt>${escapeHtmlAttr(t("galleryInfoScope"))}</dt>
+                <dd>${escapeHtmlAttr(scopeText)}</dd>
+              </div>
+            </dl>
+          </div>
         </div>
       </div>
       <p class="gallery-title heading-display">${project.name}</p>
