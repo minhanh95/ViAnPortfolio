@@ -3,7 +3,6 @@ const LANGUAGE_STORAGE_KEY = "vanlab-language";
 const aboutI18n = {
   vi: {
     pageTitle: "VAN.LAB - Giới thiệu",
-    brandTagline: "Artist Portfolio - Art Direction, Product Thinking, Spatial Storytelling",
     viewGallery: "Feature",
     viewIndex: "Danh mục",
     navAbout: "Giới thiệu",
@@ -84,7 +83,6 @@ const aboutI18n = {
   },
   en: {
     pageTitle: "VAN.LAB - About",
-    brandTagline: "Artist Portfolio - Art Direction, Product Thinking, Spatial Storytelling",
     viewGallery: "Feature",
     viewIndex: "Index",
     navAbout: "About",
@@ -167,7 +165,6 @@ const aboutI18n = {
 
 const aboutEls = {
   brandHomeLink: document.getElementById("brandHomeLink"),
-  brandTagline: document.getElementById("brandTagline"),
   viewGalleryBtn: document.getElementById("viewGalleryBtn"),
   viewIndexBtn: document.getElementById("viewIndexBtn"),
   navAbout: document.getElementById("navAbout"),
@@ -255,7 +252,6 @@ function applyLanguage(language) {
   const dict = aboutI18n[language] || aboutI18n.en;
   document.documentElement.lang = language;
   document.title = dict.pageTitle;
-  setText(aboutEls.brandTagline, dict.brandTagline);
   setText(aboutEls.viewGalleryBtn, dict.viewGallery);
   setText(aboutEls.viewIndexBtn, dict.viewIndex);
   setText(aboutEls.navAbout, dict.navAbout);

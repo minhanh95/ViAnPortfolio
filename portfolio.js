@@ -1,7 +1,6 @@
 const i18n = {
   vi: {
     pageTitle: "VAN.LAB Portfolio",
-    brandTagline: "Artist Portfolio - Art Direction, Product Thinking, Spatial Storytelling",
     viewGallery: "Feature",
     viewIndex: "Danh mục",
     navAbout: "Giới thiệu",
@@ -82,7 +81,6 @@ const i18n = {
   },
   en: {
     pageTitle: "VAN.LAB Portfolio",
-    brandTagline: "Artist Portfolio - Art Direction, Product Thinking, Spatial Storytelling",
     viewGallery: "Feature",
     viewIndex: "Index",
     navAbout: "About",
@@ -640,7 +638,6 @@ function renderStaticText() {
   document.title = t("pageTitle");
   updateHeaderOutboundLinks();
 
-  setText("brandTagline", t("brandTagline"));
   setText("viewGalleryBtn", t("viewGallery"));
   setText("viewIndexBtn", t("viewIndex"));
   setText("navAbout", t("navAbout"));
