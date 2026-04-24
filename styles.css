@@ -209,6 +209,7 @@ a {
 
 .site-footer__brandtext {
   letter-spacing: 0.1em;
+  text-transform: none;
 }
 
 .site-footer__end {
@@ -317,23 +318,24 @@ a {
 
 @media (max-width: 768px) {
   .site-footer__contact-row {
-    flex-direction: column-reverse;
+    flex-direction: row;
     flex-wrap: wrap;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: space-between;
     gap: 0.7rem;
     padding: 0.8rem 0.85rem;
   }
 
   .site-footer__end {
-    width: 100%;
-    justify-content: flex-start;
-    gap: 0.55rem 0.7rem;
-    max-width: 100%;
+    display: contents;
   }
 
   .site-footer__extnav {
+    order: 1;
     width: 100%;
+    flex: 0 0 100%;
     flex-wrap: nowrap;
+    justify-content: flex-start;
     gap: 0.55rem 0.7rem;
     overflow-x: auto;
     overflow-y: hidden;
@@ -347,11 +349,12 @@ a {
   }
 
   .site-footer__brandmark {
-    order: 1;
+    order: 2;
   }
 
   .site-footer__year {
-    order: 2;
+    order: 3;
+    margin-left: auto;
   }
 
   .site-footer__pipe,
