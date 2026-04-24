@@ -226,6 +226,7 @@ let caseSlideWheelCleanup = null;
 let caseVideoObserverCleanup = null;
 let galleryLazyObserver = null;
 let galleryRevealObserver = null;
+let galleryMobileInfoObserver = null;
 let galleryFocusCleanup = null;
 let lastGalleryInfoKey = "";
 const detailResolvePromises = new Map();
@@ -904,6 +905,7 @@ function renderGallery() {
   wireGalleryFocusEffects(wiredItems);
   wireGalleryLazyLoad();
   wireGalleryReveal();
+  wireGalleryMobileInfoFocus();
 }
 
 function cleanupGalleryObservers() {
@@ -914,6 +916,10 @@ function cleanupGalleryObservers() {
   if (galleryRevealObserver) {
     galleryRevealObserver.disconnect();
     galleryRevealObserver = null;
+  }
+  if (galleryMobileInfoObserver) {
+    galleryMobileInfoObserver.disconnect();
+    galleryMobileInfoObserver = null;
   }
 }
 
@@ -957,6 +963,50 @@ function wireGalleryReveal() {
     { root: null, rootMargin: "0px 0px -6% 0px", threshold: 0.08 },
   );
   cards.forEach((card) => galleryRevealObserver.observe(card));
+}
+
+function wireGalleryMobileInfoFocus() {
+  const cards = Array.from(els.galleryList.querySelectorAll(".gallery-item"));
+  if (!cards.length) return;
+
+  const isMobilePointer = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+  if (!isMobilePointer) {
+    cards.forEach((card) => card.classList.remove("is-mobile-active"));
+    return;
+  }
+
+  const visibilityRatios = new Map();
+  const setActiveCard = (target) => {
+    cards.forEach((card) => card.classList.toggle("is-mobile-active", card === target));
+  };
+
+  galleryMobileInfoObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        visibilityRatios.set(entry.target, entry.isIntersecting ? entry.intersectionRatio : 0);
+      });
+      let activeCard = null;
+      let bestRatio = 0;
+      cards.forEach((card) => {
+        const ratio = visibilityRatios.get(card) || 0;
+        if (ratio > bestRatio) {
+          bestRatio = ratio;
+          activeCard = card;
+        }
+      });
+      setActiveCard(bestRatio >= 0.34 ? activeCard : null);
+    },
+    {
+      root: null,
+      rootMargin: "-16% 0px -20% 0px",
+      threshold: [0.2, 0.34, 0.5, 0.66, 0.82],
+    },
+  );
+
+  cards.forEach((card) => {
+    visibilityRatios.set(card, 0);
+    galleryMobileInfoObserver.observe(card);
+  });
 }
 
 function renderIndexTable() {
