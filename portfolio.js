@@ -1792,6 +1792,8 @@ function initLenisSmoothScroll() {
   window.__vanlabLenis = null;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   if (typeof window.Lenis !== "function") return;
+  const isTouchDevice = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+  if (isTouchDevice) return;
 
   lenisInstance = new window.Lenis({
     duration: 1.2,
