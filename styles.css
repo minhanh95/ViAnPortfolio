@@ -369,7 +369,7 @@ a {
 
   .site-footer__pipe,
   .site-footer__extarrow {
-    display: none;
+    display: inline;
   }
 }
 
