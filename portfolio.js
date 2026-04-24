@@ -938,6 +938,8 @@ function wireGalleryReveal() {
 
 function renderIndexTable() {
   if (!els.tableBody) return;
+  const canHoverPreview = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  toggleIndexPreviewVisibility(false);
   els.tableBody.innerHTML = "";
   state.items.forEach((project) => {
     const row = document.createElement("tr");
@@ -948,13 +950,15 @@ function renderIndexTable() {
       <td>${project.client}</td>
       <td>${getLocalizedValue(project.category)}</td>
     `;
-    row.addEventListener("mouseenter", (event) => {
-      renderIndexPreview(project);
-      positionIndexPreview(event);
-      toggleIndexPreviewVisibility(true);
-    });
-    row.addEventListener("mousemove", positionIndexPreview);
-    row.addEventListener("mouseleave", () => toggleIndexPreviewVisibility(false));
+    if (canHoverPreview) {
+      row.addEventListener("mouseenter", (event) => {
+        renderIndexPreview(project);
+        positionIndexPreview(event);
+        toggleIndexPreviewVisibility(true);
+      });
+      row.addEventListener("mousemove", positionIndexPreview);
+      row.addEventListener("mouseleave", () => toggleIndexPreviewVisibility(false));
+    }
     row.addEventListener("click", () => {
       setSelectedProject(project.slug);
       openCaseStudy(project.slug);
