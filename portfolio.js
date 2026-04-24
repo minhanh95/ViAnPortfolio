@@ -977,8 +977,11 @@ function wireGalleryMobileInfoFocus() {
 
   const visibilityRatios = new Map();
   const setActiveCard = (target) => {
+    els.galleryList.classList.toggle("is-mobile-focus-mode", Boolean(target));
     cards.forEach((card) => card.classList.toggle("is-mobile-active", card === target));
   };
+
+  setActiveCard(cards[0] || null);
 
   galleryMobileInfoObserver = new IntersectionObserver(
     (entries) => {
@@ -994,7 +997,7 @@ function wireGalleryMobileInfoFocus() {
           activeCard = card;
         }
       });
-      setActiveCard(bestRatio >= 0.34 ? activeCard : null);
+      setActiveCard(bestRatio >= 0.2 ? activeCard : null);
     },
     {
       root: null,
