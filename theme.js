@@ -78,3 +78,17 @@
     emit(event.newValue);
   });
 })();
+
+function initSiteFooterYear() {
+  const el = document.getElementById("siteFooterYear");
+  if (!el) return;
+  const y = String(new Date().getFullYear());
+  el.textContent = y;
+  if (el.tagName === "TIME") el.setAttribute("datetime", y);
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initSiteFooterYear);
+} else {
+  initSiteFooterYear();
+}

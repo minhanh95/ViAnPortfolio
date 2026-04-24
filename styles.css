@@ -168,6 +168,32 @@ a {
   padding-bottom: clamp(4rem, 14vw, 7rem);
 }
 
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.6rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.site-footer__handle {
+  color: inherit;
+  text-decoration: none;
+}
+
+.site-footer__handle:hover {
+  color: var(--text);
+}
+
+.site-footer__year {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
 .section-label {
   margin: 0 0 0.65rem;
   color: var(--label-fg);
