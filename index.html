@@ -34,6 +34,26 @@
     </header>
 
     <main class="main-layout">
+      <section class="location-strip" aria-label="Location and profile snapshot">
+        <div class="location-strip__col location-strip__col--stack">
+          <div>
+            <p class="location-strip__label">Hanoi</p>
+            <p id="hanoiTime" class="location-strip__time">00:00</p>
+          </div>
+         
+        </div>
+        <div class="location-strip__col location-strip__col--content">
+          <p class="location-strip__label">MOTO:</p>
+          <p class="location-strip__text">
+            Precision in Design.<br />
+            Human in Narrative.
+          </p>
+        </div>
+        <div class="location-strip__col location-strip__col--content">
+          <p class="location-strip__text">Art Director / Creative Planner / Designer</p>
+        </div>
+      </section>
+
       <section id="galleryView" class="content-view reveal">
         <div class="gallery-focus-layout">
           <div id="galleryList" class="gallery-list"></div>
@@ -145,6 +165,29 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Draggable.min.js"></script>
     <script src="./projects-data.js"></script>
     <script src="./portfolio.js"></script>
+    <script>
+      (function setupVietnamClocks() {
+        const hanoiEl = document.getElementById("hanoiTime");
+    
+        if (!hanoiEl) return;
+
+        const formatTime = new Intl.DateTimeFormat("en-GB", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+          timeZone: "Asia/Ho_Chi_Minh",
+        });
+
+        const updateClock = () => {
+          const now = formatTime.format(new Date());
+          hanoiEl.textContent = now;
+          hcmEl.textContent = now;
+        };
+
+        updateClock();
+        setInterval(updateClock, 30000);
+      })();
+    </script>
   </body>
 </html>
 
