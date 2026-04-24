@@ -285,6 +285,24 @@ function updateThemeToggleUi() {
   els.themeToggleBtn.title = t("themeToggleLabel");
 }
 
+function updateHeaderOutboundLinks() {
+  const theme = window.VANLAB_THEME?.get() ?? "light";
+  const lang = state.language;
+  if (els.brandHomeLink) {
+    els.brandHomeLink.href = `./index.html?lang=${lang}&theme=${theme}`;
+  }
+  const navMeet = document.getElementById("navMeet");
+  if (navMeet && navMeet.tagName === "A") {
+    navMeet.href = `./about.html?lang=${lang}&theme=${theme}`;
+  }
+  if (els.viewGalleryBtn && els.viewGalleryBtn.tagName === "A") {
+    els.viewGalleryBtn.href = `./index.html?lang=${lang}&theme=${theme}`;
+  }
+  if (els.viewIndexBtn && els.viewIndexBtn.tagName === "A") {
+    els.viewIndexBtn.href = `./projects.html?lang=${lang}&theme=${theme}`;
+  }
+}
+
 function t(key) {
   return i18n[state.language][key];
 }
@@ -619,10 +637,7 @@ function renderStaticText() {
 
   document.documentElement.lang = state.language;
   document.title = t("pageTitle");
-  if (els.brandHomeLink) {
-    const theme = window.VANLAB_THEME?.get() ?? "light";
-    els.brandHomeLink.href = `./index.html?lang=${state.language}&theme=${theme}`;
-  }
+  updateHeaderOutboundLinks();
 
   setText("brandTagline", t("brandTagline"));
   setText("viewGalleryBtn", t("viewGallery"));
@@ -674,6 +689,7 @@ function renderStaticText() {
   els.viewGalleryBtn.classList.toggle("active", state.viewMode === "feature");
   els.viewIndexBtn.classList.toggle("active", state.viewMode === "index");
   updateThemeToggleUi();
+  window.VANLAB_REFRESH_FOOTER_BAR?.();
 }
 
 function renderListItems(target, items) {
@@ -1696,6 +1712,7 @@ function initCaseImageParallax() {
 
 function initLenisSmoothScroll() {
   lenisInstance = null;
+  window.__vanlabLenis = null;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   if (typeof window.Lenis !== "function") return;
 
@@ -1713,6 +1730,7 @@ function initLenisSmoothScroll() {
     requestAnimationFrame(raf);
   }
   requestAnimationFrame(raf);
+  window.__vanlabLenis = lenisInstance;
 }
 
 els.langViBtn.addEventListener("click", () => switchLanguage("vi"));
@@ -1747,7 +1765,11 @@ els.caseStudyView.addEventListener("click", (event) => {
 async function initializeApp() {
   localStorage.setItem(LANGUAGE_STORAGE_KEY, state.language);
   updateThemeToggleUi();
-  window.addEventListener("vanlab-themechange", updateThemeToggleUi);
+  window.addEventListener("vanlab-themechange", () => {
+    updateThemeToggleUi();
+    updateHeaderOutboundLinks();
+    window.VANLAB_REFRESH_FOOTER_BAR?.();
+  });
   await ensureProjectDetailImages(getSelectedProject());
   renderStaticText();
   renderGallery();

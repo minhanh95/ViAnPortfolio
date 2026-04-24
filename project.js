@@ -100,6 +100,7 @@ function updateStaticText() {
   pageEls.langViBtn?.classList.toggle("active", pageState.language === "vi");
   pageEls.langEnBtn?.classList.toggle("active", pageState.language === "en");
   updateThemeToggleUi();
+  window.VANLAB_REFRESH_FOOTER_BAR?.();
 }
 
 function getNextProjectSlug() {
@@ -862,6 +863,7 @@ function initializePage() {
   window.addEventListener("vanlab-themechange", () => {
     updateThemeToggleUi();
     updateOutboundNavLinks();
+    window.VANLAB_REFRESH_FOOTER_BAR?.();
   });
   window.addEventListener("resize", () => {
     updateLoopMetrics();

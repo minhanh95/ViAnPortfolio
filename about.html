@@ -42,12 +42,13 @@
 
     <main class="main-layout">
       <section class="about-page reveal in-view">
+        <h1 id="heroTitle" class="heading-display about-page-title">Professional Profile</h1>
         <div class="about-skills">
-          <p class="section-label">Skills</p>
+          <p class="section-label" id="aboutSkillsSectionLabel">Skills</p>
           <div class="skills-grid">
             <article class="skill-card">
-              <h3>Tools</h3>
-              <ul>
+              <h3 id="aboutToolsHeading">Tools</h3>
+              <ul id="aboutToolsList">
                 <li>Adobe Illustrator</li>
                 <li>Adobe Photoshop</li>
                 <li>Adobe InDesign</li>
@@ -59,8 +60,8 @@
               </ul>
             </article>
             <article class="skill-card">
-              <h3>Digital Skill</h3>
-              <ul>
+              <h3 id="aboutDigitalHeading">Digital Skill</h3>
+              <ul id="aboutDigitalList">
                 <li>Concept Development</li>
                 <li>Visual Development &amp; Design</li>
                 <li>Spatial &amp; Set design</li>
@@ -70,8 +71,8 @@
               </ul>
             </article>
             <article class="skill-card">
-              <h3>Analog Skill</h3>
-              <ul>
+              <h3 id="aboutAnalogHeading">Analog Skill</h3>
+              <ul id="aboutAnalogList">
                 <li>Model making</li>
                 <li>Set design</li>
                 <li>Food styling</li>
@@ -79,8 +80,8 @@
               </ul>
             </article>
             <article class="skill-card">
-              <h3>Language</h3>
-              <ul>
+              <h3 id="aboutLangHeading">Language</h3>
+              <ul id="aboutLangList">
                 <li>Vietnamese: native</li>
                 <li>English: fluent</li>
               </ul>
@@ -88,9 +89,35 @@
           </div>
         </div>
         <div class="about-line"></div>
+        <div class="about-si-grid">
+          <article>
+            <p class="section-label" id="aboutServicesSectionLabel">Service</p>
+            <ul id="aboutServicesList">
+              <li>Campaign Collateral</li>
+              <li>Art Direction</li>
+              <li>UI Direction</li>
+              <li>Set Design</li>
+              <li>Production Design</li>
+              <li>Food Styling</li>
+            </ul>
+          </article>
+          <article>
+            <p class="section-label" id="aboutIndustrySectionLabel">INDUSTRY</p>
+            <ul id="aboutIndustryList">
+              <li>Food &amp; Beverage</li>
+              <li>Beauty</li>
+              <li>Home care</li>
+              <li>Film</li>
+              <li>Technology</li>
+              <li>Art &amp; Culture</li>
+              <li>Fashion</li>
+            </ul>
+          </article>
+        </div>
+        <div class="about-line"></div>
         <div class="about-main-grid">
           <article>
-            <p class="section-label">Clients</p>
+            <p class="section-label" id="aboutClientsSectionLabel">Clients</p>
             <ul id="aboutStudioBody">
               <li>Vinamilk</li>
               <li>Highland</li>
@@ -117,55 +144,53 @@
               <li>Refinery Media</li>
             </ul>
           </article>
-          <article>
-            <p class="section-label">Service</p>
-            <ul id="aboutServicesList">
-              <li>Campaign Collateral</li>
-              <li>Art Direction</li>
-              <li>UI Direction</li>
-              <li>Set Design</li>
-              <li>Production Design</li>
-              <li>Food Styling</li>
-            </ul>
-          </article>
-          <article>
-            <p class="section-label">INDUSTRY</p>
-            <ul id="aboutIndustryList">
-              <li>Food &amp; Beverage</li>
-              <li>Beauty</li>
-              <li>Home care</li>
-              <li>Film</li>
-              <li>Technology</li>
-              <li>Art &amp; Culture</li>
-              <li>Fashion</li>
-            </ul>
-          </article>
-          <article>
-            <p class="section-label">Contact</p>
-            <ul id="aboutContactList">
-              <li><a href="mailto:ngv.vian@gmail.com">Email</a></li>
-              <li class="phone-reveal">
-                <details>
-                  <summary>Phone</summary>
-                  <a href="tel:+84941017048">+84941017048</a>
-                </details>
-              </li>
-              <li><a href="https://www.instagram.com/v.anlab/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-              <li>
-                <a href="https://www.linkedin.com/in/vian-nguyen-3695b2195/" target="_blank" rel="noopener noreferrer"
-                  >LinkedIn</a
-                >
-              </li>
-            </ul>
-          </article>
         </div>
         <div class="about-line"></div>
       </section>
     </main>
 
-    <footer class="site-footer" role="contentinfo">
-      <a href="https://www.instagram.com/v.anlab/" class="site-footer__handle" target="_blank" rel="noopener noreferrer">@v.anlab</a>
-      <time id="siteFooterYear" class="site-footer__year" datetime="2026">2026</time>
+    <footer class="site-footer site-footer--contactbar" role="contentinfo">
+      <div class="site-footer__contact-row">
+        <div class="site-footer__brandmark">
+          <span class="site-footer__branddot" aria-hidden="true"></span>
+          <span class="site-footer__brandtext">@V.ANLAB</span>
+        </div>
+        <div class="site-footer__end">
+          <nav class="site-footer__extnav" aria-label="Social links">
+            <a class="site-footer__extlink" href="mailto:ngv.vian@gmail.com">
+              <span class="site-footer__extlabel" data-footer-i18n="email">EMAIL</span>
+              <span class="site-footer__extarrow" aria-hidden="true">↗</span>
+            </a>
+            <span class="site-footer__pipe" aria-hidden="true">|</span>
+            <details class="site-footer__phone-details">
+              <summary class="site-footer__phone-summary">
+                <span class="site-footer__extlabel" data-footer-i18n="phone">PHONE</span>
+              </summary>
+              <span class="site-footer__phone-number">+84941017048</span>
+            </details>
+            <span class="site-footer__pipe" aria-hidden="true">|</span>
+            <a
+              class="site-footer__extlink"
+              href="https://www.linkedin.com/in/vian-nguyen-3695b2195/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="site-footer__extlabel" data-footer-i18n="linkedin">LINKEDIN</span>
+              <span class="site-footer__extarrow" aria-hidden="true">↗</span>
+            </a>
+            <span class="site-footer__pipe" aria-hidden="true">|</span>
+            <a class="site-footer__extlink" href="https://www.instagram.com/v.anlab/" target="_blank" rel="noopener noreferrer">
+              <span class="site-footer__extlabel" data-footer-i18n="instagram">INSTAGRAM</span>
+              <span class="site-footer__extarrow" aria-hidden="true">↗</span>
+            </a>
+          </nav>
+          <span class="site-footer__pipe site-footer__pipe--dim" aria-hidden="true">|</span>
+          <time id="siteFooterYear" class="site-footer__year" datetime="2026">2026</time>
+          <button type="button" class="site-footer__scroll-top" id="footerScrollTopBtn" aria-label="Back to top" title="Back to top">
+            <span class="site-footer__scroll-icon" aria-hidden="true">↑</span>
+          </button>
+        </div>
+      </div>
     </footer>
 
     <script src="./about.js"></script>

@@ -87,8 +87,79 @@ function initSiteFooterYear() {
   if (el.tagName === "TIME") el.setAttribute("datetime", y);
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initSiteFooterYear);
-} else {
+const FOOTER_BAR_I18N = {
+  vi: {
+    email: "EMAIL",
+    phone: "ĐIỆN THOẠI",
+    linkedin: "LINKEDIN",
+    instagram: "INSTAGRAM",
+    scrollTop: "Về đầu trang",
+  },
+  en: {
+    email: "EMAIL",
+    phone: "PHONE",
+    linkedin: "LINKEDIN",
+    instagram: "INSTAGRAM",
+    scrollTop: "Back to top",
+  },
+};
+
+function getFooterBarLang() {
+  try {
+    const stored = localStorage.getItem("vanlab-language");
+    if (stored === "vi" || stored === "en") return stored;
+  } catch (e) {
+    /* ignore */
+  }
+  const q = new URLSearchParams(window.location.search).get("lang");
+  if (q === "vi" || q === "en") return q;
+  return document.documentElement.lang === "vi" ? "vi" : "en";
+}
+
+function refreshFooterContactBar() {
+  const dict = FOOTER_BAR_I18N[getFooterBarLang()] || FOOTER_BAR_I18N.en;
+  const setLabel = (sel, text) => {
+    const el = document.querySelector(sel);
+    if (el) el.textContent = text;
+  };
+  setLabel("[data-footer-i18n='email']", dict.email);
+  setLabel("[data-footer-i18n='phone']", dict.phone);
+  setLabel("[data-footer-i18n='linkedin']", dict.linkedin);
+  setLabel("[data-footer-i18n='instagram']", dict.instagram);
+  const btn = document.getElementById("footerScrollTopBtn");
+  if (btn) {
+    btn.setAttribute("aria-label", dict.scrollTop);
+    btn.title = dict.scrollTop;
+  }
+}
+
+window.VANLAB_REFRESH_FOOTER_BAR = refreshFooterContactBar;
+
+function initFooterContactBar() {
+  refreshFooterContactBar();
+  document.addEventListener("click", (event) => {
+    const btn = event.target.closest("#footerScrollTopBtn");
+    if (!btn) return;
+    const L = window.__vanlabLenis;
+    if (L && typeof L.scrollTo === "function") {
+      L.scrollTo(0, { duration: 1.05 });
+    } else {
+      try {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } catch (e) {
+        window.scrollTo(0, 0);
+      }
+    }
+  });
+}
+
+function vanlabInitFooterHelpers() {
   initSiteFooterYear();
+  initFooterContactBar();
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", vanlabInitFooterHelpers);
+} else {
+  vanlabInitFooterHelpers();
 }

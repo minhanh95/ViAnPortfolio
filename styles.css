@@ -168,30 +168,181 @@ a {
   padding-bottom: clamp(4rem, 14vw, 7rem);
 }
 
-.site-footer {
+.site-footer.site-footer--contactbar {
+  padding: clamp(1rem, 2.5vw, 1.35rem) clamp(1.5rem, 4vw, 2.25rem);
+  border-top: 1px solid var(--line);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.site-footer__contact-row {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem 1.6rem;
-  border-top: 1px solid var(--line);
-  font-size: 0.78rem;
-  letter-spacing: 0.06em;
-  color: var(--muted);
+  gap: clamp(1rem, 3vw, 2rem);
+  row-gap: 0.65rem;
+  width: 100%;
+  max-width: none;
+  margin: 0;
 }
 
-.site-footer__handle {
+.site-footer__brandmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: inherit;
+  flex: 0 0 auto;
+}
+
+.site-footer__branddot {
+  display: inline-block;
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.site-footer__brandtext {
+  letter-spacing: 0.1em;
+}
+
+.site-footer__end {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.45rem 0.55rem;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.site-footer__extnav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.55rem;
+}
+
+.site-footer__extlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
   color: inherit;
   text-decoration: none;
+  transition: opacity 0.25s var(--ease-premium, ease);
 }
 
-.site-footer__handle:hover {
-  color: var(--text);
+.site-footer__extlink:hover {
+  opacity: 0.65;
+}
+
+.site-footer__phone-details {
+  display: inline;
+}
+
+.site-footer__phone-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  list-style: none;
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 0.25s var(--ease-premium, ease);
+}
+
+.site-footer__phone-summary::-webkit-details-marker {
+  display: none;
+}
+
+.site-footer__phone-summary:hover {
+  opacity: 0.65;
+}
+
+.site-footer__phone-summary:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.site-footer__phone-details[open] .site-footer__phone-summary {
+  margin-inline-end: 0.35rem;
+}
+
+.site-footer__phone-number {
+  display: inline;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  user-select: text;
+}
+
+.site-footer__extarrow {
+  font-size: 0.68em;
+  line-height: 1;
+  translate: 0 0.04em;
+}
+
+.site-footer__pipe {
+  color: var(--muted);
+  opacity: 0.55;
+  user-select: none;
+}
+
+.site-footer__pipe--dim {
+  opacity: 0.4;
 }
 
 .site-footer__year {
   margin: 0;
   font-variant-numeric: tabular-nums;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+
+.site-footer__scroll-top {
+  appearance: none;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  width: 1.85rem;
+  height: 1.85rem;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.25s var(--ease-premium, ease), color 0.25s var(--ease-premium, ease);
+}
+
+.site-footer__scroll-top:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+.site-footer__scroll-icon {
+  font-size: 0.78rem;
+  line-height: 1;
+  translate: 0 -0.04em;
+}
+
+@media (max-width: 520px) {
+  .site-footer__contact-row {
+    flex-wrap: wrap;
+  }
+
+  .site-footer__end {
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    max-width: 100%;
+  }
 }
 
 .section-label {
@@ -1598,6 +1749,13 @@ html[data-theme="light"] .theme-toggle-btn::before {
   margin-top: clamp(0.6rem, 1.8vw, 1.2rem);
 }
 
+.about-page-title {
+  margin: 0 0 clamp(1rem, 2.5vw, 1.5rem);
+  font-size: clamp(1.75rem, 4vw, 2.35rem);
+  font-weight: 500;
+  line-height: 1.15;
+}
+
 .about-skills {
   margin-bottom: clamp(1.25rem, 3vw, 2rem);
 }
@@ -1631,15 +1789,18 @@ html[data-theme="light"] .theme-toggle-btn::before {
   margin: 0 0 clamp(1.25rem, 3vw, 2rem);
 }
 
-.about-main-grid {
+.about-si-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(1.25rem, 3vw, 2rem);
-  margin-bottom: clamp(2rem, 5vw, 3rem);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.5rem, 4vw, 2.75rem);
+  margin-bottom: clamp(1.25rem, 3vw, 2rem);
 }
 
-.about-main-grid > article:first-child {
-  grid-column: auto;
+.about-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 2.75rem);
+  margin-bottom: clamp(2rem, 5vw, 3rem);
 }
 
 .about-main-grid p {
@@ -1648,38 +1809,17 @@ html[data-theme="light"] .theme-toggle-btn::before {
 }
 
 #aboutServicesList,
-#aboutIndustryList,
-#aboutContactList {
+#aboutIndustryList {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
 #aboutServicesList li,
-#aboutIndustryList li,
-#aboutContactList li {
+#aboutIndustryList li {
   margin: 0.25rem 0;
   font-size: 0.87rem;
   line-height: 1.45;
-}
-
-#aboutContactList .phone-reveal details {
-  display: inline;
-}
-
-#aboutContactList .phone-reveal summary {
-  display: inline;
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-#aboutContactList .phone-reveal summary::-webkit-details-marker {
-  display: none;
-}
-
-#aboutContactList .phone-reveal details[open] summary {
-  margin-right: 0.38rem;
 }
 
 .about-office-grid {
@@ -1733,14 +1873,6 @@ html[data-theme="light"] .theme-toggle-btn::before {
     grid-template-columns: 1fr;
   }
 
-  .about-main-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .about-main-grid > article:first-child {
-    grid-column: auto;
-  }
-
   .skills-grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -1785,6 +1917,7 @@ html[data-theme="light"] .theme-toggle-btn::before {
     grid-template-columns: 1fr;
   }
 
+  .about-si-grid,
   .about-main-grid,
   .about-office-grid {
     grid-template-columns: 1fr;

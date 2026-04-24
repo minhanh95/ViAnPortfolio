@@ -88,9 +88,48 @@
       </section>
     </main>
 
-    <footer class="site-footer" role="contentinfo">
-      <a href="https://www.instagram.com/v.anlab/" class="site-footer__handle" target="_blank" rel="noopener noreferrer">@v.anlab</a>
-      <time id="siteFooterYear" class="site-footer__year" datetime="2026">2026</time>
+    <footer class="site-footer site-footer--contactbar" role="contentinfo">
+      <div class="site-footer__contact-row">
+        <div class="site-footer__brandmark">
+          <span class="site-footer__branddot" aria-hidden="true"></span>
+          <span class="site-footer__brandtext">@V.ANLAB</span>
+        </div>
+        <div class="site-footer__end">
+          <nav class="site-footer__extnav" aria-label="Social links">
+            <a class="site-footer__extlink" href="mailto:ngv.vian@gmail.com">
+              <span class="site-footer__extlabel" data-footer-i18n="email">EMAIL</span>
+              <span class="site-footer__extarrow" aria-hidden="true">↗</span>
+            </a>
+            <span class="site-footer__pipe" aria-hidden="true">|</span>
+            <details class="site-footer__phone-details">
+              <summary class="site-footer__phone-summary">
+                <span class="site-footer__extlabel" data-footer-i18n="phone">PHONE</span>
+              </summary>
+              <span class="site-footer__phone-number">+84941017048</span>
+            </details>
+            <span class="site-footer__pipe" aria-hidden="true">|</span>
+            <a
+              class="site-footer__extlink"
+              href="https://www.linkedin.com/in/vian-nguyen-3695b2195/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="site-footer__extlabel" data-footer-i18n="linkedin">LINKEDIN</span>
+              <span class="site-footer__extarrow" aria-hidden="true">↗</span>
+            </a>
+            <span class="site-footer__pipe" aria-hidden="true">|</span>
+            <a class="site-footer__extlink" href="https://www.instagram.com/v.anlab/" target="_blank" rel="noopener noreferrer">
+              <span class="site-footer__extlabel" data-footer-i18n="instagram">INSTAGRAM</span>
+              <span class="site-footer__extarrow" aria-hidden="true">↗</span>
+            </a>
+          </nav>
+          <span class="site-footer__pipe site-footer__pipe--dim" aria-hidden="true">|</span>
+          <time id="siteFooterYear" class="site-footer__year" datetime="2026">2026</time>
+          <button type="button" class="site-footer__scroll-top" id="footerScrollTopBtn" aria-label="Back to top" title="Back to top">
+            <span class="site-footer__scroll-icon" aria-hidden="true">↑</span>
+          </button>
+        </div>
+      </div>
     </footer>
 
     <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
