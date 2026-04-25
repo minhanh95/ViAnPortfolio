@@ -14,9 +14,9 @@ const aboutI18n = {
       "Là creative developer, tôi làm việc trên nhiều quy mô: từ bối cảnh thương mại cho thương hiệu lớn tại Việt Nam, sàn diễn thử nghiệm đến ảnh tạp chí cộng đồng. Tôi chuyển tải khái niệm phức tạp thành thế giới vật lý sống động, để dù output là chiến dịch toàn cầu hay chân dung cá nhân, kết quả vẫn cân bằng, có chủ đích và gợi cảm.",
     featureWorkInLabel: "feature work in:",
     featureWorkInItems: [
-      { text: "It's Nice That", href: "https://www.itsnicethat.com/" },
-      { text: "L'Officiel", href: "https://lofficielvietnam.com/" },
-      { text: "RGB.vn", href: "https://rgb.vn/" },
+      { text: "It's Nice That", slug: "no-one-magazine" },
+      { text: "L'Officiel", slug: "lofficiel-beauty-award" },
+      { text: "RGB.vn", slug: "x3d-robot" },
     ],
     themeToggleLabel: "Đổi giao diện",
     themeDarkShort: "Tối",
@@ -105,9 +105,9 @@ const aboutI18n = {
       "As a creative developer, I navigate a diverse spectrum of scales-from high-impact commercial sets for major Vietnamese brands to avant-garde runway narratives and community-driven editorials. I specialize in translating complex concepts into immersive physical worlds, ensuring that whether the output is a global campaign or an intimate portrait, the result is a balanced, intentional, and evocative experience.",
     featureWorkInLabel: "feature work in:",
     featureWorkInItems: [
-      { text: "It's Nice That", href: "https://www.itsnicethat.com/" },
-      { text: "L'Officiel", href: "https://lofficielvietnam.com/" },
-      { text: "RGB.vn", href: "https://rgb.vn/" },
+      { text: "It's Nice That", slug: "no-one-magazine" },
+      { text: "L'Officiel", slug: "lofficiel-beauty-award" },
+      { text: "RGB.vn", slug: "x3d-robot" },
     ],
     themeToggleLabel: "Switch theme",
     themeDarkShort: "Dark",
@@ -234,6 +234,18 @@ function updateHeaderLinks(language) {
   }
 }
 
+function buildAboutProjectUrl(slug, language) {
+  const url = new URL("./project.html", window.location.href);
+  const theme = window.VANLAB_THEME ? window.VANLAB_THEME.get() : "light";
+  url.searchParams.set("slug", slug);
+  url.searchParams.set("selected", slug);
+  url.searchParams.set("lang", language);
+  url.searchParams.set("theme", theme);
+  url.searchParams.set("fromView", "about");
+  url.searchParams.set("fromScroll", String(Math.round(window.scrollY || 0)));
+  return url.toString();
+}
+
 function syncAboutPrefsToUrl(language) {
   try {
     const url = new URL(window.location.href);
@@ -255,22 +267,22 @@ function updateThemeToggleUi(language) {
   aboutEls.themeToggleBtn.setAttribute("aria-label", dict.themeToggleLabel);
 }
 
-function renderFeaturedInLinks(ul, items) {
+function renderFeaturedInLinks(ul, items, language) {
   if (!ul || !Array.isArray(items)) return;
   ul.innerHTML = items
     .map(
       (item) =>
-        `<li><a href="${item.href}" target="_blank" rel="noopener noreferrer">${item.text}</a></li>`
+        `<li><a href="${buildAboutProjectUrl(item.slug, language)}">${item.text}</a></li>`
     )
     .join("");
 }
 
-function applyAboutBody(dict) {
+function applyAboutBody(dict, language) {
   setText(document.getElementById("aboutIntroName"), dict.aboutName);
   setHtml(document.getElementById("aboutIntroP1"), dict.aboutIntroP1);
   setText(document.getElementById("aboutIntroP2"), dict.aboutIntroP2);
   setText(document.getElementById("aboutFeaturedInLabel"), dict.featureWorkInLabel);
-  renderFeaturedInLinks(document.getElementById("aboutFeaturedInList"), dict.featureWorkInItems);
+  renderFeaturedInLinks(document.getElementById("aboutFeaturedInList"), dict.featureWorkInItems, language);
 
   setText(document.getElementById("aboutSkillsSectionLabel"), dict.skillsSectionLabel);
   setText(document.getElementById("aboutToolsHeading"), dict.toolsHeading);
@@ -301,7 +313,7 @@ function applyLanguage(language) {
 
   aboutEls.langViBtn?.classList.toggle("active", language === "vi");
   aboutEls.langEnBtn?.classList.toggle("active", language === "en");
-  applyAboutBody(dict);
+  applyAboutBody(dict, language);
   window.VANLAB_REFRESH_FOOTER_BAR?.();
   updateHeaderLinks(language);
   updateThemeToggleUi(language);
