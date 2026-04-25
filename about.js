@@ -14,9 +14,18 @@ const aboutI18n = {
       "Là creative developer, tôi làm việc trên nhiều quy mô: từ bối cảnh thương mại cho thương hiệu lớn tại Việt Nam, sàn diễn thử nghiệm đến ảnh tạp chí cộng đồng. Tôi chuyển tải khái niệm phức tạp thành thế giới vật lý sống động, để dù output là chiến dịch toàn cầu hay chân dung cá nhân, kết quả vẫn cân bằng, có chủ đích và gợi cảm.",
     featureWorkInLabel: "feature work in:",
     featureWorkInItems: [
-      { text: "It's Nice That", slug: "no-one-magazine" },
-      { text: "L'Officiel", slug: "lofficiel-beauty-award" },
-      { text: "RGB.vn", slug: "x3d-robot" },
+      {
+        text: "It's Nice That",
+        href: "https://www.itsnicethat.com/articles/no-one-magazine-publication-project-260625",
+      },
+      {
+        text: "L'Officiel",
+        href: "https://www.lofficielvietnam.com/beauty/l-officiel-beauty-choice-awards-2025-ton-vinh-tuyet-tac-lam-dep-ky-nguyen-crystal",
+      },
+      {
+        text: "RGB.vn",
+        href: "https://www.facebook.com/watch/?v=1436520963676439&rdid=mWcg8bHbI9H7RZJF",
+      },
     ],
     themeToggleLabel: "Đổi giao diện",
     themeDarkShort: "Tối",
@@ -105,9 +114,18 @@ const aboutI18n = {
       "As a creative developer, I navigate a diverse spectrum of scales-from high-impact commercial sets for major Vietnamese brands to avant-garde runway narratives and community-driven editorials. I specialize in translating complex concepts into immersive physical worlds, ensuring that whether the output is a global campaign or an intimate portrait, the result is a balanced, intentional, and evocative experience.",
     featureWorkInLabel: "feature work in:",
     featureWorkInItems: [
-      { text: "It's Nice That", slug: "no-one-magazine" },
-      { text: "L'Officiel", slug: "lofficiel-beauty-award" },
-      { text: "RGB.vn", slug: "x3d-robot" },
+      {
+        text: "It's Nice That",
+        href: "https://www.itsnicethat.com/articles/no-one-magazine-publication-project-260625",
+      },
+      {
+        text: "L'Officiel",
+        href: "https://www.lofficielvietnam.com/beauty/l-officiel-beauty-choice-awards-2025-ton-vinh-tuyet-tac-lam-dep-ky-nguyen-crystal",
+      },
+      {
+        text: "RGB.vn",
+        href: "https://www.facebook.com/watch/?v=1436520963676439&rdid=mWcg8bHbI9H7RZJF",
+      },
     ],
     themeToggleLabel: "Switch theme",
     themeDarkShort: "Dark",
@@ -270,10 +288,12 @@ function updateThemeToggleUi(language) {
 function renderFeaturedInLinks(ul, items, language) {
   if (!ul || !Array.isArray(items)) return;
   ul.innerHTML = items
-    .map(
-      (item) =>
-        `<li><a href="${buildAboutProjectUrl(item.slug, language)}">${item.text}</a></li>`
-    )
+    .map((item) => {
+      const href = item.href || buildAboutProjectUrl(item.slug, language);
+      const isExternal = /^https?:\/\//i.test(href);
+      const attrs = isExternal ? ' target="_blank" rel="noopener noreferrer"' : "";
+      return `<li><a href="${href}"${attrs}>${item.text}</a></li>`;
+    })
     .join("");
 }
 
