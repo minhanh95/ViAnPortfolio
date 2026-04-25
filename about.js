@@ -7,6 +7,17 @@ const aboutI18n = {
     viewIndex: "Danh mục",
     navAbout: "Giới thiệu",
     heroTitle: "Hồ sơ năng lực",
+    aboutName: "Vian Nguyen",
+    aboutIntroP1:
+      "Art Director đa lĩnh vực với nguồn cảm hứng từ Design, chuyên sâu về <strong>thiết kế không gian và minh họa</strong>. Nền tảng này giúp tôi tiếp cận từng dự án bằng góc nhìn kép: tính kỹ thuật như kiến trúc sư và cảm xúc nghệ sĩ. Công việc của tôi nằm ở giao điểm giữa độ chính xác thương mại và cảm xúc thật, nối mục tiêu thương hiệu với câu chuyện chạm tới con người.",
+    aboutIntroP2:
+      "Là creative developer, tôi làm việc trên nhiều quy mô: từ bối cảnh thương mại cho thương hiệu lớn tại Việt Nam, sàn diễn thử nghiệm đến ảnh tạp chí cộng đồng. Tôi chuyển tải khái niệm phức tạp thành thế giới vật lý sống động, để dù output là chiến dịch toàn cầu hay chân dung cá nhân, kết quả vẫn cân bằng, có chủ đích và gợi cảm.",
+    featureWorkInLabel: "feature work in:",
+    featureWorkInItems: [
+      { text: "It's Nice That", href: "https://www.itsnicethat.com/" },
+      { text: "L'Officiel", href: "https://lofficielvietnam.com/" },
+      { text: "RGB.vn", href: "https://rgb.vn/" },
+    ],
     themeToggleLabel: "Đổi giao diện",
     themeDarkShort: "Tối",
     themeLightShort: "Sáng",
@@ -87,6 +98,17 @@ const aboutI18n = {
     viewIndex: "Index",
     navAbout: "About",
     heroTitle: "Professional Profile",
+    aboutName: "Vian Nguyen",
+    aboutIntroP1:
+      "a multidisciplinary Art Director with a creative lineage rooted in Design with minors in <strong>spatial design and illustration</strong>. This foundation allows me to approach every project with a unique dual perspective: the technical rigor of an architect and the expressive soul of an artist. My work exists at the intersection of commercial precision and raw human emotion, bridging the gap between brand objectives and visceral storytelling.",
+    aboutIntroP2:
+      "As a creative developer, I navigate a diverse spectrum of scales-from high-impact commercial sets for major Vietnamese brands to avant-garde runway narratives and community-driven editorials. I specialize in translating complex concepts into immersive physical worlds, ensuring that whether the output is a global campaign or an intimate portrait, the result is a balanced, intentional, and evocative experience.",
+    featureWorkInLabel: "feature work in:",
+    featureWorkInItems: [
+      { text: "It's Nice That", href: "https://www.itsnicethat.com/" },
+      { text: "L'Officiel", href: "https://lofficielvietnam.com/" },
+      { text: "RGB.vn", href: "https://rgb.vn/" },
+    ],
     themeToggleLabel: "Switch theme",
     themeDarkShort: "Dark",
     themeLightShort: "Light",
@@ -187,6 +209,10 @@ function setText(node, value) {
   if (node) node.textContent = value;
 }
 
+function setHtml(node, value) {
+  if (node) node.innerHTML = value;
+}
+
 function renderListItems(target, items) {
   if (!target || !Array.isArray(items)) return;
   target.innerHTML = items.map((item) => `<li>${item}</li>`).join("");
@@ -229,7 +255,23 @@ function updateThemeToggleUi(language) {
   aboutEls.themeToggleBtn.setAttribute("aria-label", dict.themeToggleLabel);
 }
 
+function renderFeaturedInLinks(ul, items) {
+  if (!ul || !Array.isArray(items)) return;
+  ul.innerHTML = items
+    .map(
+      (item) =>
+        `<li><a href="${item.href}" target="_blank" rel="noopener noreferrer">${item.text}</a></li>`
+    )
+    .join("");
+}
+
 function applyAboutBody(dict) {
+  setText(document.getElementById("aboutIntroName"), dict.aboutName);
+  setHtml(document.getElementById("aboutIntroP1"), dict.aboutIntroP1);
+  setText(document.getElementById("aboutIntroP2"), dict.aboutIntroP2);
+  setText(document.getElementById("aboutFeaturedInLabel"), dict.featureWorkInLabel);
+  renderFeaturedInLinks(document.getElementById("aboutFeaturedInList"), dict.featureWorkInItems);
+
   setText(document.getElementById("aboutSkillsSectionLabel"), dict.skillsSectionLabel);
   setText(document.getElementById("aboutToolsHeading"), dict.toolsHeading);
   setText(document.getElementById("aboutDigitalHeading"), dict.digitalHeading);
