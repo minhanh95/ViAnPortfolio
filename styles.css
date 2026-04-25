@@ -2156,10 +2156,11 @@ html[data-theme="light"] .theme-toggle-btn::before {
 
 .about-featured-in-list a {
   color: var(--about-featured-link);
+  font-style: italic;
   text-decoration: underline;
   text-underline-offset: 0.18em;
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .about-featured-in-list a:hover {
