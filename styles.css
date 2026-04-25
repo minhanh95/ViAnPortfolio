@@ -2036,6 +2036,10 @@ html[data-theme="light"] .theme-toggle-btn::before {
 }
 
 .about-hero-main {
+  --about-side-col: 210px;
+  --about-col-gap: clamp(0.6rem, 1.4vw, 0.9rem);
+  --about-name-text-inset: 0.9rem;
+  --about-bio-text-inset: 1rem;
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -2046,11 +2050,11 @@ html[data-theme="light"] .theme-toggle-btn::before {
   display: flex;
   flex-wrap: nowrap;
   align-items: start;
-  gap: clamp(0.6rem, 1.4vw, 0.9rem);
+  gap: var(--about-col-gap);
 }
 
 .about-hero-side {
-  flex: 0 0 min(100%, 210px);
+  flex: 0 0 min(100%, var(--about-side-col));
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
@@ -2069,7 +2073,7 @@ html[data-theme="light"] .theme-toggle-btn::before {
   flex: 0 0 auto;
   align-self: start;
   max-width: min(100%, 200px);
-  padding: 0.65rem 0.9rem;
+  padding: 0.65rem var(--about-name-text-inset);
   font-size: clamp(0.95rem, 1.5vw, 1.1rem);
   font-weight: 700;
   line-height: 1.2;
@@ -2083,7 +2087,7 @@ html[data-theme="light"] .theme-toggle-btn::before {
 
 .about-hero-bio-lead {
   margin: 0;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem var(--about-bio-text-inset);
   font-size: clamp(0.86rem, 1.1vw, 0.95rem);
   line-height: 1.65;
   color: var(--muted);
@@ -2102,7 +2106,7 @@ html[data-theme="light"] .theme-toggle-btn::before {
 
 .about-hero-bio-continued {
   margin: 0;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem var(--about-bio-text-inset);
   font-size: clamp(0.86rem, 1.1vw, 0.95rem);
   line-height: 1.65;
   color: var(--muted);
@@ -2115,10 +2119,11 @@ html[data-theme="light"] .theme-toggle-btn::before {
 }
 
 .about-featured-in {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.65rem 1.15rem;
+  display: grid;
+  grid-template-columns: minmax(0, var(--about-side-col)) minmax(0, 1fr);
+  column-gap: var(--about-col-gap);
+  row-gap: 0.4rem;
+  align-items: start;
   margin-top: 0;
   padding: 0;
   background: transparent;
@@ -2128,6 +2133,7 @@ html[data-theme="light"] .theme-toggle-btn::before {
 
 .about-featured-in-label {
   margin: 0;
+  padding-inline-start: var(--about-name-text-inset);
   font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -2144,6 +2150,8 @@ html[data-theme="light"] .theme-toggle-btn::before {
   list-style: none;
   margin: 0;
   padding: 0;
+  padding-inline-start: var(--about-bio-text-inset);
+  min-width: 0;
 }
 
 .about-featured-in-list a {
@@ -2183,8 +2191,9 @@ html[data-theme="light"] .theme-toggle-btn::before {
   }
 
   .about-featured-in {
-    margin-top: 0.45rem;
-    padding-inline: 0.6rem;
+    grid-template-columns: 1fr;
+    row-gap: 0.25rem;
+    margin-top: 0.35rem;
   }
 }
 
