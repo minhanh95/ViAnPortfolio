@@ -2123,6 +2123,24 @@ html[data-theme="light"] .theme-toggle-btn::before {
   display: block;
 }
 
+.about-hero-photo-img-light {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.about-hero-photo-img-dark {
+  opacity: 1;
+}
+
+html[data-theme="light"] .about-hero-photo-img-light {
+  opacity: 1;
+}
+
+html[data-theme="light"] .about-hero-photo-img-dark {
+  opacity: 0;
+  pointer-events: none;
+}
+
 .about-hero-main {
   --about-side-col: 210px;
   --about-col-gap: clamp(0.6rem, 1.4vw, 0.9rem);
@@ -2222,7 +2240,7 @@ html[data-theme="light"] .theme-toggle-btn::before {
 .about-featured-in-label {
   margin: 0;
   padding-inline-start: var(--about-name-text-inset);
-  font-size: 0.88rem;
+  font-size: clamp(0.95rem, 1.5vw, 1.1rem);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: lowercase;
