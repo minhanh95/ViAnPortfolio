@@ -1980,6 +1980,7 @@ function initCaseImageParallax() {
 }
 
 function initProjectCursor() {
+  if (pageMode !== "feature") return;
   const supportsFinePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   if (!supportsFinePointer) return;
   if (document.querySelector(".custom-pointer")) return;
