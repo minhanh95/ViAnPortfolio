@@ -597,14 +597,29 @@ function warmupImages(paths) {
   });
 }
 
-const CASE_VIDEO_IN_VIEW_MIN = 0.45;
 const CASE_PORTRAIT_VIDEO_MAX_WH_RATIO = 0.95;
 const CASE_PORTRAIT_VIDEO_PROJECT_SLUG = "vinamilk-green-farm";
 
 function tryPlayVideoEl(video) {
   if (!video || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (!video.muted) video.muted = true;
   const p = video.play();
   if (p && typeof p.catch === "function") p.catch(() => {});
+}
+
+function setCaseSlideEmbedPlayback(frame, shouldPlay) {
+  if (!frame?.contentWindow || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const src = String(frame.getAttribute("src") || "");
+  if (src.includes("player.vimeo.com")) {
+    frame.contentWindow.postMessage({ method: shouldPlay ? "play" : "pause" }, "https://player.vimeo.com");
+    return;
+  }
+  if (src.includes("youtube.com/embed/")) {
+    frame.contentWindow.postMessage(
+      JSON.stringify({ event: "command", func: shouldPlay ? "playVideo" : "pauseVideo", args: [] }),
+      "https://www.youtube.com",
+    );
+  }
 }
 
 function applyCasePortraitVideoClass(video) {
@@ -639,30 +654,97 @@ function wireCasePortraitVideoAspect() {
   });
 }
 
+function caseMediaRectVisibleInScrollerArea(rect, scrollerRect) {
+  const x1 = Math.max(rect.left, scrollerRect.left, 0);
+  const x2 = Math.min(rect.right, scrollerRect.right, window.innerWidth);
+  const y1 = Math.max(rect.top, scrollerRect.top, 0);
+  const y2 = Math.min(rect.bottom, scrollerRect.bottom, window.innerHeight);
+  return Math.max(0, x2 - x1) * Math.max(0, y2 - y1);
+}
+
+function syncCaseTrackActiveMedia() {
+  const scroller = els.caseSlideTrack;
+  if (!scroller) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    scroller.querySelectorAll("video.case-slide-media").forEach((v) => v.pause());
+    scroller.querySelectorAll("iframe.case-slide-media--embed").forEach((f) => setCaseSlideEmbedPlayback(f, false));
+    return;
+  }
+  const scrollerRect = scroller.getBoundingClientRect();
+  const minArea = 200;
+  const list = scroller.querySelectorAll("video.case-slide-media, iframe.case-slide-media--embed");
+  const rootCx = (scrollerRect.left + scrollerRect.right) / 2;
+  let best = null;
+  let bestArea = 0;
+  let bestDist = Infinity;
+  for (const el of list) {
+    if (!(el instanceof HTMLVideoElement) && !(el instanceof HTMLIFrameElement)) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) continue;
+    const area = caseMediaRectVisibleInScrollerArea(r, scrollerRect);
+    if (area < minArea) continue;
+    const dist = Math.abs((r.left + r.right) / 2 - rootCx);
+    if (area > bestArea || (area === bestArea && dist < bestDist)) {
+      best = el;
+      bestArea = area;
+      bestDist = dist;
+    }
+  }
+  for (const el of list) {
+    if (el === best) {
+      if (el instanceof HTMLVideoElement) tryPlayVideoEl(el);
+      else setCaseSlideEmbedPlayback(el, true);
+    } else {
+      if (el instanceof HTMLVideoElement) el.pause();
+      else setCaseSlideEmbedPlayback(el, false);
+    }
+  }
+}
+
 function wireCaseVideoPause() {
   if (typeof caseVideoObserverCleanup === "function") {
     caseVideoObserverCleanup();
     caseVideoObserverCleanup = null;
   }
   const track = els.caseSlideTrack;
-  if (!track) return;
-  const videos = track.querySelectorAll("video.case-slide-media");
-  if (!videos.length) return;
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        const video = entry.target;
-        const inView = entry.isIntersecting && entry.intersectionRatio >= CASE_VIDEO_IN_VIEW_MIN;
-        if (inView) tryPlayVideoEl(video);
-        else video.pause();
-      });
-    },
-    { root: track, threshold: [0, 0.25, CASE_VIDEO_IN_VIEW_MIN, 0.5, 0.65, 0.85] },
-  );
-  videos.forEach((video) => observer.observe(video));
-  caseVideoObserverCleanup = () => {
-    observer.disconnect();
+  if (!track || !track.querySelector("video.case-slide-media, iframe.case-slide-media--embed")) return;
+
+  let raf = null;
+  const schedule = () => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = null;
+      syncCaseTrackActiveMedia();
+    });
   };
+  const onLayoutOrVis = () => schedule();
+
+  track.addEventListener("scroll", onLayoutOrVis, { passive: true });
+  window.addEventListener("scroll", onLayoutOrVis, { passive: true });
+  window.addEventListener("resize", onLayoutOrVis, { passive: true });
+
+  const medias = track.querySelectorAll("video.case-slide-media, iframe.case-slide-media--embed");
+  const io = new IntersectionObserver(onLayoutOrVis, {
+    root: null,
+    threshold: [0, 0.01, 0.05, 0.1, 0.2, 0.35, 0.5, 0.75, 1],
+  });
+  medias.forEach((m) => io.observe(m));
+
+  caseVideoObserverCleanup = () => {
+    if (raf) {
+      cancelAnimationFrame(raf);
+      raf = null;
+    }
+    track.removeEventListener("scroll", onLayoutOrVis);
+    window.removeEventListener("scroll", onLayoutOrVis);
+    window.removeEventListener("resize", onLayoutOrVis);
+    document.removeEventListener("visibilitychange", onLayoutOrVis);
+    io.disconnect();
+  };
+
+  document.addEventListener("visibilitychange", onLayoutOrVis);
+  schedule();
+  requestAnimationFrame(() => requestAnimationFrame(schedule));
 }
 
 async function resolveDetailImagesForProject(project) {

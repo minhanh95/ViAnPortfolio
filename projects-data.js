@@ -798,7 +798,6 @@ Rooted in a commitment to sustainable, modern dairy, the creative direction expl
     coverPath: "assets/projects/vinamilk-green-farm/cover.jpg",
     detailDescriptions: {
       en: [
-        "",
         "KV Drinking Yogurt",
         "[Video feature here](https://web.facebook.com/reel/747760367608070)",
         "KV Honey Yogurt",
@@ -819,10 +818,8 @@ Rooted in a commitment to sustainable, modern dairy, the creative direction expl
         "",
         "",
         "",
-        "",
       ],
       vi: [
-        "",
         "KV Drinking Yogurt",
         "[Video tại đây](https://web.facebook.com/reel/747760367608070)",
         "KV Honey Yogurt",
@@ -843,16 +840,15 @@ Rooted in a commitment to sustainable, modern dairy, the creative direction expl
         "",
         "",
         "",
-        "",
       ],
     },
     detailImages: [
-      "assets/projects/vinamilk-green-farm/detail-01.jpg",
-      "assets/projects/vinamilk-green-farm/detail-02.mp4",
-      "assets/projects/vinamilk-green-farm/detail-03.jpg",
-      "assets/projects/vinamilk-green-farm/detail-04.mp4",
-      "assets/projects/vinamilk-green-farm/detail-05.jpg",
-      "assets/projects/vinamilk-green-farm/detail-06.mp4",
+      "assets/projects/vinamilk-green-farm/detail-01.mp4",
+      "assets/projects/vinamilk-green-farm/detail-02.jpg",
+      "assets/projects/vinamilk-green-farm/detail-03.mp4",
+      "assets/projects/vinamilk-green-farm/detail-04.jpg",
+      "assets/projects/vinamilk-green-farm/detail-05.mp4",
+      "assets/projects/vinamilk-green-farm/detail-06.jpg",
       "assets/projects/vinamilk-green-farm/detail-07.jpg",
       "assets/projects/vinamilk-green-farm/detail-08.jpg",
       "assets/projects/vinamilk-green-farm/detail-09.jpg",
@@ -867,7 +863,6 @@ Rooted in a commitment to sustainable, modern dairy, the creative direction expl
       "assets/projects/vinamilk-green-farm/detail-18.jpg",
       "assets/projects/vinamilk-green-farm/detail-19.jpg",
       "assets/projects/vinamilk-green-farm/detail-20.jpg",
-      "assets/projects/vinamilk-green-farm/detail-21.jpg",
     ],
   },
   {
@@ -899,7 +894,7 @@ Art direction sử dụng các yếu tố hoa lá như điểm nhấn kiến tr�
         groups: [
           {
             title: "",
-            items: ["**Photography Series:** 5 High-fidelity brand assets optimized for digital platforms."],
+            items: ["**Photography Series:** 4 high-fidelity brand assets optimized for digital platforms."],
           },
         ],
       },
@@ -908,7 +903,7 @@ Art direction sử dụng các yếu tố hoa lá như điểm nhấn kiến tr�
         groups: [
           {
             title: "",
-            items: ["**Photography Series:** 5 brand assets độ trung thực cao, tối ưu cho nền tảng số."],
+            items: ["**Photography Series:** 4 brand assets độ trung thực cao, tối ưu cho nền tảng số."],
           },
         ],
       },
@@ -919,7 +914,6 @@ Art direction sử dụng các yếu tố hoa lá như điểm nhấn kiến tr�
       "assets/projects/Color Key/detail-02.jpg",
       "assets/projects/Color Key/detail-03.jpg",
       "assets/projects/Color Key/detail-04.jpg",
-      "assets/projects/Color Key/detail-05.jpg",
     ],
   },
   {

@@ -45,14 +45,23 @@ const pageState = {
   sequence: [],
   imageCount: 0,
   counterObserver: null,
-  videoObserver: null,
+  projectVideoUnwire: null,
   setStart: 0,
   setWidth: 0,
   velocity: 0,
   momentumRaf: null,
   lastWheelAt: Date.now(),
   hasUserInteracted: false,
+  cachedMaxScale: 1.06,
+  scaleAnimRaf: null,
 };
+
+/* Per-slide scale lerp parameters: 0.18 reaches ~99% of the target in ~25 frames (~0.4s @ 60Hz),
+   which feels like a confident glide without lagging behind the user. SCALE_EPS controls when
+   we snap to target and stop the rAF loop. Using a numeric .__currentScale / .__targetScale on
+   the slide element avoids string parsing each frame. */
+const SCALE_LERP = 0.18;
+const SCALE_EPS = 0.0015;
 const LANGUAGE_STORAGE_KEY = "vanlab-language";
 
 const SCROLL_PHYSICS = {
@@ -545,7 +554,11 @@ function createSlide(slide, realIndex, cloneSet) {
     const captionHtml = `<figcaption class="project-slide-caption">${renderInlineRichText(captionText)}</figcaption>`;
     if (isVideoPath(slide.path)) {
       wrapper.classList.add("project-slide--has-video");
-      wrapper.innerHTML = `<video class="project-slide-media" src="${src}" controls playsinline muted preload="metadata" title="${label}"></video>${captionHtml}`;
+      // Manual playback only: no `autoplay`, no JS-driven play()/pause(). Keeping decoders idle
+      // unless the user clicks play is the surest way to keep horizontal scroll silky on every
+      // device — even mid-range laptops. `preload="metadata"` lets the slide show the first frame
+      // without buffering the whole clip up front, and `controls` gives users the play button.
+      wrapper.innerHTML = `<video class="project-slide-media" src="${src}" controls playsinline muted preload="metadata" disablepictureinpicture disableremoteplayback title="${label}"></video>${captionHtml}`;
     } else if (isVimeoPath(slide.path)) {
       const embedSrc = escapeHtml(buildVimeoEmbedUrl(slide.path));
       wrapper.innerHTML = `<iframe class="project-slide-media project-slide-media--embed" src="${embedSrc}" title="${label}" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>${captionHtml}`;
@@ -682,54 +695,207 @@ function wireCounterObserver() {
   slides.forEach((slide) => pageState.counterObserver.observe(slide));
 }
 
-const PROJECT_VIDEO_IN_VIEW_MIN = 0.45;
-
-function tryPlayProjectVideo(video) {
-  if (!video || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const p = video.play();
-  if (p && typeof p.catch === "function") p.catch(() => {});
+function mediaRectVisibleInScrollerArea(rect, scrollerRect) {
+  const x1 = Math.max(rect.left, scrollerRect.left, 0);
+  const x2 = Math.min(rect.right, scrollerRect.right, window.innerWidth);
+  const y1 = Math.max(rect.top, scrollerRect.top, 0);
+  const y2 = Math.min(rect.bottom, scrollerRect.bottom, window.innerHeight);
+  return Math.max(0, x2 - x1) * Math.max(0, y2 - y1);
 }
 
-function setEmbedPlayback(frame, shouldPlay) {
-  if (!frame?.contentWindow || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const src = String(frame.getAttribute("src") || "");
-  if (src.includes("player.vimeo.com")) {
-    frame.contentWindow.postMessage({ method: shouldPlay ? "play" : "pause" }, "https://player.vimeo.com");
+const FOCUS_MIN_SLIDE_AREA = 32;
+
+function refreshProjectMaxScaleCache() {
+  const g = pageEls.gallery;
+  if (!g) {
+    pageState.cachedMaxScale = 1.06;
     return;
   }
-  if (src.includes("youtube.com/embed/")) {
-    frame.contentWindow.postMessage(
-      JSON.stringify({ event: "command", func: shouldPlay ? "playVideo" : "pauseVideo", args: [] }),
-      "https://www.youtube.com",
-    );
+  const raw = getComputedStyle(g).getPropertyValue("--project-slide-active-scale").trim();
+  const n = parseFloat(raw);
+  pageState.cachedMaxScale = Number.isFinite(n) && n > 1 ? n : 1.06;
+}
+
+/** 0..1 from 0..1 for a softer shoulder at the “edge” of the lerp. */
+function smoothStep01(t) {
+  const x = Math.max(0, Math.min(1, t));
+  return x * x * (3 - 2 * x);
+}
+
+/**
+ * Glide each slide's --project-scroll-scale from its current value toward __targetScale.
+ * Runs on its own rAF loop so the visual scale animation is independent of wheel/scroll event
+ * timing — uneven scroll input still yields a smooth scale-up when arriving at a project.
+ */
+function tickScaleAnim() {
+  pageState.scaleAnimRaf = null;
+  const scroller = pageEls.gallery;
+  if (!scroller) return;
+  const slides = scroller.querySelectorAll(".project-slide");
+  let needsMore = false;
+  for (const slide of slides) {
+    if (!(slide instanceof HTMLElement)) continue;
+    const target = slide.__targetScale != null ? slide.__targetScale : 1;
+    const current = slide.__currentScale != null ? slide.__currentScale : 1;
+    let next;
+    if (Math.abs(target - current) <= SCALE_EPS) {
+      if (current === target) continue;
+      next = target;
+      slide.__currentScale = target;
+    } else {
+      next = current + (target - current) * SCALE_LERP;
+      slide.__currentScale = next;
+      needsMore = true;
+    }
+    const valStr = next.toFixed(3);
+    if (slide.dataset.scrollScale !== valStr) {
+      slide.style.setProperty("--project-scroll-scale", valStr);
+      slide.dataset.scrollScale = valStr;
+    }
+  }
+  if (needsMore) {
+    pageState.scaleAnimRaf = requestAnimationFrame(tickScaleAnim);
   }
 }
 
-function wireProjectVideoPause() {
-  if (pageState.videoObserver) {
-    pageState.videoObserver.disconnect();
-    pageState.videoObserver = null;
+function ensureScaleAnimRunning() {
+  if (pageState.scaleAnimRaf == null) {
+    pageState.scaleAnimRaf = requestAnimationFrame(tickScaleAnim);
   }
-  const mediaEls = pageEls.gallery.querySelectorAll("video.project-slide-media, iframe.project-slide-media--embed");
-  if (!mediaEls.length) return;
-  pageState.videoObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        const media = entry.target;
-        const inView = entry.isIntersecting && entry.intersectionRatio >= PROJECT_VIDEO_IN_VIEW_MIN;
-        if (media instanceof HTMLVideoElement) {
-          if (inView) tryPlayProjectVideo(media);
-          else media.pause();
-          return;
-        }
-        if (media instanceof HTMLIFrameElement) {
-          setEmbedPlayback(media, inView);
-        }
-      });
-    },
-    { root: pageEls.gallery, threshold: [0, 0.25, PROJECT_VIDEO_IN_VIEW_MIN, 0.5, 0.65, 0.85] },
-  );
-  mediaEls.forEach((media) => pageState.videoObserver.observe(media));
+}
+
+/**
+ * Single-pass scroll sync.
+ *
+ * Read each slide's rect once and compute its target scale + front-z candidate. Writing scale
+ * targets here (instead of the live CSS variable) lets tickScaleAnim() lerp the actual value on
+ * a separate rAF loop, which keeps the scale-up animation smooth even with uneven wheel input.
+ *
+ * Video / meta slides intentionally stay at scale 1 — videos because re-rasterising frames each
+ * scroll tick is the main source of jitter, meta because its long copy block reflows when scaled.
+ *
+ * No automatic playback: videos are only ever started by the user clicking the native controls,
+ * so we don't pick a "focused" media or call play()/pause() during scroll. This is the cleanest
+ * way to keep scroll perfectly smooth on lower-end machines.
+ */
+function syncProjectGalleryScrollState() {
+  const scroller = pageEls.gallery;
+  if (!scroller) return;
+
+  const scrollerRect = scroller.getBoundingClientRect();
+  if (scrollerRect.width < 2) return;
+
+  const rootCx = (scrollerRect.left + scrollerRect.right) / 2;
+  const maxExtra = pageState.cachedMaxScale - 1;
+  const slides = scroller.querySelectorAll(".project-slide");
+
+  const candidates = [];
+  let frontSlide = null;
+  let frontT = -1;
+
+  for (const slide of slides) {
+    if (!(slide instanceof HTMLElement)) continue;
+    if (slide.classList.contains("project-empty")) continue;
+    const rect = slide.getBoundingClientRect();
+    if (rect.width < 2 || rect.height < 2) {
+      // Off-screen / unmeasured: snap target+current to 1 so when it scrolls back into view the
+      // glide starts from rest instead of jumping mid-animation.
+      slide.__targetScale = 1;
+      slide.__currentScale = 1;
+      if (slide.dataset.scrollScale !== "") {
+        slide.style.removeProperty("--project-scroll-scale");
+        slide.style.removeProperty("z-index");
+        slide.dataset.scrollScale = "";
+      }
+      continue;
+    }
+
+    const area = mediaRectVisibleInScrollerArea(rect, scrollerRect);
+    const isVideoSlide = slide.classList.contains("project-slide--has-video");
+    const isMetaSlide = slide.classList.contains("project-slide--meta");
+    const skipScale = isVideoSlide || isMetaSlide;
+    let scale = 1;
+    let t = 0;
+
+    if (area >= FOCUS_MIN_SLIDE_AREA && !skipScale) {
+      const slideCx = (rect.left + rect.right) / 2;
+      const dist = Math.abs(slideCx - rootCx);
+      const falloff = scrollerRect.width * 0.45 + rect.width * 0.2;
+      const raw = 1 - Math.min(1, dist / Math.max(1, falloff));
+      t = smoothStep01(raw);
+      scale = 1 + maxExtra * t;
+
+      if (t > frontT) {
+        frontT = t;
+        frontSlide = slide;
+      }
+    }
+
+    candidates.push({ slide, scale, t });
+  }
+
+  // Write phase: only update the *target* scale here. The actual CSS variable is animated
+  // toward this target by tickScaleAnim() on a separate rAF loop, which gives a smooth glide
+  // that is decoupled from uneven wheel/scroll event timing.
+  let needAnim = false;
+  for (const c of candidates) {
+    c.slide.__targetScale = c.scale;
+    if (c.slide.__currentScale == null) c.slide.__currentScale = 1;
+    if (Math.abs(c.slide.__currentScale - c.scale) > SCALE_EPS) needAnim = true;
+
+    if (c.slide === frontSlide && frontT > 0.02) {
+      if (c.slide.dataset.scrollFront !== "1") {
+        c.slide.style.setProperty("z-index", "2");
+        c.slide.dataset.scrollFront = "1";
+      }
+    } else if (c.slide.dataset.scrollFront === "1") {
+      c.slide.style.removeProperty("z-index");
+      c.slide.dataset.scrollFront = "";
+    }
+  }
+  if (needAnim) ensureScaleAnimRunning();
+}
+
+/** Wire the per-frame scale sync to scroll/resize. (Name kept for backward compatibility with
+ *  the renderSequence/renderNotFound teardown hooks; there's no longer any video pause logic.) */
+function wireProjectVideoPause() {
+  if (pageState.projectVideoUnwire) {
+    pageState.projectVideoUnwire();
+    pageState.projectVideoUnwire = null;
+  }
+  const root = pageEls.gallery;
+  if (!root) return;
+
+  refreshProjectMaxScaleCache();
+
+  let raf = null;
+  const schedule = () => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = null;
+      syncProjectGalleryScrollState();
+    });
+  };
+  const onScroll = () => schedule();
+  const onResize = () => {
+    refreshProjectMaxScaleCache();
+    schedule();
+  };
+
+  root.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onResize, { passive: true });
+
+  pageState.projectVideoUnwire = () => {
+    if (raf) {
+      cancelAnimationFrame(raf);
+      raf = null;
+    }
+    root.removeEventListener("scroll", onScroll);
+    window.removeEventListener("resize", onResize);
+  };
+
+  schedule();
+  requestAnimationFrame(() => requestAnimationFrame(schedule));
 }
 
 function runMomentum() {
@@ -739,12 +905,16 @@ function runMomentum() {
       cancelAnimationFrame(pageState.momentumRaf);
       pageState.momentumRaf = null;
     }
+    syncProjectGalleryScrollState();
     return;
   }
 
   pageState.velocity *= SCROLL_PHYSICS.MOMENTUM_DECAY;
   pageEls.gallery.scrollLeft += pageState.velocity * SCROLL_PHYSICS.VELOCITY_TO_PIXEL;
   recenterIfNeeded();
+  // The scroll-position change above triggers the gallery's scroll listener which already
+  // schedules syncProjectGalleryScrollState via rAF; calling it here too would do the same
+  // expensive layout work twice per frame.
   pageState.momentumRaf = requestAnimationFrame(runMomentum);
 }
 
@@ -787,18 +957,26 @@ function wireHorizontalWheel() {
 }
 
 function renderNotFound() {
-  if (pageState.videoObserver) {
-    pageState.videoObserver.disconnect();
-    pageState.videoObserver = null;
+  if (pageState.projectVideoUnwire) {
+    pageState.projectVideoUnwire();
+    pageState.projectVideoUnwire = null;
+  }
+  if (pageState.scaleAnimRaf != null) {
+    cancelAnimationFrame(pageState.scaleAnimRaf);
+    pageState.scaleAnimRaf = null;
   }
   pageEls.gallery.innerHTML = `<article class="project-empty">${pageI18n[pageState.language].notFound}</article>`;
   updateCounter(0);
 }
 
 function renderSequence() {
-  if (pageState.videoObserver) {
-    pageState.videoObserver.disconnect();
-    pageState.videoObserver = null;
+  if (pageState.projectVideoUnwire) {
+    pageState.projectVideoUnwire();
+    pageState.projectVideoUnwire = null;
+  }
+  if (pageState.scaleAnimRaf != null) {
+    cancelAnimationFrame(pageState.scaleAnimRaf);
+    pageState.scaleAnimRaf = null;
   }
   pageEls.gallery.innerHTML = "";
   [-1, 0, 1].forEach((cloneSet) => {
