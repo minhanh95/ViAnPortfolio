@@ -204,6 +204,7 @@ const aboutI18n = {
 };
 
 const aboutEls = {
+  siteHeader: document.getElementById("siteHeader"),
   brandHomeLink: document.getElementById("brandHomeLink"),
   viewGalleryBtn: document.getElementById("viewGalleryBtn"),
   viewIndexBtn: document.getElementById("viewIndexBtn"),
@@ -212,6 +213,32 @@ const aboutEls = {
   langToggleBtn: document.getElementById("langToggleBtn"),
   themeToggleBtn: document.getElementById("themeToggleBtn"),
 };
+
+function wireHeaderGlassEffect() {
+  if (!aboutEls.siteHeader) return;
+  const threshold = 12;
+  const hideThreshold = 110;
+  let lastScroll = Math.max(0, window.scrollY || 0);
+
+  const setHeaderState = (scroll) => {
+    const safeScroll = Math.max(0, Number(scroll) || 0);
+    const delta = safeScroll - lastScroll;
+    const isNearTop = safeScroll < hideThreshold;
+    aboutEls.siteHeader.classList.toggle("scrolled", safeScroll > threshold);
+    if (isNearTop) {
+      aboutEls.siteHeader.classList.remove("is-hidden");
+    } else if (delta > 2) {
+      aboutEls.siteHeader.classList.add("is-hidden");
+    } else if (delta < -2) {
+      aboutEls.siteHeader.classList.remove("is-hidden");
+    }
+    lastScroll = safeScroll;
+  };
+
+  const onScroll = () => setHeaderState(window.scrollY);
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+}
 
 function getInitialLanguage() {
   const query = new URLSearchParams(window.location.search);
@@ -362,6 +389,7 @@ function initializeAboutPage() {
   }
   applyLanguage(currentLanguage);
   syncAboutPrefsToUrl(currentLanguage);
+  wireHeaderGlassEffect();
 
   aboutEls.langToggleBtn?.addEventListener("click", () => {
     const nextLanguage = currentLanguage === "vi" ? "en" : "vi";
