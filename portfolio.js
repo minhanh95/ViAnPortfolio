@@ -209,9 +209,12 @@ const state = {
   inCaseStudy: false,
   mobileInfoCollapsed: true,
   items: sortedProjects,
-  selectedSlug: sortedProjects.some((project) => project.slug === initialSelectedParam)
-    ? initialSelectedParam
-    : sortedProjects[0]?.slug || "",
+  selectedSlug:
+    pageMode === "projects"
+      ? ""
+      : sortedProjects.some((project) => project.slug === initialSelectedParam)
+        ? initialSelectedParam
+        : sortedProjects[0]?.slug || "",
   caseSlideIndex: 0,
   caseAnimating: false,
 };
@@ -260,8 +263,7 @@ const els = {
   caseInfoTech: document.getElementById("caseInfoTech"),
   caseInfoYear: document.getElementById("caseInfoYear"),
   nextProjectBtn: document.getElementById("nextProjectBtn"),
-  langViBtn: document.getElementById("langViBtn"),
-  langEnBtn: document.getElementById("langEnBtn"),
+  langToggleBtn: document.getElementById("langToggleBtn"),
   themeToggleBtn: document.getElementById("themeToggleBtn"),
   viewGalleryBtn: document.getElementById("viewGalleryBtn"),
   viewIndexBtn: document.getElementById("viewIndexBtn"),
@@ -276,6 +278,48 @@ const els = {
   galleryInfoObjectiveLabel: document.getElementById("galleryInfoObjectiveLabel"),
   galleryInfoScopeLabel: document.getElementById("galleryInfoScopeLabel"),
 };
+
+let locationStripHeaderSyncWired = false;
+
+/**
+ * Orients the MOTO column with the main nav: .header-nav is typically wider than the MOTO
+ * text, so a naive `auto` mid column is narrower, extra space goes to the first `1fr`, and the
+ * MOTO block drifts right relative to "Feature". The mid column's min is set to the nav width
+ * (same as the header's center track).
+ */
+function syncLocationStripToHeaderNav() {
+  const nav = document.querySelector(".header-nav");
+  const hasStrip = document.querySelector(".location-strip");
+  if (!nav || !hasStrip) {
+    document.documentElement.style.removeProperty("--location-strip-mid");
+    return;
+  }
+  if (window.innerWidth <= 950) {
+    document.documentElement.style.removeProperty("--location-strip-mid");
+    return;
+  }
+  const w = Math.round(nav.getBoundingClientRect().width);
+  if (w < 1) {
+    requestAnimationFrame(syncLocationStripToHeaderNav);
+    return;
+  }
+  document.documentElement.style.setProperty("--location-strip-mid", `${w}px`);
+}
+
+function initLocationStripHeaderSync() {
+  if (locationStripHeaderSyncWired) return;
+  const nav = document.querySelector(".header-nav");
+  if (!nav || !document.querySelector(".location-strip")) return;
+  locationStripHeaderSyncWired = true;
+  const run = () => syncLocationStripToHeaderNav();
+  window.addEventListener("resize", run, { passive: true });
+  if (typeof ResizeObserver !== "undefined") {
+    new ResizeObserver(run).observe(nav);
+  }
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(run);
+  }
+}
 
 function updateThemeToggleUi() {
   if (!els.themeToggleBtn || !window.VANLAB_THEME) return;
@@ -554,11 +598,45 @@ function warmupImages(paths) {
 }
 
 const CASE_VIDEO_IN_VIEW_MIN = 0.45;
+const CASE_PORTRAIT_VIDEO_MAX_WH_RATIO = 0.95;
+const CASE_PORTRAIT_VIDEO_PROJECT_SLUG = "vinamilk-green-farm";
 
 function tryPlayVideoEl(video) {
   if (!video || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const p = video.play();
   if (p && typeof p.catch === "function") p.catch(() => {});
+}
+
+function applyCasePortraitVideoClass(video) {
+  if (!(video instanceof HTMLVideoElement)) return;
+  const item = video.closest(".case-image-item");
+  if (!item) return;
+  const project = getSelectedProject();
+  if (!project || project.slug !== CASE_PORTRAIT_VIDEO_PROJECT_SLUG) {
+    item.classList.remove("case-image-item--portrait-video");
+    return;
+  }
+  const w = video.videoWidth;
+  const h = video.videoHeight;
+  if (!w || !h) return;
+  const isPortrait = w / h < CASE_PORTRAIT_VIDEO_MAX_WH_RATIO;
+  item.classList.toggle("case-image-item--portrait-video", isPortrait);
+}
+
+function wireCasePortraitVideoAspect() {
+  const track = els.caseSlideTrack;
+  if (!track) return;
+  const project = getSelectedProject();
+  if (!project || project.slug !== CASE_PORTRAIT_VIDEO_PROJECT_SLUG) return;
+  const videos = track.querySelectorAll("video.case-slide-media");
+  videos.forEach((video) => {
+    if (!(video instanceof HTMLVideoElement)) return;
+    if (video.readyState >= 1) {
+      applyCasePortraitVideoClass(video);
+    } else {
+      video.addEventListener("loadedmetadata", () => applyCasePortraitVideoClass(video), { once: true });
+    }
+  });
 }
 
 function wireCaseVideoPause() {
@@ -682,12 +760,16 @@ function renderStaticText() {
   els.caseInfoYearLabel.textContent = t("caseInfoYearLabel");
   els.nextProjectBtn.textContent = t("nextProject");
 
-  els.langViBtn.classList.toggle("active", state.language === "vi");
-  els.langEnBtn.classList.toggle("active", state.language === "en");
+  if (els.langToggleBtn) {
+    els.langToggleBtn.textContent = state.language.toUpperCase();
+    els.langToggleBtn.setAttribute("aria-label", "Switch language");
+    els.langToggleBtn.title = "Switch language";
+  }
   els.viewGalleryBtn.classList.toggle("active", state.viewMode === "feature");
   els.viewIndexBtn.classList.toggle("active", state.viewMode === "index");
   updateThemeToggleUi();
   window.VANLAB_REFRESH_FOOTER_BAR?.();
+  syncLocationStripToHeaderNav();
 }
 
 function renderListItems(target, items) {
@@ -1197,6 +1279,7 @@ function renderCaseStudy() {
   updateCaseSlideCounter(1, slideImages.length);
   wireCaseSlideObserver(slideImages.length);
   wireCaseHorizontalWheel();
+  wireCasePortraitVideoAspect();
   wireCaseVideoPause();
   updateCaseSlideArrowsState(slideImages.length);
 }
@@ -1812,8 +1895,10 @@ function initLenisSmoothScroll() {
   window.__vanlabLenis = lenisInstance;
 }
 
-els.langViBtn.addEventListener("click", () => switchLanguage("vi"));
-els.langEnBtn.addEventListener("click", () => switchLanguage("en"));
+els.langToggleBtn?.addEventListener("click", () => {
+  const nextLanguage = state.language === "vi" ? "en" : "vi";
+  switchLanguage(nextLanguage);
+});
 els.themeToggleBtn?.addEventListener("click", switchTheme);
 if (els.viewGalleryBtn?.tagName === "BUTTON") {
   els.viewGalleryBtn.addEventListener("click", () => switchViewMode("feature"));
@@ -1861,6 +1946,7 @@ async function initializeApp() {
   initAnchorNavigation();
   initScrollReveal();
   initCaseImageParallax();
+  initLocationStripHeaderSync();
   window.addEventListener("resize", handleCaseLayoutResize);
   if (initialSelectedParam && focusSelectedProject()) {
     return;

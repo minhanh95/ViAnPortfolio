@@ -9,7 +9,7 @@ const aboutI18n = {
     heroTitle: "Hồ sơ năng lực",
     aboutName: "Vian Nguyen",
     aboutIntroP1:
-      "Art Director đa lĩnh vực với nguồn cảm hứng từ Design, chuyên sâu về <strong>thiết kế không gian và minh họa</strong>. Nền tảng này giúp tôi tiếp cận từng dự án bằng góc nhìn kép: tính kỹ thuật như kiến trúc sư và cảm xúc nghệ sĩ. Công việc của tôi nằm ở giao điểm giữa độ chính xác thương mại và cảm xúc thật, nối mục tiêu thương hiệu với câu chuyện chạm tới con người.",
+      "<strong>Art Director đa lĩnh vực</strong> với nguồn cảm hứng từ Design, chuyên sâu về thiết kế không gian và minh họa. Nền tảng này giúp tôi tiếp cận từng dự án bằng góc nhìn kép: tính kỹ thuật như kiến trúc sư và cảm xúc nghệ sĩ. Công việc của tôi nằm ở giao điểm giữa độ chính xác thương mại và cảm xúc thật, nối mục tiêu thương hiệu với câu chuyện chạm tới con người.",
     aboutIntroP2:
       "Là creative developer, tôi làm việc trên nhiều quy mô: từ bối cảnh thương mại cho thương hiệu lớn tại Việt Nam, sàn diễn thử nghiệm đến ảnh tạp chí cộng đồng. Tôi chuyển tải khái niệm phức tạp thành thế giới vật lý sống động, để dù output là chiến dịch toàn cầu hay chân dung cá nhân, kết quả vẫn cân bằng, có chủ đích và gợi cảm.",
     featureWorkInLabel: "feature work in:",
@@ -109,7 +109,7 @@ const aboutI18n = {
     heroTitle: "Professional Profile",
     aboutName: "Vian Nguyen",
     aboutIntroP1:
-      "a multidisciplinary Art Director with a creative lineage rooted in Design with minors in <strong>spatial design and illustration</strong>. This foundation allows me to approach every project with a unique dual perspective: the technical rigor of an architect and the expressive soul of an artist. My work exists at the intersection of commercial precision and raw human emotion, bridging the gap between brand objectives and visceral storytelling.",
+      "<strong>a multidisciplinary Art Director</strong> with a creative lineage rooted in Design with minors in spatial design and illustration. This foundation allows me to approach every project with a unique dual perspective: the technical rigor of an architect and the expressive soul of an artist. My work exists at the intersection of commercial precision and raw human emotion, bridging the gap between brand objectives and visceral storytelling.",
     aboutIntroP2:
       "As a creative developer, I navigate a diverse spectrum of scales-from high-impact commercial sets for major Vietnamese brands to avant-garde runway narratives and community-driven editorials. I specialize in translating complex concepts into immersive physical worlds, ensuring that whether the output is a global campaign or an intimate portrait, the result is a balanced, intentional, and evocative experience.",
     featureWorkInLabel: "feature work in:",
@@ -209,8 +209,7 @@ const aboutEls = {
   viewIndexBtn: document.getElementById("viewIndexBtn"),
   navAbout: document.getElementById("navAbout"),
   heroTitle: document.getElementById("heroTitle"),
-  langViBtn: document.getElementById("langViBtn"),
-  langEnBtn: document.getElementById("langEnBtn"),
+  langToggleBtn: document.getElementById("langToggleBtn"),
   themeToggleBtn: document.getElementById("themeToggleBtn"),
 };
 
@@ -331,8 +330,11 @@ function applyLanguage(language) {
   setText(aboutEls.navAbout, dict.navAbout);
   setText(aboutEls.heroTitle, dict.heroTitle);
 
-  aboutEls.langViBtn?.classList.toggle("active", language === "vi");
-  aboutEls.langEnBtn?.classList.toggle("active", language === "en");
+  if (aboutEls.langToggleBtn) {
+    aboutEls.langToggleBtn.textContent = language.toUpperCase();
+    aboutEls.langToggleBtn.setAttribute("aria-label", "Switch language");
+    aboutEls.langToggleBtn.title = "Switch language";
+  }
   applyAboutBody(dict, language);
   window.VANLAB_REFRESH_FOOTER_BAR?.();
   updateHeaderLinks(language);
@@ -361,8 +363,10 @@ function initializeAboutPage() {
   applyLanguage(currentLanguage);
   syncAboutPrefsToUrl(currentLanguage);
 
-  aboutEls.langViBtn?.addEventListener("click", () => switchLanguage("vi"));
-  aboutEls.langEnBtn?.addEventListener("click", () => switchLanguage("en"));
+  aboutEls.langToggleBtn?.addEventListener("click", () => {
+    const nextLanguage = currentLanguage === "vi" ? "en" : "vi";
+    switchLanguage(nextLanguage);
+  });
   aboutEls.themeToggleBtn?.addEventListener("click", () => {
     if (!window.VANLAB_THEME) return;
     window.VANLAB_THEME.toggle({ syncUrl: true });

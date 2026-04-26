@@ -65,14 +65,17 @@ const SCROLL_PHYSICS = {
   VELOCITY_TO_PIXEL: 42,
 };
 const LANDSCAPE_MEDIA_RATIO = 1.2;
+/** Taller than wide → use portrait frame (matches mobile / social video). */
+const PORTRAIT_VIDEO_MAX_WH_RATIO = 0.95;
+/** Only this project page uses the portrait slide resize (9:16 social clips). */
+const PORTRAIT_VIDEO_PROJECT_SLUG = "vinamilk-green-farm";
 
 const pageEls = {
   counter: document.getElementById("projectCounter"),
   gallery: document.getElementById("projectGallery"),
   backLink: document.getElementById("projectBackLink"),
   nextLink: document.getElementById("projectNextLink"),
-  langViBtn: document.getElementById("langViBtn"),
-  langEnBtn: document.getElementById("langEnBtn"),
+  langToggleBtn: document.getElementById("langToggleBtn"),
   themeToggleBtn: document.getElementById("themeToggleBtn"),
 };
 
@@ -97,8 +100,11 @@ function getReturnContext() {
 function updateStaticText() {
   pageEls.backLink.textContent = pageI18n[pageState.language].back;
   pageEls.nextLink.textContent = pageI18n[pageState.language].nextProject;
-  pageEls.langViBtn?.classList.toggle("active", pageState.language === "vi");
-  pageEls.langEnBtn?.classList.toggle("active", pageState.language === "en");
+  if (pageEls.langToggleBtn) {
+    pageEls.langToggleBtn.textContent = pageState.language.toUpperCase();
+    pageEls.langToggleBtn.setAttribute("aria-label", "Switch language");
+    pageEls.langToggleBtn.title = "Switch language";
+  }
   updateThemeToggleUi();
   window.VANLAB_REFRESH_FOOTER_BAR?.();
 }
@@ -538,6 +544,7 @@ function createSlide(slide, realIndex, cloneSet) {
     const captionText = String(slide.caption || "").trim();
     const captionHtml = `<figcaption class="project-slide-caption">${renderInlineRichText(captionText)}</figcaption>`;
     if (isVideoPath(slide.path)) {
+      wrapper.classList.add("project-slide--has-video");
       wrapper.innerHTML = `<video class="project-slide-media" src="${src}" controls playsinline muted preload="metadata" title="${label}"></video>${captionHtml}`;
     } else if (isVimeoPath(slide.path)) {
       const embedSrc = escapeHtml(buildVimeoEmbedUrl(slide.path));
@@ -580,6 +587,48 @@ function wireLandscapeMediaSizing() {
       return;
     }
     img.addEventListener("load", () => applyLandscapeClassForImage(img), { once: true });
+  });
+}
+
+function applyProjectPortraitVideoClass(video) {
+  if (!(video instanceof HTMLVideoElement) || !pageEls.gallery) return;
+  if (pageState.currentSlug !== PORTRAIT_VIDEO_PROJECT_SLUG) return;
+  const srcSlide = video.closest('.project-slide--image.project-slide--has-video');
+  if (!srcSlide) return;
+  const realIndex = String(srcSlide.dataset.realIndex ?? "");
+  const w = video.videoWidth;
+  const h = video.videoHeight;
+  if (!w || !h) return;
+  const isPortrait = w / h < PORTRAIT_VIDEO_MAX_WH_RATIO;
+  const sameSlides = pageEls.gallery.querySelectorAll(
+    `.project-slide--image.project-slide--has-video[data-real-index="${realIndex}"]`,
+  );
+  sameSlides.forEach((slide) => {
+    if (!(slide instanceof HTMLElement)) return;
+    if (isPortrait) {
+      slide.classList.add("project-slide--video-portrait");
+      slide.style.setProperty("--project-portrait-aspect", `${w} / ${h}`);
+    } else {
+      slide.classList.remove("project-slide--video-portrait");
+      slide.style.removeProperty("--project-portrait-aspect");
+    }
+  });
+  requestAnimationFrame(() => {
+    updateLoopMetrics();
+    recenterIfNeeded();
+  });
+}
+
+function wireProjectPortraitVideoAspect() {
+  if (pageState.currentSlug !== PORTRAIT_VIDEO_PROJECT_SLUG) return;
+  const videos = pageEls.gallery.querySelectorAll('video.project-slide-media');
+  videos.forEach((video) => {
+    if (!(video instanceof HTMLVideoElement)) return;
+    if (video.readyState >= 1) {
+      applyProjectPortraitVideoClass(video);
+    } else {
+      video.addEventListener("loadedmetadata", () => applyProjectPortraitVideoClass(video), { once: true });
+    }
   });
 }
 
@@ -759,6 +808,7 @@ function renderSequence() {
     });
   });
   wireLandscapeMediaSizing();
+  wireProjectPortraitVideoAspect();
 
   requestAnimationFrame(() => {
     const middleSlides = Array.from(pageEls.gallery.querySelectorAll('.project-slide[data-clone-set="0"]'));
@@ -855,8 +905,10 @@ function initializePage() {
     window.history.replaceState(window.history.state, "", url.toString());
     renderPage();
   }
-  pageEls.langViBtn?.addEventListener("click", () => switchLanguage("vi"));
-  pageEls.langEnBtn?.addEventListener("click", () => switchLanguage("en"));
+  pageEls.langToggleBtn?.addEventListener("click", () => {
+    const nextLanguage = pageState.language === "vi" ? "en" : "vi";
+    switchLanguage(nextLanguage);
+  });
   pageEls.themeToggleBtn?.addEventListener("click", () => {
     window.VANLAB_THEME?.toggle({ syncUrl: true });
   });
