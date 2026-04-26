@@ -1720,6 +1720,67 @@ body[data-page="projects"] .main-layout {
   transform: translateY(-3%);
 }
 
+@media (hover: hover) and (pointer: fine) {
+  html.has-custom-pointer body,
+  html.has-custom-pointer body * {
+    cursor: none !important;
+  }
+
+  .custom-pointer {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--text);
+    color: #111;
+    pointer-events: none;
+    z-index: 200;
+    opacity: 0;
+    transform: translate3d(-50%, -50%, 0) scale(1);
+    transform-origin: center;
+    will-change: transform, width, height, opacity, background-color, color;
+    transition:
+      width 0.26s var(--ease-reveal),
+      height 0.26s var(--ease-reveal),
+      background-color 0.22s ease,
+      color 0.22s ease,
+      opacity 0.2s ease;
+  }
+
+  .custom-pointer.is-visible {
+    opacity: 1;
+  }
+
+  .custom-pointer.is-project {
+    width: 92px;
+    height: 92px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #111;
+  }
+
+  .custom-pointer__icon {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    font-size: 1.9rem;
+    line-height: 1;
+    transform: translate(-50%, -50%) scale(0.72);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.26s var(--ease-reveal);
+  }
+
+  .custom-pointer.is-project .custom-pointer__icon {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .gallery-item .gallery-media-overlay-label {
+    display: none;
+  }
+}
+
 .gallery-mobile-info {
   display: none;
 }

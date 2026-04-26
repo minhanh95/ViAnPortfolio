@@ -1979,6 +1979,72 @@ function initCaseImageParallax() {
   els.caseSlideTrack.addEventListener("pointerleave", resetCaseTopImageParallax);
 }
 
+function initProjectCursor() {
+  const supportsFinePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  if (!supportsFinePointer) return;
+  if (document.querySelector(".custom-pointer")) return;
+
+  const cursor = document.createElement("div");
+  cursor.className = "custom-pointer";
+  cursor.setAttribute("aria-hidden", "true");
+  cursor.innerHTML = `<span class="custom-pointer__icon">&#8599;</span>`;
+  document.body.appendChild(cursor);
+  document.documentElement.classList.add("has-custom-pointer");
+
+  const projectSelector = ".gallery-item, #projectsTableBody tr";
+  let targetX = window.innerWidth * 0.5;
+  let targetY = window.innerHeight * 0.5;
+  let currentX = targetX;
+  let currentY = targetY;
+
+  const render = () => {
+    currentX += (targetX - currentX) * 0.22;
+    currentY += (targetY - currentY) * 0.22;
+    cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) translate(-50%, -50%)`;
+    requestAnimationFrame(render);
+  };
+  requestAnimationFrame(render);
+
+  window.addEventListener(
+    "pointermove",
+    (event) => {
+      if (event.pointerType && event.pointerType !== "mouse") return;
+      targetX = event.clientX;
+      targetY = event.clientY;
+      cursor.classList.add("is-visible");
+    },
+    { passive: true },
+  );
+
+  document.addEventListener("pointerover", (event) => {
+    if (!(event.target instanceof Element)) return;
+    const entered = event.target.closest(projectSelector);
+    if (!entered) return;
+    const from = event.relatedTarget instanceof Element ? event.relatedTarget.closest(projectSelector) : null;
+    if (from === entered) return;
+    cursor.classList.add("is-project");
+  });
+
+  document.addEventListener("pointerout", (event) => {
+    if (!(event.target instanceof Element)) return;
+    const left = event.target.closest(projectSelector);
+    if (!left) return;
+    const to = event.relatedTarget instanceof Element ? event.relatedTarget.closest(projectSelector) : null;
+    if (to === left) return;
+    if (!to) cursor.classList.remove("is-project");
+  });
+
+  window.addEventListener("blur", () => {
+    cursor.classList.remove("is-visible", "is-project");
+  });
+
+  document.addEventListener("mouseout", (event) => {
+    if (!event.relatedTarget) {
+      cursor.classList.remove("is-visible", "is-project");
+    }
+  });
+}
+
 function initLenisSmoothScroll() {
   lenisInstance = null;
   window.__vanlabLenis = null;
@@ -2055,6 +2121,7 @@ async function initializeApp() {
   initAnchorNavigation();
   initScrollReveal();
   initCaseImageParallax();
+  initProjectCursor();
   initLocationStripHeaderSync();
   window.addEventListener("resize", handleCaseLayoutResize);
   if (initialSelectedParam && focusSelectedProject()) {
