@@ -70,7 +70,7 @@ a {
   align-items: center;
   gap: 1.2rem;
   padding: 0.85rem var(--page-inline);
-  border-bottom: 1px solid transparent;
+  border-bottom: 1px solid var(--line);
   transition: transform 0.32s var(--ease-premium), background 0.5s var(--ease-premium), border-color 0.5s var(--ease-premium);
   will-change: transform;
 }
@@ -1225,7 +1225,7 @@ body {
 .site-header {
   padding: 0.9rem var(--page-inline);
   background: transparent;
-  border-bottom: 1px solid transparent;
+  border-bottom: 1px solid var(--line);
 }
 
 .site-header.scrolled {
@@ -1372,6 +1372,14 @@ html[data-theme="light"] .theme-toggle-btn::before {
 
 .content-view {
   padding-top: clamp(2.25rem, 6vw, 4rem);
+}
+
+body[data-page="projects"] .content-view {
+  padding-top: 0;
+}
+
+body[data-page="projects"] .main-layout {
+  padding-top: clamp(0.25rem, 1vw, 0.75rem);
 }
 
 /* Gallery: full-bleed width; other sections keep main gutter */
