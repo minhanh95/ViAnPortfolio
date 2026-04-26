@@ -1319,8 +1319,9 @@ Vai trò của tôi trải dài từ creative toàn phần đến art direction 
         "Người Cầm Đèn",
         "Headshot",
         "Media team",
-        "Design team",
         "Project management team",
+        "Design team",
+       
         "Founders",
         "Art team",
         "",
@@ -1339,8 +1340,9 @@ Vai trò của tôi trải dài từ creative toàn phần đến art direction 
         "người cầm đèn",
         "Headshot",
         "Media team",
-        "Design team",
         "Project management team",
+        "Design team",
+        
         "Founders",
         "Art team",
         "",

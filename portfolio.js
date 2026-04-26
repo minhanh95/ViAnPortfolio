@@ -988,24 +988,49 @@ function wireGalleryFocusEffects(galleryItems) {
 }
 
 function attachGalleryMediaParallax(media) {
-  if (!media || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (!media) return;
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const img = media.querySelector("img");
+  const overlayLabel = media.querySelector(".gallery-media-overlay-label");
   if (!img) return;
 
-  const onMove = (event) => {
+  const setOverlayCursorPosition = (event) => {
+    if (!overlayLabel) return;
     const rect = media.getBoundingClientRect();
-    const nx = (event.clientX - rect.left) / rect.width - 0.5;
-    const ny = (event.clientY - rect.top) / rect.height - 0.5;
-    const max = 11;
-    img.style.setProperty("--img-px", `${-nx * max * 2}px`);
-    img.style.setProperty("--img-py", `${-ny * max * 2}px`);
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    overlayLabel.style.setProperty("--overlay-x", `${x}px`);
+    overlayLabel.style.setProperty("--overlay-y", `${y}px`);
+  };
+
+  const onMove = (event) => {
+    if (!prefersReducedMotion) {
+      const rect = media.getBoundingClientRect();
+      const nx = (event.clientX - rect.left) / rect.width - 0.5;
+      const ny = (event.clientY - rect.top) / rect.height - 0.5;
+      const max = 11;
+      img.style.setProperty("--img-px", `${-nx * max * 2}px`);
+      img.style.setProperty("--img-py", `${-ny * max * 2}px`);
+    }
+    setOverlayCursorPosition(event);
+  };
+
+  const onEnter = (event) => {
+    setOverlayCursorPosition(event);
   };
 
   const onLeave = () => {
-    img.style.setProperty("--img-px", "0px");
-    img.style.setProperty("--img-py", "0px");
+    if (!prefersReducedMotion) {
+      img.style.setProperty("--img-px", "0px");
+      img.style.setProperty("--img-py", "0px");
+    }
+    if (overlayLabel) {
+      overlayLabel.style.removeProperty("--overlay-x");
+      overlayLabel.style.removeProperty("--overlay-y");
+    }
   };
 
+  media.addEventListener("pointerenter", onEnter);
   media.addEventListener("pointermove", onMove);
   media.addEventListener("pointerleave", onLeave);
 }
@@ -1029,7 +1054,9 @@ function renderGallery() {
       <div class="gallery-media">
         <img data-src="${project.coverPath}" alt="${project.name} cover" loading="lazy" decoding="async" />
         <div class="gallery-media-overlay" aria-hidden="true">
-          <span class="gallery-media-overlay-label">${t("previewViewDetail")}</span>
+          <span class="gallery-media-overlay-label">
+            <span class="gallery-media-overlay-icon">&#8599;</span>
+          </span>
           <div class="gallery-mobile-info">
             <p class="gallery-mobile-info-title">${escapeHtmlAttr(project.name || "")}</p>
             <dl class="gallery-mobile-info-meta">
