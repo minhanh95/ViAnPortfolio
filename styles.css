@@ -1754,9 +1754,9 @@ body[data-page="projects"] .main-layout {
   }
 
   .custom-pointer.is-project {
-    width: 92px;
-    height: 92px;
-    background: rgba(255, 255, 255, 0.95);
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.60);
     color: #111;
   }
 
@@ -1764,7 +1764,7 @@ body[data-page="projects"] .main-layout {
     position: absolute;
     left: 50%;
     top: 50%;
-    font-size: 1.9rem;
+    font-size: 1.55rem;
     line-height: 1;
     transform: translate(-50%, -50%) scale(0.72);
     opacity: 0;
