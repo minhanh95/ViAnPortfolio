@@ -166,13 +166,15 @@ const projects = Array.isArray(window.VANLAB_PROJECTS)
   ? window.VANLAB_PROJECTS.filter((project) => !HIDDEN_PROJECT_SLUGS.has(project.slug))
   : [];
 const FEATURED_PROJECT_SLUGS = [
+  "vinamilk-green-farm",
+  "highland-mo-man",
+  "one-plus",
+  "lofficiel-beauty-award",
+  "vinamilk-sure",
   "invisible-space-studio",
   "vina-design-storexmoidien",
   "no-one-magazine",
-  "lofficiel-beauty-award",
   "downy-luxe",
-  "vinamilk-green-farm",
-  "one-plus",
   "x3d-robot",
   "kfc-2025",
 ];
