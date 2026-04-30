@@ -429,7 +429,7 @@ function buildYouTubePosterSlideHtml(path, altText, customPosterPath) {
   if (custom) {
     const posterSrc = escapeHtml(custom);
     return `<a class="project-slide-media project-slide-media--youtube" href="${href}" target="_blank" rel="noopener noreferrer" title="${labelEsc}" aria-label="${labelEsc}, YouTube">
-    <span class="project-slide-youtube-poster"><img src="${posterSrc}" width="1600" height="900" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" /><span class="project-slide-youtube-play" aria-hidden="true"></span></span>
+    <span class="project-slide-youtube-poster"><img src="${posterSrc}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" /><span class="project-slide-youtube-play" aria-hidden="true"></span></span>
   </a>`;
   }
   const id = parseYouTubeVideoId(path);
@@ -441,7 +441,7 @@ function buildYouTubePosterSlideHtml(path, altText, customPosterPath) {
       ? escapeHtml(`this.onload=null;if(this.naturalWidth<400)this.src='${hqUrl}'`)
       : "";
   const thumb = maxUrl
-    ? `<img src="${escapeHtml(maxUrl)}" width="1600" height="900" onload="${onMaxLoadCheck}" onerror="${onMaxFail}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" />`
+    ? `<img src="${escapeHtml(maxUrl)}" onload="${onMaxLoadCheck}" onerror="${onMaxFail}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" />`
     : "";
   return `<a class="project-slide-media project-slide-media--youtube" href="${href}" target="_blank" rel="noopener noreferrer" title="${labelEsc}" aria-label="${labelEsc}, YouTube">
     <span class="project-slide-youtube-poster">${thumb}<span class="project-slide-youtube-play" aria-hidden="true"></span></span>
@@ -453,7 +453,7 @@ function buildTikTokPosterSlideHtml(path, altText) {
   const labelEsc = escapeHtml(altText);
   const posterUrl = getTikTokPosterUrl(path);
   const poster = posterUrl
-    ? `<img src="${escapeHtml(posterUrl)}" width="1600" height="900" alt="" loading="lazy" decoding="async" />`
+    ? `<img src="${escapeHtml(posterUrl)}" alt="" loading="lazy" decoding="async" />`
     : "";
   return `<a class="project-slide-media project-slide-media--youtube" href="${href}" target="_blank" rel="noopener noreferrer" title="${labelEsc}" aria-label="${labelEsc}, TikTok">
     <span class="project-slide-youtube-poster">${poster}<span class="project-slide-youtube-play" aria-hidden="true"></span></span>
@@ -648,7 +648,7 @@ function createSlide(slide, realIndex, cloneSet) {
     } else if (isTikTokPath(slide.path)) {
       wrapper.innerHTML = `${buildTikTokPosterSlideHtml(slide.path, slide.alt)}${captionHtml}`;
     } else {
-      wrapper.innerHTML = `${buildResponsivePictureTag(slide.path, slide.alt)}${captionHtml}`;
+      wrapper.innerHTML = `<img src="${src}" alt="${label}" loading="lazy" decoding="async" />${captionHtml}`;
     }
   }
   return wrapper;
