@@ -1577,13 +1577,18 @@ body[data-page="projects"] .main-layout {
   content-visibility: auto;
   contain-intrinsic-size: 420px;
   cursor: pointer;
-  opacity: 0;
-  transform: translateY(16px);
+  opacity: 1;
+  transform: translateY(0);
   transition:
     transform 0.35s var(--ease-reveal),
     opacity 0.35s var(--ease-reveal),
     filter 0.35s var(--ease-reveal),
     box-shadow 0.35s var(--ease-reveal);
+}
+
+.gallery-item.reveal-pending {
+  opacity: 0;
+  transform: translateY(16px);
 }
 
 .gallery-list.is-focus-mode .gallery-item {
@@ -1611,7 +1616,7 @@ body[data-page="projects"] .main-layout {
   margin-top: clamp(1rem, 3vw, 2rem);
 }
 
-.gallery-item.in-view {
+.gallery-item.reveal-pending.in-view {
   opacity: 1;
   transform: translateY(0);
 }
@@ -1667,6 +1672,11 @@ body[data-page="projects"] .main-layout {
 
 .gallery-media img.is-loaded {
   opacity: 1;
+}
+
+.gallery-media img.is-error {
+  background: rgba(255, 255, 255, 0.08);
+  object-fit: contain;
 }
 
 .gallery-item:hover .gallery-media img.is-loaded {
@@ -1910,6 +1920,12 @@ body[data-page="projects"] .main-layout {
     line-height: 1.38;
     color: #fff;
     font-weight: 500;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .gallery-item.is-mobile-active .gallery-mobile-info {
@@ -2168,6 +2184,16 @@ body[data-page="projects"] .main-layout {
 /* Keep About content visible even if reveal observer is not running on this page */
 .about-page.reveal,
 .about-page.reveal.in-view {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+/* Keep first view visible while deferred CSS/JS bootstraps observers. */
+body[data-page="feature"] #galleryView.reveal,
+body[data-page="feature"] #galleryView.reveal.in-view,
+body[data-page="projects"] #indexView.reveal,
+body[data-page="projects"] #indexView.reveal.in-view {
   opacity: 1;
   transform: none;
   transition: none;
@@ -3411,6 +3437,11 @@ a.case-slide-media--youtube:focus-visible .case-slide-youtube-play {
   scrollbar-width: none;
   -ms-overflow-style: none;
   scroll-behavior: auto;
+}
+
+.project-gallery.is-initializing {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .project-gallery::-webkit-scrollbar {

@@ -55,6 +55,7 @@ const pageState = {
   cachedMaxScale: 1.06,
   scaleAnimRaf: null,
 };
+const projectMediaWarmupCache = new Set();
 
 /* Per-slide scale lerp parameters: 0.18 reaches ~99% of the target in ~25 frames (~0.4s @ 60Hz),
    which feels like a confident glide without lagging behind the user. SCALE_EPS controls when
@@ -129,11 +130,15 @@ function buildProjectUrl(slug) {
   const detailUrl = new URL("./project.html", window.location.href);
   detailUrl.searchParams.set("slug", slug);
   detailUrl.searchParams.set("lang", pageState.language);
-  detailUrl.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "light");
+  detailUrl.searchParams.set("theme", getCurrentTheme());
   detailUrl.searchParams.set("fromView", pageState.returnView);
   detailUrl.searchParams.set("fromScroll", String(pageState.returnScroll));
   detailUrl.searchParams.set("selected", slug);
   return detailUrl.toString();
+}
+
+function getCurrentTheme() {
+  return window.VANLAB_THEME?.get() || (document.documentElement.dataset.theme === "light" ? "light" : "dark");
 }
 
 function updateThemeToggleUi() {
@@ -234,6 +239,72 @@ function renderInlineRichText(input) {
 
 function isVideoPath(path) {
   return /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(path || "");
+}
+
+function getVideoPosterPath(path) {
+  if (!isVideoPath(path) || /^https?:\/\//i.test(path || "")) return "";
+  return String(path).replace(/\.(mp4|webm|ogg|mov)(\?.*)?$/i, ".jpg");
+}
+
+function buildResponsiveImageTag(path, alt, options = {}) {
+  const { loading = "lazy", fetchpriority = "auto", sizes = "(max-width: 900px) 84vw, 68vw", width = 1600, height = 1000 } = options;
+  const src = escapeHtml(path);
+  return `<img src="${src}" srcset="${src} 1x, ${src} 2x" sizes="${escapeHtml(sizes)}" width="${width}" height="${height}" alt="${escapeHtml(alt)}" loading="${loading}" decoding="async" fetchpriority="${fetchpriority}" />`;
+}
+
+function getRasterSourceVariants(path) {
+  if (!path || /^https?:\/\//i.test(path) || !/\.(jpe?g|png)(\?.*)?$/i.test(path)) {
+    return { avif: "", webp: "" };
+  }
+  const base = String(path).replace(/\.(jpe?g|png)(\?.*)?$/i, "");
+  return {
+    avif: `${base}.avif`,
+    webp: `${base}.webp`,
+  };
+}
+
+function buildResponsivePictureTag(path, alt, options = {}) {
+  const { sizes = "(max-width: 900px) 84vw, 68vw" } = options;
+  const variants = getRasterSourceVariants(path);
+  return `<picture class="project-slide-picture">
+    ${variants.avif ? `<source type="image/avif" srcset="${escapeHtml(variants.avif)} 1x, ${escapeHtml(variants.avif)} 2x" sizes="${escapeHtml(sizes)}" />` : ""}
+    ${variants.webp ? `<source type="image/webp" srcset="${escapeHtml(variants.webp)} 1x, ${escapeHtml(variants.webp)} 2x" sizes="${escapeHtml(sizes)}" />` : ""}
+    ${buildResponsiveImageTag(path, alt, options)}
+  </picture>`;
+}
+
+function warmupProjectMediaPaths(paths, options = {}) {
+  const { eager = false, maxItems = Number.POSITIVE_INFINITY } = options;
+  const queue = Array.isArray(paths) ? paths.slice(0, maxItems) : [];
+  const prime = (path) => {
+    if (!path || projectMediaWarmupCache.has(path)) return;
+    projectMediaWarmupCache.add(path);
+    if (isVideoPath(path)) {
+      const video = document.createElement("video");
+      video.preload = "metadata";
+      const poster = getVideoPosterPath(path);
+      if (poster) video.poster = poster;
+      video.src = path;
+      return;
+    }
+    if (isYouTubePath(path) || isTikTokPath(path) || isFacebookPath(path) || isVimeoPath(path)) return;
+    const variants = getRasterSourceVariants(path);
+    const image = new Image();
+    image.decoding = "async";
+    image.loading = eager ? "eager" : "lazy";
+    image.src = variants.avif || variants.webp || path;
+  };
+  queue.forEach((path) => {
+    if (eager) {
+      prime(path);
+      return;
+    }
+    if (typeof window.requestIdleCallback === "function") {
+      window.requestIdleCallback(() => prime(path), { timeout: 1200 });
+      return;
+    }
+    window.setTimeout(() => prime(path), 180);
+  });
 }
 
 function isVimeoPath(path) {
@@ -358,7 +429,7 @@ function buildYouTubePosterSlideHtml(path, altText, customPosterPath) {
   if (custom) {
     const posterSrc = escapeHtml(custom);
     return `<a class="project-slide-media project-slide-media--youtube" href="${href}" target="_blank" rel="noopener noreferrer" title="${labelEsc}" aria-label="${labelEsc}, YouTube">
-    <span class="project-slide-youtube-poster"><img src="${posterSrc}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" /><span class="project-slide-youtube-play" aria-hidden="true"></span></span>
+    <span class="project-slide-youtube-poster"><img src="${posterSrc}" width="1600" height="900" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" /><span class="project-slide-youtube-play" aria-hidden="true"></span></span>
   </a>`;
   }
   const id = parseYouTubeVideoId(path);
@@ -370,7 +441,7 @@ function buildYouTubePosterSlideHtml(path, altText, customPosterPath) {
       ? escapeHtml(`this.onload=null;if(this.naturalWidth<400)this.src='${hqUrl}'`)
       : "";
   const thumb = maxUrl
-    ? `<img src="${escapeHtml(maxUrl)}" onload="${onMaxLoadCheck}" onerror="${onMaxFail}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" />`
+    ? `<img src="${escapeHtml(maxUrl)}" width="1600" height="900" onload="${onMaxLoadCheck}" onerror="${onMaxFail}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" />`
     : "";
   return `<a class="project-slide-media project-slide-media--youtube" href="${href}" target="_blank" rel="noopener noreferrer" title="${labelEsc}" aria-label="${labelEsc}, YouTube">
     <span class="project-slide-youtube-poster">${thumb}<span class="project-slide-youtube-play" aria-hidden="true"></span></span>
@@ -382,7 +453,7 @@ function buildTikTokPosterSlideHtml(path, altText) {
   const labelEsc = escapeHtml(altText);
   const posterUrl = getTikTokPosterUrl(path);
   const poster = posterUrl
-    ? `<img src="${escapeHtml(posterUrl)}" alt="" loading="lazy" decoding="async" />`
+    ? `<img src="${escapeHtml(posterUrl)}" width="1600" height="900" alt="" loading="lazy" decoding="async" />`
     : "";
   return `<a class="project-slide-media project-slide-media--youtube" href="${href}" target="_blank" rel="noopener noreferrer" title="${labelEsc}" aria-label="${labelEsc}, TikTok">
     <span class="project-slide-youtube-poster">${poster}<span class="project-slide-youtube-play" aria-hidden="true"></span></span>
@@ -558,7 +629,9 @@ function createSlide(slide, realIndex, cloneSet) {
       // unless the user clicks play is the surest way to keep horizontal scroll silky on every
       // device — even mid-range laptops. `preload="metadata"` lets the slide show the first frame
       // without buffering the whole clip up front, and `controls` gives users the play button.
-      wrapper.innerHTML = `<video class="project-slide-media" src="${src}" controls playsinline muted preload="metadata" disablepictureinpicture disableremoteplayback title="${label}"></video>${captionHtml}`;
+      const poster = getVideoPosterPath(slide.path);
+      const posterAttr = poster ? ` poster="${escapeHtml(poster)}"` : "";
+      wrapper.innerHTML = `<video class="project-slide-media" src="${src}" controls playsinline muted preload="metadata"${posterAttr} disablepictureinpicture disableremoteplayback title="${label}"></video>${captionHtml}`;
     } else if (isVimeoPath(slide.path)) {
       const embedSrc = escapeHtml(buildVimeoEmbedUrl(slide.path));
       wrapper.innerHTML = `<iframe class="project-slide-media project-slide-media--embed" src="${embedSrc}" title="${label}" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>${captionHtml}`;
@@ -575,7 +648,7 @@ function createSlide(slide, realIndex, cloneSet) {
     } else if (isTikTokPath(slide.path)) {
       wrapper.innerHTML = `${buildTikTokPosterSlideHtml(slide.path, slide.alt)}${captionHtml}`;
     } else {
-      wrapper.innerHTML = `<img src="${src}" alt="${label}" loading="lazy" decoding="async" />${captionHtml}`;
+      wrapper.innerHTML = `${buildResponsivePictureTag(slide.path, slide.alt)}${captionHtml}`;
     }
   }
   return wrapper;
@@ -583,6 +656,7 @@ function createSlide(slide, realIndex, cloneSet) {
 
 function applyLandscapeClassForImage(img) {
   if (!(img instanceof HTMLImageElement)) return;
+  if (window.matchMedia("(min-width: 901px)").matches) return;
   const slide = img.closest(".project-slide--image");
   if (!slide || slide.classList.contains("project-slide--media-fill-vertical")) return;
   const naturalW = Number(img.naturalWidth || 0);
@@ -782,6 +856,24 @@ function syncProjectGalleryScrollState() {
   const scroller = pageEls.gallery;
   if (!scroller) return;
 
+  if (!pageState.hasUserInteracted) {
+    const slides = scroller.querySelectorAll(".project-slide");
+    for (const slide of slides) {
+      if (!(slide instanceof HTMLElement)) continue;
+      slide.__targetScale = 1;
+      slide.__currentScale = 1;
+      if (slide.dataset.scrollScale !== "1.000") {
+        slide.style.setProperty("--project-scroll-scale", "1");
+        slide.dataset.scrollScale = "1.000";
+      }
+      if (slide.dataset.scrollFront === "1") {
+        slide.style.removeProperty("z-index");
+        slide.dataset.scrollFront = "";
+      }
+    }
+    return;
+  }
+
   const scrollerRect = scroller.getBoundingClientRect();
   if (scrollerRect.width < 2) return;
 
@@ -965,6 +1057,7 @@ function renderNotFound() {
     cancelAnimationFrame(pageState.scaleAnimRaf);
     pageState.scaleAnimRaf = null;
   }
+  pageEls.gallery.classList.remove("is-initializing");
   pageEls.gallery.innerHTML = `<article class="project-empty">${pageI18n[pageState.language].notFound}</article>`;
   updateCounter(0);
 }
@@ -978,6 +1071,7 @@ function renderSequence() {
     cancelAnimationFrame(pageState.scaleAnimRaf);
     pageState.scaleAnimRaf = null;
   }
+  pageEls.gallery.classList.add("is-initializing");
   pageEls.gallery.innerHTML = "";
   [-1, 0, 1].forEach((cloneSet) => {
     pageState.sequence.forEach((slide, realIndex) => {
@@ -998,6 +1092,9 @@ function renderSequence() {
     updateCounter(0);
     wireCounterObserver();
     wireProjectVideoPause();
+    requestAnimationFrame(() => {
+      pageEls.gallery.classList.remove("is-initializing");
+    });
   });
 }
 
@@ -1008,7 +1105,7 @@ function updateOutboundNavLinks() {
   const backPage = pageState.returnView === "index" ? "./projects.html" : "./index.html";
   const backUrl = new URL(backPage, window.location.href);
   backUrl.searchParams.set("lang", pageState.language);
-  backUrl.searchParams.set("theme", window.VANLAB_THEME.get());
+  backUrl.searchParams.set("theme", getCurrentTheme());
   backUrl.searchParams.set("scroll", String(pageState.returnScroll));
   backUrl.searchParams.set("selected", pageState.currentSlug);
   pageEls.backLink.href = backUrl.toString();
@@ -1024,7 +1121,10 @@ async function renderPage() {
   }
 
   const details = await resolveDetailImages(project);
-  const orderedImages = [project.coverPath, ...details.filter((path) => path !== project.coverPath)];
+  const primaryCover = project.coverPath;
+  const orderedImages = [primaryCover, ...details.filter((path) => path !== project.coverPath && path !== primaryCover)];
+  warmupProjectMediaPaths(orderedImages.slice(0, 3), { eager: true, maxItems: 3 });
+  warmupProjectMediaPaths(orderedImages, { eager: false, maxItems: 8 });
   const localizedDescriptions = Array.isArray(project.detailDescriptions?.[pageState.language])
     ? project.detailDescriptions[pageState.language]
     : Array.isArray(project.detailDescriptions?.en)
@@ -1077,9 +1177,7 @@ function initializePage() {
     updateOutboundNavLinks();
     const url = new URL(window.location.href);
     url.searchParams.set("lang", pageState.language);
-    if (window.VANLAB_THEME) {
-      url.searchParams.set("theme", window.VANLAB_THEME.get());
-    }
+    url.searchParams.set("theme", getCurrentTheme());
     window.history.replaceState(window.history.state, "", url.toString());
     renderPage();
   }

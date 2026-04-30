@@ -210,9 +210,26 @@ const aboutEls = {
   viewIndexBtn: document.getElementById("viewIndexBtn"),
   navAbout: document.getElementById("navAbout"),
   heroTitle: document.getElementById("heroTitle"),
+  heroPhoto: document.getElementById("aboutHeroPhoto"),
   langToggleBtn: document.getElementById("langToggleBtn"),
   themeToggleBtn: document.getElementById("themeToggleBtn"),
 };
+
+function syncAboutHeroPhotoToTheme() {
+  const node = aboutEls.heroPhoto;
+  if (!(node instanceof HTMLImageElement) || !window.VANLAB_THEME) return;
+  const theme = window.VANLAB_THEME.get();
+  const darkSrc = node.dataset.darkSrc || node.getAttribute("src") || "";
+  const lightSrc = node.dataset.lightSrc || darkSrc;
+  const nextSrc = theme === "light" ? lightSrc : darkSrc;
+  if (nextSrc && node.getAttribute("src") !== nextSrc) {
+    node.src = nextSrc;
+  }
+}
+
+function getCurrentTheme() {
+  return window.VANLAB_THEME?.get() || (document.documentElement.dataset.theme === "light" ? "light" : "dark");
+}
 
 function wireHeaderGlassEffect() {
   if (!aboutEls.siteHeader) return;
@@ -263,7 +280,7 @@ function renderListItems(target, items) {
 }
 
 function updateHeaderLinks(language) {
-  const theme = window.VANLAB_THEME ? window.VANLAB_THEME.get() : "light";
+  const theme = getCurrentTheme();
   if (aboutEls.brandHomeLink) {
     aboutEls.brandHomeLink.href = `./index.html?lang=${language}&theme=${theme}`;
   }
@@ -280,7 +297,7 @@ function updateHeaderLinks(language) {
 
 function buildAboutProjectUrl(slug, language) {
   const url = new URL("./project.html", window.location.href);
-  const theme = window.VANLAB_THEME ? window.VANLAB_THEME.get() : "light";
+  const theme = getCurrentTheme();
   url.searchParams.set("slug", slug);
   url.searchParams.set("selected", slug);
   url.searchParams.set("lang", language);
@@ -294,9 +311,7 @@ function syncAboutPrefsToUrl(language) {
   try {
     const url = new URL(window.location.href);
     url.searchParams.set("lang", language);
-    if (window.VANLAB_THEME) {
-      url.searchParams.set("theme", window.VANLAB_THEME.get());
-    }
+    url.searchParams.set("theme", getCurrentTheme());
     window.history.replaceState(window.history.state, "", url.toString());
   } catch (e) {
     /* ignore */
@@ -366,6 +381,7 @@ function applyLanguage(language) {
   window.VANLAB_REFRESH_FOOTER_BAR?.();
   updateHeaderLinks(language);
   updateThemeToggleUi(language);
+  syncAboutHeroPhotoToTheme();
 }
 
 function initializeAboutPage() {
@@ -400,6 +416,7 @@ function initializeAboutPage() {
     window.VANLAB_THEME.toggle({ syncUrl: true });
   });
   window.addEventListener("vanlab-themechange", () => {
+    syncAboutHeroPhotoToTheme();
     applyLanguage(currentLanguage);
     syncAboutPrefsToUrl(currentLanguage);
   });

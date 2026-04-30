@@ -59,6 +59,8 @@ Hợp tác cùng **Vina Design Store** và **Moi Dien**, chiến dịch tái ng�
       },
     },
     coverPath: "assets/projects/vina-design-storexmoidien/cover.jpg",
+    coverWebpPath: "assets/projects/vina-design-storexmoidien/cover.webp",
+    coverAvifPath: "assets/projects/vina-design-storexmoidien/cover.avif",
     detailDescriptions: {
       en: [
         "",
@@ -160,6 +162,8 @@ Trong bối cảnh ra mắt **Downy Luxe**, bài toán đặt ra là chuyển h�
       },
     },
     coverPath: "assets/projects/downy-2025/cover.jpg",
+    coverWebpPath: "assets/projects/downy-2025/cover.webp",
+    coverAvifPath: "assets/projects/downy-2025/cover.avif",
     detailDescriptions: {
       en: [
         "",
@@ -279,6 +283,8 @@ Thông qua việc kiến tạo các bối cảnh vừa mang tính lifestyle vừ
       },
     },
     coverPath: "assets/projects/ps/cover.jpg",
+    coverWebpPath: "assets/projects/ps/cover.webp",
+    coverAvifPath: "assets/projects/ps/cover.avif",
     detailImages: [
       "assets/projects/ps/detail-01.jpg",
       "assets/projects/ps/detail-02.jpg",
@@ -351,6 +357,8 @@ Lấy cảm hứng từ di sản văn hóa Việt Nam, định hướng sáng t�
       },
     },
     coverPath: "assets/projects/vinamilk-sure/cover.jpg",
+    coverWebpPath: "assets/projects/vinamilk-sure/cover.webp",
+    coverAvifPath: "assets/projects/vinamilk-sure/cover.avif",
     detailImages: [
       "assets/projects/vinamilk-sure/detail-01.jpg",
       "assets/projects/vinamilk-sure/detail-02.jpg",
@@ -428,6 +436,8 @@ Hợp tác cùng **Densu Render**, chiến lược thị giác tập trung vào 
       },
     },
     coverPath: "assets/projects/vinamilk-scu/cover.jpg",
+    coverWebpPath: "assets/projects/vinamilk-scu/cover.webp",
+    coverAvifPath: "assets/projects/vinamilk-scu/cover.avif",
     detailImages: [
       "https://www.facebook.com/reel/897362946479871",
       "https://web.facebook.com/reel/1463891114808419",
@@ -477,6 +487,8 @@ To elevate the campaign's allure, I engineered a high-contrast lighting strategy
       },
     },
     coverPath: "assets/projects/cheese-coffee/cover.jpg",
+    coverWebpPath: "assets/projects/cheese-coffee/cover.webp",
+    coverAvifPath: "assets/projects/cheese-coffee/cover.avif",
     detailImages: [
       "assets/projects/cheese-coffee/detail-01.jpg",
       "assets/projects/cheese-coffee/detail-02.jpg",
@@ -526,6 +538,8 @@ Phối hợp cùng Director, tôi chuyển hóa tinh thần "mới" này thành 
       },
     },
     coverPath: "assets/projects/pizza-hut/cover.jpg",
+    coverWebpPath: "assets/projects/pizza-hut/cover.webp",
+    coverAvifPath: "assets/projects/pizza-hut/cover.avif",
     detailImages: [
       "assets/projects/pizza-hut/detail-01.mp4",
       "assets/projects/pizza-hut/detail-02.jpg",
@@ -594,6 +608,8 @@ Dự án được giới thiệu trên **It's Nice That**, nền tảng quốc t
       },
     },
     coverPath: "assets/projects/no-one-magazine/cover.jpg",
+    coverWebpPath: "assets/projects/no-one-magazine/cover.webp",
+    coverAvifPath: "assets/projects/no-one-magazine/cover.avif",
     detailDescriptions: {
       en: [
         "",
@@ -687,6 +703,8 @@ Mở rộng từ ý niệm trung tâm **"Crystal Age,"** tôi xây dựng một 
       },
     },
     coverPath: "assets/projects/lofficiel-beauty-award-2025/cover.jpg",
+    coverWebpPath: "assets/projects/lofficiel-beauty-award-2025/cover.webp",
+    coverAvifPath: "assets/projects/lofficiel-beauty-award-2025/cover.avif",
     detailCaptions: {
       "detail-08.mp4": {
         en: "Glimpse of the work in the L'O BW2025",
@@ -796,6 +814,8 @@ Rooted in a commitment to sustainable, modern dairy, the creative direction expl
       },
     },
     coverPath: "assets/projects/vinamilk-green-farm/cover.jpg",
+    coverAvifPath: "assets/projects/vinamilk-green-farm/cover.avif",
+    coverWebpPath: "assets/projects/vinamilk-green-farm/cover.webp",
     detailDescriptions: {
       en: [
         "KV Drinking Yogurt",
@@ -909,6 +929,8 @@ Art direction sử dụng các yếu tố hoa lá như điểm nhấn kiến tr�
       },
     },
     coverPath: "assets/projects/Color Key/cover.jpg",
+    coverWebpPath: "assets/projects/Color Key/cover.webp",
+    coverAvifPath: "assets/projects/Color Key/cover.avif",
     detailImages: [
       "assets/projects/Color Key/detail-01.jpg",
       "assets/projects/Color Key/detail-02.jpg",
@@ -960,6 +982,8 @@ Chiến dịch xoay quanh ý niệm **liquid metamorphosis**, với các bố c�
       },
     },
     coverPath: "assets/projects/highland-mo-man/cover.jpg",
+    coverWebpPath: "assets/projects/highland-mo-man/cover.webp",
+    coverAvifPath: "assets/projects/highland-mo-man/cover.avif",
     detailImages: [
       "assets/projects/highland-mo-man/detail-01.jpg",
       "assets/projects/highland-mo-man/detail-02.jpg",
@@ -1021,6 +1045,8 @@ Art direction khuếch đại nhiệt độ và kết cấu đặc trưng của 
       },
     },
     coverPath: "assets/projects/kfc-2025/cover.jpg",
+    coverWebpPath: "assets/projects/kfc-2025/cover.webp",
+    coverAvifPath: "assets/projects/kfc-2025/cover.avif",
     detailImages: [
       "assets/projects/kfc-2025/detail-03.jpg",
       "https://youtu.be/FdfhGDNGuH4?si=cLY11nJURdfY2dkJ",
@@ -1105,6 +1131,8 @@ The visual identity translates technical attributes - precision, clarity, and im
       vi: "Assistant Art Director",
     },
     coverPath: "assets/projects/one-plus/cover.jpg",
+    coverWebpPath: "assets/projects/one-plus/cover.webp",
+    coverAvifPath: "assets/projects/one-plus/cover.avif",
     youtubePosterPath: "assets/projects/one-plus/detail-12.jpg",
     detailDescriptions: {
       en: [
@@ -1229,6 +1257,8 @@ The character design features a fluid silhouette, serving as a metaphor for the 
       },
     },
     coverPath: "assets/projects/x3d-robot/cover.jpg",
+    coverWebpPath: "assets/projects/x3d-robot/cover.webp",
+    coverAvifPath: "assets/projects/x3d-robot/cover.avif",
     youtubePosterPath: "assets/projects/x3d-robot/detail-01.jpg",
     detailImages: [
       "https://www.youtube.com/watch?v=tcEi7EfWRcA",
@@ -1313,6 +1343,8 @@ Vai trò của tôi trải dài từ creative toàn phần đến art direction 
       },
     },
     coverPath: "assets/projects/invisible-space-studio/cover.jpg",
+    coverWebpPath: "assets/projects/invisible-space-studio/cover.webp",
+    coverAvifPath: "assets/projects/invisible-space-studio/cover.avif",
     detailDescriptions: {
       en: [
         "",
@@ -1425,6 +1457,8 @@ Chiến lược thị giác tôn vinh nguyên liệu thô (hạt, trái cây, th
       },
     },
     coverPath: "assets/projects/an-mien/cover.jpg",
+    coverWebpPath: "assets/projects/an-mien/cover.webp",
+    coverAvifPath: "assets/projects/an-mien/cover.avif",
     detailImages: [
       "assets/projects/an-mien/detail-01.jpg",
       "assets/projects/an-mien/detail-02.jpg",
@@ -1494,6 +1528,8 @@ The creative direction moves away from traditional runway tropes, focusing inste
       },
     },
     coverPath: "assets/projects/cs-en-runway/cover.jpg",
+    coverWebpPath: "assets/projects/cs-en-runway/cover.webp",
+    coverAvifPath: "assets/projects/cs-en-runway/cover.avif",
     detailImages: [
       "assets/projects/cs-en-runway/detail-01.jpg",
       "assets/projects/cs-en-runway/detail-02.jpg",

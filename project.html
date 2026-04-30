@@ -10,10 +10,30 @@
       type="image/png"
       href="./icon/ruler.png"
     />
+    <script>
+      (function applyInitialTheme() {
+        const STORAGE_KEY = "vanlab-theme";
+        const query = new URLSearchParams(window.location.search).get("theme");
+        const fromQuery = query === "light" || query === "dark" ? query : null;
+        let fromStorage = null;
+        try {
+          const stored = localStorage.getItem(STORAGE_KEY);
+          if (stored === "light" || stored === "dark") fromStorage = stored;
+        } catch (e) {
+          /* ignore */
+        }
+        document.documentElement.dataset.theme = fromQuery || fromStorage || "dark";
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=optional" rel="stylesheet" />
+    <link rel="preload" href="./base.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="preload" href="./project.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript>
+      <link rel="stylesheet" href="./base.css" />
+      <link rel="stylesheet" href="./project.css" />
+    </noscript>
     <script src="./theme.js"></script>
   </head>
   <body>
@@ -41,4 +61,3 @@
     <script src="./project.js"></script>
   </body>
 </html>
-

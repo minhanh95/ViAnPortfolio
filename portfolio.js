@@ -330,8 +330,12 @@ function updateThemeToggleUi() {
   els.themeToggleBtn.title = t("themeToggleLabel");
 }
 
+function getCurrentTheme() {
+  return window.VANLAB_THEME?.get() || (document.documentElement.dataset.theme === "light" ? "light" : "dark");
+}
+
 function updateHeaderOutboundLinks() {
-  const theme = window.VANLAB_THEME?.get() ?? "light";
+  const theme = getCurrentTheme();
   const lang = state.language;
   if (els.brandHomeLink) {
     els.brandHomeLink.href = `./index.html?lang=${lang}&theme=${theme}`;
@@ -361,11 +365,38 @@ function getSelectedProject() {
   return state.items.find((item) => item.slug === state.selectedSlug) || state.items[0];
 }
 
+function getProjectPrimaryCover(project) {
+  if (!project) return "";
+  const webp = String(project.coverWebpPath || "").trim();
+  return webp || project.coverPath;
+}
+
+function getProjectCoverSources(project) {
+  if (!project) return { avif: "", webp: "", fallback: "" };
+  return {
+    avif: String(project.coverAvifPath || "").trim(),
+    webp: String(project.coverWebpPath || "").trim(),
+    fallback: project.coverPath || "",
+  };
+}
+
 function normalizeSlideImages(project) {
   const rawImages = project.detailImages?.length ? project.detailImages : [project.coverPath];
   const uniqueImages = [...new Set(rawImages)];
   const detailOnly = uniqueImages.filter((path) => path !== project.coverPath);
   return detailOnly.length ? detailOnly : [project.coverPath];
+}
+
+function getNeighborSlidePaths(paths, index, radius = 1) {
+  if (!Array.isArray(paths) || !paths.length) return [];
+  const maxRadius = Math.max(0, radius);
+  const neighbors = [];
+  for (let i = -maxRadius; i <= maxRadius; i += 1) {
+    const nextIndex = index + i;
+    if (nextIndex < 0 || nextIndex >= paths.length) continue;
+    neighbors.push(paths[nextIndex]);
+  }
+  return [...new Set(neighbors)];
 }
 
 function isMobileCaseLayout() {
@@ -481,7 +512,7 @@ function buildYouTubePosterCaseHtml(path, labelAttr, customPosterPath) {
   if (custom && !/(youtube\.com|youtu\.be)/i.test(custom)) {
     const posterSrc = escapeHtmlAttr(custom);
     return `<a class="case-slide-media case-slide-media--youtube" href="${href}" target="_blank" rel="noopener noreferrer" title="${labelAttr}" aria-label="${labelAttr}, YouTube">
-    <span class="case-slide-youtube-poster"><img src="${posterSrc}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" /><span class="case-slide-youtube-play" aria-hidden="true"></span></span>
+    <span class="case-slide-youtube-poster"><img src="${posterSrc}" width="1600" height="900" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" /><span class="case-slide-youtube-play" aria-hidden="true"></span></span>
   </a>`;
   }
   const id = parseYouTubeVideoId(path);
@@ -493,7 +524,7 @@ function buildYouTubePosterCaseHtml(path, labelAttr, customPosterPath) {
       ? escapeHtmlAttr(`this.onload=null;if(this.naturalWidth<400)this.src='${hqUrl}'`)
       : "";
   const thumb = maxUrl
-    ? `<img src="${escapeHtmlAttr(maxUrl)}" onload="${onMaxLoadCheck}" onerror="${onMaxFail}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" />`
+    ? `<img src="${escapeHtmlAttr(maxUrl)}" width="1600" height="900" onload="${onMaxLoadCheck}" onerror="${onMaxFail}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" />`
     : "";
   return `<a class="case-slide-media case-slide-media--youtube" href="${href}" target="_blank" rel="noopener noreferrer" title="${labelAttr}" aria-label="${labelAttr}, YouTube">
     <span class="case-slide-youtube-poster">${thumb}<span class="case-slide-youtube-play" aria-hidden="true"></span></span>
@@ -504,7 +535,7 @@ function buildTikTokPosterCaseHtml(path, labelAttr) {
   const href = escapeHtmlAttr(path);
   const posterUrl = getTikTokPosterUrl(path);
   const poster = posterUrl
-    ? `<img src="${escapeHtmlAttr(posterUrl)}" alt="" loading="lazy" decoding="async" />`
+    ? `<img src="${escapeHtmlAttr(posterUrl)}" width="1600" height="900" alt="" loading="lazy" decoding="async" />`
     : "";
   return `<a class="case-slide-media case-slide-media--youtube" href="${href}" target="_blank" rel="noopener noreferrer" title="${labelAttr}" aria-label="${labelAttr}, TikTok">
     <span class="case-slide-youtube-poster">${poster}<span class="case-slide-youtube-play" aria-hidden="true"></span></span>
@@ -533,11 +564,54 @@ function escapeHtmlAttr(str) {
     .replace(/</g, "&lt;");
 }
 
+function buildResponsiveImgTag(src, alt, options = {}) {
+  const {
+    loading = "lazy",
+    fetchpriority = "auto",
+    sizes = "(max-width: 760px) 100vw, 50vw",
+    className = "",
+    width = 1600,
+    height = 1000,
+  } = options;
+  const srcEsc = escapeHtmlAttr(src);
+  const altEsc = escapeHtmlAttr(alt);
+  const classAttr = className ? ` class="${escapeHtmlAttr(className)}"` : "";
+  return `<img${classAttr} src="${srcEsc}" srcset="${srcEsc} 1x, ${srcEsc} 2x" sizes="${escapeHtmlAttr(sizes)}" width="${width}" height="${height}" alt="${altEsc}" loading="${loading}" decoding="async" fetchpriority="${fetchpriority}" />`;
+}
+
+function getRasterSourceVariants(src) {
+  if (!src || /^https?:\/\//i.test(src) || !/\.(jpe?g|png)(\?.*)?$/i.test(src)) {
+    return { avif: "", webp: "" };
+  }
+  const base = String(src).replace(/\.(jpe?g|png)(\?.*)?$/i, "");
+  return {
+    avif: `${base}.avif`,
+    webp: `${base}.webp`,
+  };
+}
+
+function buildResponsivePictureTag(src, alt, options = {}) {
+  const { sizes = "(max-width: 760px) 100vw, 50vw" } = options;
+  const variants = getRasterSourceVariants(src);
+  return `<picture class="case-slide-picture">
+    ${variants.avif ? `<source type="image/avif" srcset="${escapeHtmlAttr(variants.avif)} 1x, ${escapeHtmlAttr(variants.avif)} 2x" sizes="${escapeHtmlAttr(sizes)}" />` : ""}
+    ${variants.webp ? `<source type="image/webp" srcset="${escapeHtmlAttr(variants.webp)} 1x, ${escapeHtmlAttr(variants.webp)} 2x" sizes="${escapeHtmlAttr(sizes)}" />` : ""}
+    ${buildResponsiveImgTag(src, alt, options)}
+  </picture>`;
+}
+
+function getVideoPosterPath(path) {
+  if (!isVideoPath(path) || /^https?:\/\//i.test(path || "")) return "";
+  return String(path).replace(/\.(mp4|webm|ogg|mov)(\?.*)?$/i, ".jpg");
+}
+
 function buildCaseSlideMediaHtml(path, projectName, slideIndex, youtubePosterPath) {
   const src = escapeHtmlAttr(path);
   const label = escapeHtmlAttr(`${projectName} detail ${slideIndex + 1}`);
   if (isVideoPath(path)) {
-    return `<video class="case-slide-media" src="${src}" controls playsinline muted preload="metadata" title="${label}"></video>`;
+    const poster = getVideoPosterPath(path);
+    const posterAttr = poster ? ` poster="${escapeHtmlAttr(poster)}"` : "";
+    return `<video class="case-slide-media" src="${src}" controls playsinline muted preload="metadata"${posterAttr} title="${label}"></video>`;
   }
   if (isYouTubePath(path)) {
     return buildYouTubePosterCaseHtml(path, label, youtubePosterPath);
@@ -551,7 +625,7 @@ function buildCaseSlideMediaHtml(path, projectName, slideIndex, youtubePosterPat
       return `<iframe class="case-slide-media case-slide-media--embed" src="${escapeHtmlAttr(embed)}" title="${label}" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
     }
   }
-  return `<img src="${src}" alt="${label}" loading="lazy" decoding="async" />`;
+  return buildResponsivePictureTag(path, `${projectName} detail ${slideIndex + 1}`);
 }
 
 function getAssetFileName(path) {
@@ -579,23 +653,39 @@ function getDetailDisplayMode(project, path, imageIndex) {
   return "contain";
 }
 
-function warmupImages(paths) {
-  paths.forEach((path) => {
+function warmupImages(paths, options = {}) {
+  const { eager = false, maxItems = Number.POSITIVE_INFINITY } = options;
+  const queue = Array.isArray(paths) ? paths.slice(0, maxItems) : [];
+  const prime = (path) => {
     if (!path || imageWarmupCache.has(path)) return;
     imageWarmupCache.add(path);
     if (isVideoPath(path)) {
       const video = document.createElement("video");
       video.preload = "metadata";
+      const poster = getVideoPosterPath(path);
+      if (poster) video.poster = poster;
       video.src = path;
       return;
     }
     if (isYouTubePath(path) || isTikTokPath(path)) {
       return;
     }
+    const variants = getRasterSourceVariants(path);
     const image = new Image();
     image.decoding = "async";
-    image.loading = "eager";
-    image.src = path;
+    image.loading = eager ? "eager" : "lazy";
+    image.src = variants.avif || variants.webp || path;
+  };
+  queue.forEach((path) => {
+    if (eager) {
+      prime(path);
+      return;
+    }
+    if (typeof window.requestIdleCallback === "function") {
+      window.requestIdleCallback(() => prime(path), { timeout: 1000 });
+      return;
+    }
+    window.setTimeout(() => prime(path), 120);
   });
 }
 
@@ -773,6 +863,7 @@ async function resolveDetailImagesForProject(project) {
 }
 
 async function ensureProjectDetailImages(project) {
+  if (!project) return [];
   if (project.detailImages?.length) {
     return project.detailImages;
   }
@@ -865,6 +956,19 @@ function getScopeText(project) {
   const scope = getLocalizedValue(project.scopeOfWork);
   if (Array.isArray(scope)) return scope.filter(Boolean).join(", ");
   return String(scope || project.technology || "");
+}
+
+function getCompactScopeText(project) {
+  const scope = getLocalizedValue(project.scopeOfWork);
+  if (Array.isArray(scope)) {
+    const list = scope.filter(Boolean);
+    if (!list.length) return "";
+    if (list.length <= 2) return list.join(", ");
+    return `${list.slice(0, 2).join(", ")} +${list.length - 2}`;
+  }
+  const raw = String(scope || project.technology || "").trim();
+  if (!raw) return "";
+  return raw.length > 48 ? `${raw.slice(0, 48).trim()}...` : raw;
 }
 
 function animateGalleryInfoText() {
@@ -1045,16 +1149,29 @@ function renderGallery() {
   const remainingProjects = state.items.filter((project) => !featuredSlugs.has(project.slug));
   const galleryItems = featuredProjects.length ? [...featuredProjects, ...remainingProjects] : state.items;
   const wiredItems = [];
-  galleryItems.forEach((project) => {
+  galleryItems.forEach((project, itemIndex) => {
     const objective = getLocalizedValue(project.objective) || getLocalizedValue(project.category) || "";
     const scopeText = getScopeText(project);
+    const compactScopeText = getCompactScopeText(project);
     const item = document.createElement("article");
     item.className = "gallery-item";
+    if (itemIndex >= 3) item.classList.add("reveal-pending");
     item.dataset.slug = project.slug;
     item.classList.toggle("active", project.slug === state.selectedSlug);
+    const eagerCover = itemIndex === 0;
+    const coverSources = getProjectCoverSources(project);
+    const coverPath = getProjectPrimaryCover(project);
+    const coverSourceAttr = eagerCover ? "srcset" : "data-srcset";
+    const coverAttrs = eagerCover
+      ? `src="${coverPath}" srcset="${coverPath} 1x, ${coverPath} 2x" sizes="(max-width: 760px) 100vw, 50vw" width="1600" height="1000" loading="eager" fetchpriority="high"`
+      : `data-src="${coverPath}" data-srcset="${coverPath} 1x, ${coverPath} 2x" data-sizes="(max-width: 760px) 100vw, 50vw" width="1600" height="1000" loading="lazy" fetchpriority="auto"`;
     item.innerHTML = `
       <div class="gallery-media">
-        <img data-src="${project.coverPath}" alt="${project.name} cover" loading="lazy" decoding="async" />
+        <picture class="gallery-picture">
+          ${coverSources.avif ? `<source type="image/avif" ${coverSourceAttr}="${coverSources.avif} 1x, ${coverSources.avif} 2x" sizes="(max-width: 760px) 100vw, 50vw" />` : ""}
+          ${coverSources.webp ? `<source type="image/webp" ${coverSourceAttr}="${coverSources.webp} 1x, ${coverSources.webp} 2x" sizes="(max-width: 760px) 100vw, 50vw" />` : ""}
+          <img ${coverAttrs} alt="${project.name} cover" decoding="async" />
+        </picture>
         <div class="gallery-media-overlay" aria-hidden="true">
           <span class="gallery-media-overlay-label">
             <span class="gallery-media-overlay-icon">&#8599;</span>
@@ -1076,7 +1193,7 @@ function renderGallery() {
               </div>
               <div>
                 <dt>${escapeHtmlAttr(t("galleryInfoScope"))}</dt>
-                <dd>${escapeHtmlAttr(scopeText)}</dd>
+                <dd>${escapeHtmlAttr(compactScopeText)}</dd>
               </div>
             </dl>
           </div>
@@ -1114,7 +1231,21 @@ function cleanupGalleryObservers() {
 }
 
 function wireGalleryLazyLoad() {
-  const lazyImages = Array.from(els.galleryList.querySelectorAll("img[data-src]"));
+  const allImages = Array.from(els.galleryList.querySelectorAll(".gallery-media img"));
+  if (!allImages.length) return;
+  const markLoaded = (image) => image.classList.add("is-loaded");
+  const markError = (image) => {
+    image.classList.add("is-loaded", "is-error");
+  };
+  allImages.forEach((image) => {
+    if (image.complete && image.getAttribute("src")) {
+      markLoaded(image);
+      return;
+    }
+    image.addEventListener("load", () => markLoaded(image), { once: true });
+    image.addEventListener("error", () => markError(image), { once: true });
+  });
+  const lazyImages = allImages.filter((image) => image.dataset.src);
   if (!lazyImages.length) return;
   galleryLazyObserver = new IntersectionObserver(
     (entries, observer) => {
@@ -1122,15 +1253,18 @@ function wireGalleryLazyLoad() {
         if (!entry.isIntersecting) return;
         const image = entry.target;
         const source = image.dataset.src;
+        const srcset = image.dataset.srcset;
+        const sizes = image.dataset.sizes;
+        image.closest("picture")?.querySelectorAll("source[data-srcset]").forEach((sourceNode) => {
+          sourceNode.srcset = sourceNode.dataset.srcset;
+          sourceNode.removeAttribute("data-srcset");
+        });
+        if (srcset) image.srcset = srcset;
+        if (sizes) image.sizes = sizes;
         if (source) image.src = source;
         image.removeAttribute("data-src");
-        image.addEventListener(
-          "load",
-          () => {
-            image.classList.add("is-loaded");
-          },
-          { once: true },
-        );
+        image.removeAttribute("data-srcset");
+        image.removeAttribute("data-sizes");
         observer.unobserve(image);
       });
     },
@@ -1140,8 +1274,12 @@ function wireGalleryLazyLoad() {
 }
 
 function wireGalleryReveal() {
-  const cards = Array.from(els.galleryList.querySelectorAll(".gallery-item"));
+  const cards = Array.from(els.galleryList.querySelectorAll(".gallery-item.reveal-pending"));
   if (!cards.length) return;
+  if (window.matchMedia("(hover: none), (pointer: coarse)").matches) {
+    cards.forEach((card) => card.classList.add("in-view"));
+    return;
+  }
   galleryRevealObserver = new IntersectionObserver(
     (entries, observer) => {
       entries.forEach((entry) => {
@@ -1350,8 +1488,10 @@ function renderCaseStudy() {
   if (!project) return;
 
   const slideImages = normalizeSlideImages(project);
-  warmupImages(slideImages);
-  if (project.youtubePosterPath) warmupImages([project.youtubePosterPath]);
+  const nearSlides = getNeighborSlidePaths(slideImages, state.caseSlideIndex, 1);
+  warmupImages(nearSlides, { eager: true, maxItems: 3 });
+  warmupImages(slideImages, { eager: false, maxItems: 8 });
+  if (project.youtubePosterPath) warmupImages([project.youtubePosterPath], { eager: true, maxItems: 1 });
 
   els.caseTitle.textContent = project.name;
   els.caseType.textContent = getLocalizedValue(project.category);
@@ -1564,7 +1704,7 @@ function applyCaseStudyMode() {
 async function openCaseStudy(slug) {
   const currentUrl = new URL(window.location.href);
   currentUrl.searchParams.set("lang", state.language);
-  currentUrl.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "light");
+  currentUrl.searchParams.set("theme", getCurrentTheme());
   currentUrl.searchParams.set("view", state.viewMode);
   currentUrl.searchParams.set("scroll", String(Math.round(window.scrollY)));
   currentUrl.searchParams.set("selected", slug);
@@ -1573,7 +1713,7 @@ async function openCaseStudy(slug) {
   const url = new URL("./project.html", window.location.href);
   url.searchParams.set("slug", slug);
   url.searchParams.set("lang", state.language);
-  url.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "light");
+  url.searchParams.set("theme", getCurrentTheme());
   url.searchParams.set("fromView", state.viewMode);
   url.searchParams.set("fromScroll", String(Math.round(window.scrollY)));
   url.searchParams.set("selected", slug);
@@ -1807,7 +1947,7 @@ function syncListStateToUrl() {
   if (state.inCaseStudy) return;
   const url = new URL(window.location.href);
   url.searchParams.set("lang", state.language);
-  url.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "light");
+  url.searchParams.set("theme", getCurrentTheme());
   url.searchParams.set("view", state.viewMode);
   if (state.selectedSlug) {
     url.searchParams.set("selected", state.selectedSlug);
@@ -1822,7 +1962,7 @@ function switchViewMode(mode) {
   if (mode === "feature" && pageMode === "projects") {
     const url = new URL("./index.html", window.location.href);
     url.searchParams.set("lang", state.language);
-    url.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "light");
+    url.searchParams.set("theme", getCurrentTheme());
     if (state.selectedSlug) url.searchParams.set("selected", state.selectedSlug);
     window.location.href = url.toString();
     return;
@@ -1830,7 +1970,7 @@ function switchViewMode(mode) {
   if (mode === "index" && pageMode === "feature") {
     const url = new URL("./projects.html", window.location.href);
     url.searchParams.set("lang", state.language);
-    url.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "light");
+    url.searchParams.set("theme", getCurrentTheme());
     if (state.selectedSlug) url.searchParams.set("selected", state.selectedSlug);
     window.location.href = url.toString();
     return;
@@ -1838,7 +1978,7 @@ function switchViewMode(mode) {
   if (mode === "index" && pageMode === "projects") {
     const url = new URL("./projects.html", window.location.href);
     url.searchParams.set("lang", state.language);
-    url.searchParams.set("theme", window.VANLAB_THEME?.get() ?? "light");
+    url.searchParams.set("theme", getCurrentTheme());
     if (state.selectedSlug) url.searchParams.set("selected", state.selectedSlug);
     window.location.href = url.toString();
     return;
@@ -2104,6 +2244,25 @@ els.caseStudyView.addEventListener("click", (event) => {
   }
 });
 
+function warmupInitialProjectDetails() {
+  const selected = getSelectedProject();
+  if (selected) {
+    void ensureProjectDetailImages(selected);
+  }
+  const topProjects = state.items.slice(0, 3);
+  const run = () => {
+    topProjects.forEach((project) => {
+      if (!project) return;
+      void ensureProjectDetailImages(project);
+    });
+  };
+  if (typeof window.requestIdleCallback === "function") {
+    window.requestIdleCallback(run, { timeout: 1500 });
+    return;
+  }
+  window.setTimeout(run, 240);
+}
+
 async function initializeApp() {
   localStorage.setItem(LANGUAGE_STORAGE_KEY, state.language);
   updateThemeToggleUi();
@@ -2112,10 +2271,10 @@ async function initializeApp() {
     updateHeaderOutboundLinks();
     window.VANLAB_REFRESH_FOOTER_BAR?.();
   });
-  await ensureProjectDetailImages(getSelectedProject());
   renderStaticText();
   renderGallery();
   renderIndexTable();
+  warmupInitialProjectDetails();
   applyViewMode();
   applyCaseStudyMode();
   syncListStateToUrl();
