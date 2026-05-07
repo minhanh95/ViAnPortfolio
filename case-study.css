@@ -546,6 +546,34 @@ body.case-open {
   background: transparent;
   transform: none !important;
   border: 0;
+  opacity: 0;
+  transition: opacity 0.32s ease;
+}
+
+.case-image-item.is-loaded img,
+.case-image-item.is-loaded video.case-slide-media,
+.case-image-item.is-loaded iframe.case-slide-media--embed,
+.case-image-item.is-loaded .case-slide-picture,
+.case-image-item.is-loaded a.case-slide-media--youtube {
+  opacity: 1;
+}
+
+/* The picture/anchor wrappers also need the fade so the inner img isn't
+   visible while the parent wrapper is still 0-opacity */
+.case-image-item .case-slide-picture,
+.case-image-item a.case-slide-media--youtube {
+  opacity: 0;
+  transition: opacity 0.32s ease;
+}
+
+/* Errored slides: keep the SVG fallback visible, hide the broken element */
+.case-image-item.is-error img,
+.case-image-item.is-error video.case-slide-media,
+.case-image-item.is-error iframe.case-slide-media--embed,
+.case-image-item.is-error .case-slide-picture,
+.case-image-item.is-error a.case-slide-media--youtube {
+  opacity: 0;
+  visibility: hidden;
 }
 
 .case-image-item--media-cover img,

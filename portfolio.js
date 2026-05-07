@@ -564,6 +564,61 @@ function escapeHtmlAttr(str) {
     .replace(/</g, "&lt;");
 }
 
+/* Marks .media-skeleton wrappers as is-loaded / is-error based on the load
+   state of any descendant <img>, <video>, or <iframe>. Listeners stay
+   attached so a successful src swap (e.g. the YouTube maxres → hq fallback)
+   can clear an earlier is-error state. Idempotent — repeat calls won't
+   double-bind. Targets either a single wrapper or every wrapper inside the
+   given root. */
+function wireMediaSkeletonsIn(root) {
+  if (!root) return;
+  const wrappers = root.classList?.contains("media-skeleton")
+    ? [root]
+    : Array.from(root.querySelectorAll(".media-skeleton"));
+  wrappers.forEach((wrapper) => {
+    if (wrapper.dataset.skeletonWired === "1") return;
+    wrapper.dataset.skeletonWired = "1";
+
+    const markLoaded = () => {
+      wrapper.classList.add("is-loaded");
+      wrapper.classList.remove("is-error");
+    };
+    const markError = () => {
+      wrapper.classList.add("is-loaded", "is-error");
+    };
+
+    const img = wrapper.querySelector("img");
+    if (img) {
+      if (img.complete && img.naturalWidth > 0) {
+        markLoaded();
+      } else if (img.complete && img.naturalWidth === 0 && img.getAttribute("src")) {
+        markError();
+      }
+      img.addEventListener("load", markLoaded);
+      img.addEventListener("error", markError);
+      return;
+    }
+
+    const video = wrapper.querySelector("video");
+    if (video) {
+      if (video.readyState >= 1) {
+        markLoaded();
+      } else {
+        video.addEventListener("loadedmetadata", markLoaded, { once: true });
+        video.addEventListener("error", markError, { once: true });
+      }
+      return;
+    }
+
+    const iframe = wrapper.querySelector("iframe");
+    if (iframe) {
+      iframe.addEventListener("load", markLoaded, { once: true });
+      iframe.addEventListener("error", markError, { once: true });
+      window.setTimeout(markLoaded, 4000);
+    }
+  });
+}
+
 function buildResponsiveImgTag(src, alt, options = {}) {
   const {
     loading = "lazy",
@@ -592,11 +647,12 @@ function getRasterSourceVariants(src) {
 
 function buildResponsivePictureTag(src, alt, options = {}) {
   const { sizes = "(max-width: 760px) 100vw, 50vw" } = options;
+  const mergedOptions = { ...options, sizes };
   const variants = getRasterSourceVariants(src);
   return `<picture class="case-slide-picture">
     ${variants.avif ? `<source type="image/avif" srcset="${escapeHtmlAttr(variants.avif)} 1x, ${escapeHtmlAttr(variants.avif)} 2x" sizes="${escapeHtmlAttr(sizes)}" />` : ""}
     ${variants.webp ? `<source type="image/webp" srcset="${escapeHtmlAttr(variants.webp)} 1x, ${escapeHtmlAttr(variants.webp)} 2x" sizes="${escapeHtmlAttr(sizes)}" />` : ""}
-    ${buildResponsiveImgTag(src, alt, options)}
+    ${buildResponsiveImgTag(src, alt, mergedOptions)}
   </picture>`;
 }
 
@@ -625,7 +681,14 @@ function buildCaseSlideMediaHtml(path, projectName, slideIndex, youtubePosterPat
       return `<iframe class="case-slide-media case-slide-media--embed" src="${escapeHtmlAttr(embed)}" title="${label}" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
     }
   }
-  return buildResponsivePictureTag(path, `${projectName} detail ${slideIndex + 1}`);
+  // Case-study slides fill the modal, so they're effectively 100vw at every breakpoint.
+  // Mark the first slide as high priority so it pops in immediately when the modal opens.
+  const isFirst = slideIndex === 0;
+  return buildResponsivePictureTag(path, `${projectName} detail ${slideIndex + 1}`, {
+    sizes: "100vw",
+    loading: isFirst ? "eager" : "lazy",
+    fetchpriority: isFirst ? "high" : "auto",
+  });
 }
 
 function getAssetFileName(path) {
@@ -1161,7 +1224,7 @@ function renderGallery() {
       ? `src="${coverPath}" srcset="${coverPath} 1x, ${coverPath} 2x" sizes="(max-width: 760px) 100vw, 50vw" width="1600" height="1000" loading="eager" fetchpriority="high"`
       : `data-src="${coverPath}" data-srcset="${coverPath} 1x, ${coverPath} 2x" data-sizes="(max-width: 760px) 100vw, 50vw" width="1600" height="1000" loading="lazy" fetchpriority="auto"`;
     item.innerHTML = `
-      <div class="gallery-media">
+      <div class="gallery-media media-skeleton">
         <picture class="gallery-picture">
           ${coverSources.avif ? `<source type="image/avif" ${coverSourceAttr}="${coverSources.avif} 1x, ${coverSources.avif} 2x" sizes="(max-width: 760px) 100vw, 50vw" />` : ""}
           ${coverSources.webp ? `<source type="image/webp" ${coverSourceAttr}="${coverSources.webp} 1x, ${coverSources.webp} 2x" sizes="(max-width: 760px) 100vw, 50vw" />` : ""}
@@ -1228,13 +1291,21 @@ function cleanupGalleryObservers() {
 function wireGalleryLazyLoad() {
   const allImages = Array.from(els.galleryList.querySelectorAll(".gallery-media img"));
   if (!allImages.length) return;
-  const markLoaded = (image) => image.classList.add("is-loaded");
+  const markLoaded = (image) => {
+    image.classList.add("is-loaded");
+    image.closest(".gallery-media")?.classList.add("is-loaded");
+  };
   const markError = (image) => {
     image.classList.add("is-loaded", "is-error");
+    image.closest(".gallery-media")?.classList.add("is-loaded", "is-error");
   };
   allImages.forEach((image) => {
-    if (image.complete && image.getAttribute("src")) {
+    if (image.complete && image.naturalWidth > 0) {
       markLoaded(image);
+      return;
+    }
+    if (image.complete && image.getAttribute("src") && image.naturalWidth === 0) {
+      markError(image);
       return;
     }
     image.addEventListener("load", () => markLoaded(image), { once: true });
@@ -1373,12 +1444,15 @@ function renderIndexPreview(project) {
     return;
   }
   els.indexPreview.innerHTML = `
-    <img src="${escapeHtmlAttr(project.coverPath || "")}" alt="${escapeHtmlAttr((project.name || "") + " preview")}" width="800" height="600" loading="lazy" decoding="async" />
+    <div class="index-preview-media media-skeleton">
+      <img src="${escapeHtmlAttr(project.coverPath || "")}" alt="${escapeHtmlAttr((project.name || "") + " preview")}" width="800" height="600" loading="lazy" decoding="async" />
+    </div>
     <div class="index-preview-meta">
       <p>${escapeHtmlAttr(project.name || "")}</p>
       <p>${escapeHtmlAttr(String(project.year || ""))} - ${escapeHtmlAttr(project.client || "")} - ${escapeHtmlAttr(getLocalizedValue(project.category) || "")}</p>
     </div>
   `;
+  wireMediaSkeletonsIn(els.indexPreview);
 }
 
 function toggleIndexPreviewVisibility(visible) {
@@ -1507,7 +1581,7 @@ function renderCaseStudy() {
         const caption = getDetailCaption(project, path, imageIndex);
         const mode = getDetailDisplayMode(project, path, imageIndex);
         return `
-        <figure class="case-image-item${
+        <figure class="case-image-item media-skeleton${
           mode === "cover"
             ? " case-image-item--media-cover"
             : mode === "cover-vertical"
@@ -1523,6 +1597,7 @@ function renderCaseStudy() {
 
   els.caseSlideTrack.scrollLeft = 0;
   updateCaseSlideCounter(1, slideImages.length);
+  wireMediaSkeletonsIn(els.caseSlideTrack);
   wireCaseSlideObserver(slideImages.length);
   wireCaseHorizontalWheel();
   wireCasePortraitVideoAspect();

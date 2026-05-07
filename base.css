@@ -1310,3 +1310,78 @@ body[data-page="projects"] .content-view {
 body[data-page="projects"] .main-layout {
   padding-top: clamp(0.25rem, 1vw, 0.75rem);
 }
+
+/* --- Media skeleton / placeholder system ---------------------------------
+   Any wrapper with .media-skeleton shows a subtle shimmer until the inner
+   <img>/<video>/<iframe> reports complete (JS adds .is-loaded). On error
+   (.is-error) the shimmer is replaced with a static broken-image glyph so
+   slow networks / 404s never show a black void. Theme-aware via tokens. */
+.media-skeleton {
+  --skeleton-base: color-mix(in srgb, var(--text) 7%, transparent);
+  --skeleton-highlight: color-mix(in srgb, var(--text) 13%, transparent);
+  position: relative;
+  background-color: var(--skeleton-base);
+  isolation: isolate;
+}
+
+.media-skeleton::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+    100deg,
+    transparent 30%,
+    var(--skeleton-highlight) 50%,
+    transparent 70%
+  );
+  background-size: 220% 100%;
+  background-repeat: no-repeat;
+  background-position: -120% 0;
+  animation: media-shimmer 1.4s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 1;
+  transition: opacity 0.32s ease;
+}
+
+.media-skeleton.is-loaded {
+  background-color: transparent;
+}
+
+.media-skeleton.is-loaded::before {
+  opacity: 0;
+  animation: none;
+}
+
+.media-skeleton.is-error {
+  background-color: var(--skeleton-base);
+}
+
+.media-skeleton.is-error::before {
+  display: none;
+}
+
+.media-skeleton.is-error::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><rect x='6' y='9' width='36' height='30' rx='3'/><circle cx='17' cy='20' r='3'/><path d='M6 32l11-10 9 8 5-4 11 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: clamp(28px, 9%, 56px);
+  color: var(--muted);
+  opacity: 0.55;
+  z-index: 1;
+}
+
+@keyframes media-shimmer {
+  0%   { background-position: -120% 0; }
+  100% { background-position: 220% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media-skeleton::before {
+    animation: none;
+  }
+}

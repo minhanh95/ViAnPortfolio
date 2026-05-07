@@ -77,12 +77,32 @@
   transform: translate3d(0, 0, 0);
 }
 
+.index-preview-media {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  display: block;
+  overflow: hidden;
+}
+
+.index-preview-media img,
 .index-preview img {
   width: 100%;
+  height: 100%;
   aspect-ratio: 4 / 5;
   object-fit: cover;
   display: block;
   background: transparent;
+  opacity: 0;
+  transition: opacity 0.32s ease;
+}
+
+.index-preview-media.is-loaded img,
+.index-preview-media.is-error img {
+  opacity: 1;
+}
+
+.index-preview-media.is-error img {
+  visibility: hidden;
 }
 
 .index-preview-meta {

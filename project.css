@@ -387,6 +387,35 @@
   background: transparent;
 }
 
+/* Fade media in once load fires; matches the gallery card behavior so the
+   shimmer placeholder hands off cleanly. .media-skeleton + .is-loaded is
+   set by wireMediaSkeletons() in project.js. */
+.project-slide--image.media-skeleton > img,
+.project-slide--image.media-skeleton > .project-slide-picture,
+.project-slide--image.media-skeleton > video.project-slide-media,
+.project-slide--image.media-skeleton > iframe.project-slide-media--embed,
+.project-slide--image.media-skeleton > a.project-slide-media--youtube {
+  opacity: 0;
+  transition: opacity 0.32s ease;
+}
+
+.project-slide--image.media-skeleton.is-loaded > img,
+.project-slide--image.media-skeleton.is-loaded > .project-slide-picture,
+.project-slide--image.media-skeleton.is-loaded > video.project-slide-media,
+.project-slide--image.media-skeleton.is-loaded > iframe.project-slide-media--embed,
+.project-slide--image.media-skeleton.is-loaded > a.project-slide-media--youtube {
+  opacity: 1;
+}
+
+.project-slide--image.media-skeleton.is-error > img,
+.project-slide--image.media-skeleton.is-error > .project-slide-picture,
+.project-slide--image.media-skeleton.is-error > video.project-slide-media,
+.project-slide--image.media-skeleton.is-error > iframe.project-slide-media--embed,
+.project-slide--image.media-skeleton.is-error > a.project-slide-media--youtube {
+  opacity: 0;
+  visibility: hidden;
+}
+
 .project-slide--media-fill-vertical {
   flex: 0 0 min(72vw, 1120px);
   align-items: center;

@@ -208,6 +208,59 @@ function escapeHtml(s) {
     .replace(/"/g, "&quot;");
 }
 
+/* Mark .media-skeleton wrappers as is-loaded / is-error so the shimmer
+   placeholder fades out and broken media gets a visible fallback glyph
+   instead of a black rectangle. Listeners stay attached so a src-swap
+   fallback (e.g. YouTube maxres → hq) can clear an earlier error. */
+function wireMediaSkeletons(root) {
+  if (!root) return;
+  const wrappers = root.classList?.contains("media-skeleton")
+    ? [root]
+    : Array.from(root.querySelectorAll(".media-skeleton"));
+  wrappers.forEach((wrapper) => {
+    if (wrapper.dataset.skeletonWired === "1") return;
+    wrapper.dataset.skeletonWired = "1";
+
+    const markLoaded = () => {
+      wrapper.classList.add("is-loaded");
+      wrapper.classList.remove("is-error");
+    };
+    const markError = () => {
+      wrapper.classList.add("is-loaded", "is-error");
+    };
+
+    const img = wrapper.querySelector("img");
+    if (img) {
+      if (img.complete && img.naturalWidth > 0) {
+        markLoaded();
+      } else if (img.complete && img.naturalWidth === 0 && img.getAttribute("src")) {
+        markError();
+      }
+      img.addEventListener("load", markLoaded);
+      img.addEventListener("error", markError);
+      return;
+    }
+
+    const video = wrapper.querySelector("video");
+    if (video) {
+      if (video.readyState >= 1) {
+        markLoaded();
+      } else {
+        video.addEventListener("loadedmetadata", markLoaded, { once: true });
+        video.addEventListener("error", markError, { once: true });
+      }
+      return;
+    }
+
+    const iframe = wrapper.querySelector("iframe");
+    if (iframe) {
+      iframe.addEventListener("load", markLoaded, { once: true });
+      iframe.addEventListener("error", markError, { once: true });
+      window.setTimeout(markLoaded, 4000);
+    }
+  });
+}
+
 function renderInlineRichText(input) {
   const source = String(input ?? "");
   const tokenRegex = /(\[[^\]]+\]\(https?:\/\/[^\s)]+\)|\*\*[^*]+\*\*)/g;
@@ -612,6 +665,9 @@ function createSlide(slide, realIndex, cloneSet) {
   if (slide.type === "image" && slide.displayMode === "cover-vertical") {
     wrapper.classList.add("project-slide--media-fill-vertical");
   }
+  if (slide.type === "image") {
+    wrapper.classList.add("media-skeleton");
+  }
   wrapper.dataset.realIndex = String(realIndex);
   wrapper.dataset.cloneSet = String(cloneSet);
   wrapper.dataset.counterIndex = String(slide.counterIndex ?? -1);
@@ -649,7 +705,9 @@ function createSlide(slide, realIndex, cloneSet) {
     } else if (isTikTokPath(slide.path)) {
       wrapper.innerHTML = `${buildTikTokPosterSlideHtml(slide.path, slide.alt)}${captionHtml}`;
     } else {
-      wrapper.innerHTML = `<img src="${src}" alt="${label}" width="1600" height="1067" loading="lazy" decoding="async" />${captionHtml}`;
+      const fetchPriority = realIndex === 1 ? "high" : "auto";
+      const eagerLoad = realIndex === 1 ? "eager" : "lazy";
+      wrapper.innerHTML = `<img src="${src}" alt="${label}" width="1600" height="1067" loading="${eagerLoad}" fetchpriority="${fetchPriority}" decoding="async" />${captionHtml}`;
     }
   }
   return wrapper;
@@ -1173,6 +1231,7 @@ function renderSequence() {
   });
   wireLandscapeMediaSizing();
   wireProjectPortraitVideoAspect();
+  wireMediaSkeletons(pageEls.gallery);
 
   requestAnimationFrame(() => {
     const middleSlides = Array.from(pageEls.gallery.querySelectorAll('.project-slide[data-clone-set="0"]'));
