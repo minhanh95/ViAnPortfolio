@@ -46,6 +46,7 @@ const pageState = {
   imageCount: 0,
   counterObserver: null,
   projectVideoUnwire: null,
+  projectVideoAutoplayUnwire: null,
   setStart: 0,
   setWidth: 0,
   velocity: 0,
@@ -429,7 +430,7 @@ function buildYouTubePosterSlideHtml(path, altText, customPosterPath) {
   if (custom) {
     const posterSrc = escapeHtml(custom);
     return `<a class="project-slide-media project-slide-media--youtube" href="${href}" target="_blank" rel="noopener noreferrer" title="${labelEsc}" aria-label="${labelEsc}, YouTube">
-    <span class="project-slide-youtube-poster"><img src="${posterSrc}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" /><span class="project-slide-youtube-play" aria-hidden="true"></span></span>
+    <span class="project-slide-youtube-poster"><img src="${posterSrc}" alt="" width="1280" height="720" loading="lazy" decoding="async" referrerpolicy="no-referrer" /><span class="project-slide-youtube-play" aria-hidden="true"></span></span>
   </a>`;
   }
   const id = parseYouTubeVideoId(path);
@@ -441,7 +442,7 @@ function buildYouTubePosterSlideHtml(path, altText, customPosterPath) {
       ? escapeHtml(`this.onload=null;if(this.naturalWidth<400)this.src='${hqUrl}'`)
       : "";
   const thumb = maxUrl
-    ? `<img src="${escapeHtml(maxUrl)}" onload="${onMaxLoadCheck}" onerror="${onMaxFail}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" />`
+    ? `<img src="${escapeHtml(maxUrl)}" width="1280" height="720" onload="${onMaxLoadCheck}" onerror="${onMaxFail}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" />`
     : "";
   return `<a class="project-slide-media project-slide-media--youtube" href="${href}" target="_blank" rel="noopener noreferrer" title="${labelEsc}" aria-label="${labelEsc}, YouTube">
     <span class="project-slide-youtube-poster">${thumb}<span class="project-slide-youtube-play" aria-hidden="true"></span></span>
@@ -453,7 +454,7 @@ function buildTikTokPosterSlideHtml(path, altText) {
   const labelEsc = escapeHtml(altText);
   const posterUrl = getTikTokPosterUrl(path);
   const poster = posterUrl
-    ? `<img src="${escapeHtml(posterUrl)}" alt="" loading="lazy" decoding="async" />`
+    ? `<img src="${escapeHtml(posterUrl)}" alt="" width="720" height="1280" loading="lazy" decoding="async" />`
     : "";
   return `<a class="project-slide-media project-slide-media--youtube" href="${href}" target="_blank" rel="noopener noreferrer" title="${labelEsc}" aria-label="${labelEsc}, TikTok">
     <span class="project-slide-youtube-poster">${poster}<span class="project-slide-youtube-play" aria-hidden="true"></span></span>
@@ -625,13 +626,13 @@ function createSlide(slide, realIndex, cloneSet) {
     const captionHtml = `<figcaption class="project-slide-caption">${renderInlineRichText(captionText)}</figcaption>`;
     if (isVideoPath(slide.path)) {
       wrapper.classList.add("project-slide--has-video");
-      // Manual playback only: no `autoplay`, no JS-driven play()/pause(). Keeping decoders idle
-      // unless the user clicks play is the surest way to keep horizontal scroll silky on every
-      // device — even mid-range laptops. `preload="metadata"` lets the slide show the first frame
-      // without buffering the whole clip up front, and `controls` gives users the play button.
+      // Autoplay-on-view: the IntersectionObserver wired in wireProjectVideoAutoplay() calls
+      // play() when the slide is >=50% visible and pause() when it leaves view. `muted` is
+      // required for browser-allowed autoplay; `loop` keeps the clip cycling while in view;
+      // `preload="metadata"` keeps off-screen slides from buffering the full clip.
       const poster = getVideoPosterPath(slide.path);
       const posterAttr = poster ? ` poster="${escapeHtml(poster)}"` : "";
-      wrapper.innerHTML = `<video class="project-slide-media" src="${src}" controls playsinline muted preload="metadata"${posterAttr} disablepictureinpicture disableremoteplayback title="${label}"></video>${captionHtml}`;
+      wrapper.innerHTML = `<video class="project-slide-media" src="${src}" controls playsinline muted loop preload="metadata"${posterAttr} disablepictureinpicture disableremoteplayback title="${label}"></video>${captionHtml}`;
     } else if (isVimeoPath(slide.path)) {
       const embedSrc = escapeHtml(buildVimeoEmbedUrl(slide.path));
       wrapper.innerHTML = `<iframe class="project-slide-media project-slide-media--embed" src="${embedSrc}" title="${label}" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>${captionHtml}`;
@@ -648,7 +649,7 @@ function createSlide(slide, realIndex, cloneSet) {
     } else if (isTikTokPath(slide.path)) {
       wrapper.innerHTML = `${buildTikTokPosterSlideHtml(slide.path, slide.alt)}${captionHtml}`;
     } else {
-      wrapper.innerHTML = `<img src="${src}" alt="${label}" loading="lazy" decoding="async" />${captionHtml}`;
+      wrapper.innerHTML = `<img src="${src}" alt="${label}" width="1600" height="1067" loading="lazy" decoding="async" />${captionHtml}`;
     }
   }
   return wrapper;
@@ -990,6 +991,59 @@ function wireProjectVideoPause() {
   requestAnimationFrame(() => requestAnimationFrame(schedule));
 }
 
+function wireProjectVideoAutoplay() {
+  if (pageState.projectVideoAutoplayUnwire) {
+    pageState.projectVideoAutoplayUnwire();
+    pageState.projectVideoAutoplayUnwire = null;
+  }
+  const root = pageEls.gallery;
+  if (!root) return;
+  if (typeof IntersectionObserver !== "function") return;
+
+  const videos = root.querySelectorAll("video.project-slide-media");
+  console.log("[video-autoplay] wiring", videos.length, "video(s)");
+  if (!videos.length) return;
+
+  // Pre-arm: muted+playsinline are required for browser-allowed autoplay.
+  videos.forEach((v) => {
+    v.muted = true;
+    v.playsInline = true;
+    v.setAttribute("muted", "");
+    v.setAttribute("playsinline", "");
+  });
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const v = entry.target;
+        if (!(v instanceof HTMLVideoElement)) return;
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+          if (!v.muted) v.muted = true;
+          const p = v.play();
+          if (p && typeof p.catch === "function") {
+            p.catch((err) => console.warn("[video-autoplay] play blocked:", err?.name || err));
+          }
+        } else {
+          v.pause();
+        }
+      });
+    },
+    { root: null, threshold: [0, 0.5, 1] }
+  );
+
+  videos.forEach((v) => io.observe(v));
+
+  const onVisibilityChange = () => {
+    if (document.hidden) videos.forEach((v) => v.pause());
+  };
+  document.addEventListener("visibilitychange", onVisibilityChange);
+
+  pageState.projectVideoAutoplayUnwire = () => {
+    io.disconnect();
+    document.removeEventListener("visibilitychange", onVisibilityChange);
+  };
+}
+
 function runMomentum() {
   if (Math.abs(pageState.velocity) <= SCROLL_PHYSICS.MIN_VELOCITY) {
     pageState.velocity = 0;
@@ -1053,6 +1107,10 @@ function renderNotFound() {
     pageState.projectVideoUnwire();
     pageState.projectVideoUnwire = null;
   }
+  if (pageState.projectVideoAutoplayUnwire) {
+    pageState.projectVideoAutoplayUnwire();
+    pageState.projectVideoAutoplayUnwire = null;
+  }
   if (pageState.scaleAnimRaf != null) {
     cancelAnimationFrame(pageState.scaleAnimRaf);
     pageState.scaleAnimRaf = null;
@@ -1066,6 +1124,10 @@ function renderSequence() {
   if (pageState.projectVideoUnwire) {
     pageState.projectVideoUnwire();
     pageState.projectVideoUnwire = null;
+  }
+  if (pageState.projectVideoAutoplayUnwire) {
+    pageState.projectVideoAutoplayUnwire();
+    pageState.projectVideoAutoplayUnwire = null;
   }
   if (pageState.scaleAnimRaf != null) {
     cancelAnimationFrame(pageState.scaleAnimRaf);
@@ -1092,6 +1154,7 @@ function renderSequence() {
     updateCounter(0);
     wireCounterObserver();
     wireProjectVideoPause();
+    wireProjectVideoAutoplay();
     requestAnimationFrame(() => {
       pageEls.gallery.classList.remove("is-initializing");
     });

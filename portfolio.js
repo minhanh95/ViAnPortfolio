@@ -693,14 +693,14 @@ const CASE_PORTRAIT_VIDEO_MAX_WH_RATIO = 0.95;
 const CASE_PORTRAIT_VIDEO_PROJECT_SLUG = "vinamilk-green-farm";
 
 function tryPlayVideoEl(video) {
-  if (!video || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (!video) return;
   if (!video.muted) video.muted = true;
   const p = video.play();
-  if (p && typeof p.catch === "function") p.catch(() => {});
+  if (p && typeof p.catch === "function") p.catch((err) => console.warn("[video-autoplay] case-study play blocked:", err?.name || err));
 }
 
 function setCaseSlideEmbedPlayback(frame, shouldPlay) {
-  if (!frame?.contentWindow || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (!frame?.contentWindow) return;
   const src = String(frame.getAttribute("src") || "");
   if (src.includes("player.vimeo.com")) {
     frame.contentWindow.postMessage({ method: shouldPlay ? "play" : "pause" }, "https://player.vimeo.com");
@@ -757,11 +757,6 @@ function caseMediaRectVisibleInScrollerArea(rect, scrollerRect) {
 function syncCaseTrackActiveMedia() {
   const scroller = els.caseSlideTrack;
   if (!scroller) return;
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    scroller.querySelectorAll("video.case-slide-media").forEach((v) => v.pause());
-    scroller.querySelectorAll("iframe.case-slide-media--embed").forEach((f) => setCaseSlideEmbedPlayback(f, false));
-    return;
-  }
   const scrollerRect = scroller.getBoundingClientRect();
   const minArea = 200;
   const list = scroller.querySelectorAll("video.case-slide-media, iframe.case-slide-media--embed");
@@ -1199,7 +1194,7 @@ function renderGallery() {
           </div>
         </div>
       </div>
-      <p class="gallery-title heading-display">${project.name}</p>
+      <p class="gallery-title heading-display">${escapeHtmlAttr(project.name || "")}</p>
     `;
     item.addEventListener("click", () => {
       setSelectedProject(project.slug);
@@ -1350,9 +1345,9 @@ function renderIndexTable() {
     row.dataset.slug = project.slug;
     row.classList.toggle("active", project.slug === state.selectedSlug);
     row.innerHTML = `
-      <td>${project.year}</td>
-      <td>${project.client}</td>
-      <td>${getLocalizedValue(project.category)}</td>
+      <td>${escapeHtmlAttr(String(project.year || ""))}</td>
+      <td>${escapeHtmlAttr(project.client || "")}</td>
+      <td>${escapeHtmlAttr(getLocalizedValue(project.category) || "")}</td>
     `;
     if (canHoverPreview) {
       row.addEventListener("mouseenter", (event) => {
@@ -1378,10 +1373,10 @@ function renderIndexPreview(project) {
     return;
   }
   els.indexPreview.innerHTML = `
-    <img src="${project.coverPath}" alt="${project.name} preview" />
+    <img src="${escapeHtmlAttr(project.coverPath || "")}" alt="${escapeHtmlAttr((project.name || "") + " preview")}" width="800" height="600" loading="lazy" decoding="async" />
     <div class="index-preview-meta">
-      <p>${project.name}</p>
-      <p>${project.year} - ${project.client} - ${getLocalizedValue(project.category)}</p>
+      <p>${escapeHtmlAttr(project.name || "")}</p>
+      <p>${escapeHtmlAttr(String(project.year || ""))} - ${escapeHtmlAttr(project.client || "")} - ${escapeHtmlAttr(getLocalizedValue(project.category) || "")}</p>
     </div>
   `;
 }

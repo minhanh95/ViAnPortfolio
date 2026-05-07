@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.claude/
+
+# Node (in case)
+node_modules/
+
+# Local secrets
+.env
+.env.*
+
+# Audit / dev artifacts
+lighthouse-reports/
+*.log

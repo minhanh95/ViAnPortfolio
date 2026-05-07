@@ -30,11 +30,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=optional" rel="stylesheet" />
     <link rel="preload" href="./base.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <link rel="preload" href="./projects.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="preload" href="./case-study.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript>
       <link rel="stylesheet" href="./base.css" />
       <link rel="stylesheet" href="./projects.css" />
+      <link rel="stylesheet" href="./case-study.css" />
     </noscript>
-    <script src="./theme.js"></script>
+    <script src="./theme.js" defer></script>
+    <script src="./vendor/lenis-1.1.14.min.js" defer></script>
+    <script src="./projects-data.js" defer></script>
+    <script src="./portfolio.js" defer></script>
   </head>
   <body data-page="projects">
     <header class="site-header" id="siteHeader">
@@ -152,8 +157,5 @@
       </div>
     </footer>
 
-    <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
-    <script src="./projects-data.js"></script>
-    <script src="./portfolio.js"></script>
   </body>
 </html>
