@@ -20,3 +20,6 @@ node_modules/
 # Audit / dev artifacts
 lighthouse-reports/
 *.log
+
+# Local project documentation (for Claude sessions only)
+CLAUDE.md

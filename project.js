@@ -755,19 +755,49 @@ function wireCounterObserver() {
     return;
   }
 
-  pageState.counterObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting || entry.intersectionRatio < 0.6) return;
-        const counterIndex = Number(entry.target.dataset.counterIndex || -1);
-        if (counterIndex < 0) return;
-        updateCounter(counterIndex);
-      });
-    },
-    { root: pageEls.gallery, threshold: [0.6, 0.85] },
-  );
+  // Pick the countable slide whose horizontal center is nearest the gallery's center.
+  // The previous IntersectionObserver approach let "last entry to exceed 0.6" win, which
+  // is non-deterministic when multiple slides are simultaneously above threshold (slide
+  // widths range 35vw–72vw, so several can be visible at once) — causing skipped/wrong numbers.
+  let pendingFrame = null;
+  const pickActive = () => {
+    pendingFrame = null;
+    const galleryRect = pageEls.gallery.getBoundingClientRect();
+    const galleryCenter = galleryRect.left + galleryRect.width / 2;
+    let bestSlide = null;
+    let bestDistance = Infinity;
+    for (const slide of slides) {
+      const rect = slide.getBoundingClientRect();
+      if (rect.right < galleryRect.left || rect.left > galleryRect.right) continue;
+      const distance = Math.abs(rect.left + rect.width / 2 - galleryCenter);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        bestSlide = slide;
+      }
+    }
+    if (!bestSlide) return;
+    const counterIndex = Number(bestSlide.dataset.counterIndex || -1);
+    if (counterIndex < 0) return;
+    updateCounter(counterIndex);
+  };
 
-  slides.forEach((slide) => pageState.counterObserver.observe(slide));
+  const onScroll = () => {
+    if (pendingFrame != null) return;
+    pendingFrame = requestAnimationFrame(pickActive);
+  };
+
+  pageEls.gallery.addEventListener("scroll", onScroll, { passive: true });
+  pageState.counterObserver = {
+    disconnect() {
+      if (pendingFrame != null) {
+        cancelAnimationFrame(pendingFrame);
+        pendingFrame = null;
+      }
+      pageEls.gallery.removeEventListener("scroll", onScroll);
+    },
+  };
+
+  pickActive();
 }
 
 function mediaRectVisibleInScrollerArea(rect, scrollerRect) {
